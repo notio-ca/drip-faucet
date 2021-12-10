@@ -36,7 +36,7 @@ var app = new Vue({
         this.getAccount(this.account);
         this.br34pBalance(this.account);
         this.bnbBalance(this.account);
-
+        this.ping();
     },
     methods: {
         appTick() {
