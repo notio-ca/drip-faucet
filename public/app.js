@@ -58,6 +58,11 @@ var app = new Vue({
                 document.title = app.drip_usd.toFixed(2) + " $ DRIP";
             });
         },
+        ping() {
+            API_Get("/.netlify/functions/ping", function (data) {
+                console.log(data);
+            });
+        },
         accountChanged(event) {
             console.log("change");
             this.getAccount();
