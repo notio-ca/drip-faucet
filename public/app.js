@@ -69,6 +69,7 @@ String.prototype.replaceAll = function (search, replacement) {
 var app = new Vue({
     el: '#app',
     data: {
+        is_loaded: false,
         drip_usd: 0,
         drip_players: 0,
         drip_supply: 0,
@@ -79,7 +80,8 @@ var app = new Vue({
         account: "",
     },
     watch: {
-        account_list: function () { this.userSave(); }
+        account_list: function () { this.userSave(); },
+        currency_select: function () { this.userSave(); }
     },
     mounted: function() {
         this.userLoad();
@@ -91,7 +93,8 @@ var app = new Vue({
         if (document.location.hash != "") { this.account = document.location.hash.replace("#", ""); this.addAccount(); }
         //$Contract_BR34P_Pancake.methods.getReserves().call(function(error, result) { console.log(result._reserve1 / result._reserve0); });
 
-        this.ping();
+        // this.ping();
+        $("#app").show();
     },
     methods: {
         appTick() {
@@ -109,10 +112,16 @@ var app = new Vue({
                 this.bnbBalance(i);
             }
         },
+        userDefault() {
+            return {
+                account_list: [],
+                currency_select: this.currency_select
+            };
+        },
         userSave() {
-            save = [];
+            save = this.userDefault();
             for (i=0; i < this.account_list.length; i++) {
-                save.push({
+                save.account_list.push({
                     name: this.account_list[i].name,
                     wallet: this.account_list[i].wallet,
                 });
@@ -122,17 +131,21 @@ var app = new Vue({
         },
         userLoad() {
             saved_data = $Cookie.get("USER");
-            if (saved_data == undefined) { saved_data = "[]"; }
+            if (saved_data == undefined) { saved_data = JSON.stringify(this.userDefault()); }
             saved_data = JSON.parse(saved_data);
+            saved_is_valid = true;
+            if (!saved_data.hasOwnProperty('account_list')) { saved_is_valid = false; }
+            if (!saved_data.hasOwnProperty('currency_select')) { saved_is_valid = false; }
+            if (!saved_is_valid) { saved_data = this.userDefault(); }
+
+            this.currency_select = saved_data.currency_select;
             this.account_list = [];
-            for (i=0; i < saved_data.length; i++) {
+            for (i=0; i < saved_data.account_list.length; i++) {
                 this.account_list.push({
-                    name: saved_data[i].name,
-                    wallet: saved_data[i].wallet,
+                    name: saved_data.account_list[i].name,
+                    wallet: saved_data.account_list[i].wallet,
                     claims_available: 0,
-                    payout_per_day:0,
                     deposits: 0,
-                    deposit_last: 0,
                     payout_max: 0,
                     claimed: 0,
                     reward_direct: 0,
@@ -207,7 +220,6 @@ var app = new Vue({
             $Contract_DripFaucet.methods.userInfo(account.wallet).call(function(error, result) {
                 if (error) { console.log(error); return false; };
                 account.deposits = app.toDec18(result.deposits);
-                account.payout_per_day = account.deposits * 0.01;
                 //account.deposit_last = app.sinceDays(result.deposit_time); // UNUSED
                 payout_max = app.toDec18(result.deposits) * 3.65;
                 if (payout_max > 100000) { payout_max = 100000; }
@@ -272,25 +284,14 @@ var app = new Vue({
         }
     },
     filters: {
-        DRIPtoUSD(value) { try { return app.formatNum((value * app.drip_usd).toFixed(2)) + "$"; } catch {} },
-        BNBtoUSD(value) { try { return app.formatNum((value * app.bnb_usd).toFixed(2)) + "$"; } catch {} },
-        toNum0(value) { try { return app.formatNum(parseFloat(value).toFixed(0)); } catch {} },
+        DRIPtoUSD(value) { try { return app.formatNum((value * app.drip_usd).toFixed(2)); } catch {} },
+        BNBtoUSD(value) { try { return app.formatNum((value * app.bnb_usd).toFixed(2)); } catch {} },
+        toInt(value) { try { return app.formatNum(parseFloat(value).toFixed(0)); } catch {} },
         toNum2(value) { try { return app.formatNum(parseFloat(value).toFixed(2)); } catch {} },
         toNum3(value) { try { return app.formatNum(parseFloat(value).toFixed(3)); } catch {} }
-
     },
     computed: {
-        // account_list_ordered() {
-        //     //return this.account_list;
-        //     const ordered = Object.keys(this.account_list).sort().reduce(
-        //         (obj, key) => { 
-        //           obj[key] = this.account_list[key]; 
-        //           return obj;
-        //         }, 
-        //         {}
-        //       );
-        //     return ordered;
-        // }
+
     }
 
 });
