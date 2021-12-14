@@ -1,13 +1,16 @@
-body { padding:20px; background-color:#202020; color:#FFF; font-family: Arial, Helvetica, sans-serif; font-size:24px; }
+body { padding:20px; background-color:#202020; color:#FFF; font-family:'Ubuntu', sans-serif; font-weight:400; font-size:24px; }
 
-input { width:100%; padding:0 10px 0 10px; border-radius:5px; outline:none; }
-input.text-edit { width:auto; background-color: transparent; color:#FFF; border:0; cursor:pointer; display:inline-block; outline:none; }
+input { width:100%; padding:0 10px 0 10px; border-radius:10px; outline:none; border-style:solid; border:0; }
+input.text-edit { width:auto; background-color: transparent; color:#FFF; border:0; cursor:pointer; display:inline-block; outline:none; padding-left:0; }
 input.text-edit:focus {  }
-.font-sm { font-size:13px; }
+.font-sm { font-size:14px; }
+.font-lg { font-size:32px; }
 .clickable { cursor:pointer ;}
 .inline { display: inline-block; }
 .hide { display:none; }
 .clear { float:none; clear:both;}
+.float { float:left; }
+.float-right { float:right; }
 
 .switch { position: relative; display: inline-block; width: 60px; height: 34px; }
 .switch input { opacity: 0; width: 0; height: 0; }
@@ -18,4 +21,20 @@ input:focus + .slider { box-shadow: 0 0 1px #2271b1; }
 input:checked + .slider:before { -webkit-transform: translateX(26px); -ms-transform: translateX(26px); transform: translateX(26px); }
 .slider.round { border-radius: 34px; }
 .slider.round:before { border-radius: 50%; }
+
+.pills-info { float:left; margin:0 5px 5px 0; }
+.pills-info > div { display:inline-block; line-height:1; }
+.pills-info > div:first-child { background-color:#2271b1; border-radius: 10px 0 0 10px; padding:5px 10px 5px 15px; }
+.pills-info > div:last-child { background-color:#164c77; border-radius: 0 10px 10px 0; padding:5px 15px 5px 10px; }
+
+.search-bar { margin-top:5px; }
+.panel-title { background-color:#164c77; border-radius: 10px 10px 0 0 ; margin:10px 0 0 0; line-height:1; padding:5px 10px 5px 15px; }
+.panel-body { background-color:#111; padding:15px; margin: 0 0 10px 0; border-radius:0 0 10px 10px; }
+.box-info { min-width:100px; float:left; background-color:#2271b1; border-radius: 10px; margin:5px; line-height:1; }
+    .box-info-title { font-size:16px; text-align:center; padding:10px 20px 0 20px; color:#111; font-weight:700; }
+    .box-info-value { font-size:32px; text-align:center; padding:5px 20px 10px 20px; }
+span.decimal { font-size:13px; }
+
+.footer { text-align:center; font-size:18px; color:#AAA; }
+.footer a { color:#EEE; }
 

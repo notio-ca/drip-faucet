@@ -75,7 +75,7 @@ var app = new Vue({
         drip_supply: 0,
         drip_contract_balance: 0,
         bnb_usd:0,
-        currency_select: false,
+        currency_select: true,
         account_list: [],
         account: "",
     },
