@@ -22,16 +22,16 @@
             <div class="inline">USD</div>
             <div>DRIP: {{ drip_usd|toNum2 }}$</div>
             <div>BNB: {{ bnb_usd|toNum2 }}$</div>
-            <div>Players: {{ drip_players }}</div>
-            <div>Supply: <span v-if="!currency_select">{{ drip_supply }}</span><span v-else>{{ drip_supply|DRIPtoUSD }}</span></div>
-            <div>Contract Balance: <span v-if="!currency_select">{{ drip_contract_balance }}</span><span v-else>{{ drip_contract_balance|BNBtoUSD }}</span></div>
+            <div>Players: {{ drip_players|toNum0 }}</div>
+            <div>Supply: <span v-if="!currency_select">{{ drip_supply|toNum2 }}</span><span v-else>{{ drip_supply|DRIPtoUSD }}</span></div>
+            <div>Contract BNB: <span v-if="!currency_select">{{ drip_contract_balance|toNum2 }}</span><span v-else>{{ drip_contract_balance|BNBtoUSD }}</span></div>
             <hr>
             <input type="text" v-model="account" v-on:change="addAccount()" v-on:keyup="addAccount()" placeholder="Enter Wallet Address" />
 
 
             <div v-for="(account, index) in account_list" v-bind:key="account.wallet">
                 <div>
-                    <input class="text-edit" type="text" v-model="account.name" v-on:keyup="userSave()">
+                    <input class="text-edit" type="text" v-model="account.name" v-on:keyup="userSave()"> <i class="fas fa-pen"></i>
                     <span class="font-sm"> {{ account.wallet }}</span>
                     <span v-on:click="moveUp(index)" class="clickable"><i class="fas fa-chevron-circle-up"></i></span>
                     <span v-on:click="remove(index)" class="clickable"><i class="fas fa-times-circle"></i></span>
@@ -39,17 +39,18 @@
                 <div>Available: <span v-if="!currency_select">{{ account.claims_available|toNum3 }}</span><span v-else>{{ account.claims_available|DRIPtoUSD }}</span></div>
                 <div>Per day: <span v-if="!currency_select">{{ account.payout_per_day|toNum3 }}</span><span v-else>{{ account.payout_per_day|DRIPtoUSD }}</span></div>
                 <div>Deposits: <span v-if="!currency_select">{{ account.deposits|toNum2 }}</span><span v-else>{{ account.deposits|DRIPtoUSD }}</span></div>
-                <div>Deposits (Next Hydrate): <span v-if="!currency_select">{{ account.next_hydrate|toNum2 }}</span><span v-else>{{ account.next_hydrate|DRIPtoUSD }}</span></div>
+                <div>Deposits (Next Hydrate): <span v-if="!currency_select">{{ (account.claims_available + account.deposits)|toNum2 }}</span><span v-else>{{ (account.claims_available + account.deposits)|DRIPtoUSD }}</span></div>
                 <div>Max Payout: <span v-if="!currency_select">{{ account.payout_max|toNum2 }}</span><span v-else>{{ account.payout_max|DRIPtoUSD }}</span></div>
                 <div>Claimed: <span v-if="!currency_select">{{ account.claimed|toNum2 }}</span><span v-else>{{ account.claimed|DRIPtoUSD }}</span></div>
+                <div>Total Reward: <span v-if="!currency_select">{{ (account.reward_direct + account.reward_indirect)|toNum2 }}</span><span v-else>{{ (account.reward_direct + account.reward_indirect)|DRIPtoUSD }}</span></div>
                 <div>Direct Reward: <span v-if="!currency_select">{{ account.reward_direct|toNum2 }}</span><span v-else>{{ account.reward_direct|DRIPtoUSD }}</span></div>
                 <div>Indirect Reward: <span v-if="!currency_select">{{ account.reward_indirect|toNum2 }}</span><span v-else>{{ account.reward_indirect|DRIPtoUSD }}</span></div>
-                <div>Airdrop Sent: <span v-if="!currency_select">{{ account.airdrop_sent|toNum2 }}</span><span v-else>{{ account.airdrop_sent|DRIPtoUSD }}</span></div>
-                <div>Airdrop Received: <span v-if="!currency_select">{{ account.airdrop_received|toNum2 }}</span><span v-else>{{ account.airdrop_received|DRIPtoUSD }}</span></div>
+                <div>Airdrop Sent: <span v-if="!currency_select">{{ account.airdrop_sent|toNum3 }}</span><span v-else>{{ account.airdrop_sent|DRIPtoUSD }}</span></div>
+                <div>Airdrop Received: <span v-if="!currency_select">{{ account.airdrop_received|toNum3 }}</span><span v-else>{{ account.airdrop_received|DRIPtoUSD }}</span></div>
                 <div>Team Direct: {{ account.team_direct }}</div>
                 <div>Team Total: {{ account.team_total }}</div>
-                <div>BR34P Balance {{ account.br43p_balance }}</div>
-                <div>Buddy: {{ account.buddy_address }}</div>
+                <div>BR34P Balance {{ account.br43p_balance|toNum3 }}</div>
+                <div>Buddy: <span class="font-sm">{{ account.buddy_address }}</span></div>
                 <div>BNB Balance <span v-if="!currency_select">{{ account.bnb_balance|toNum3 }}</span><span v-else>{{ account.bnb_balance|BNBtoUSD }}</span></div>
                 <hr>
             </div>

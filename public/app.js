@@ -86,6 +86,7 @@ var app = new Vue({
         this.appLongTick();
         
         // this.ping();
+        if (document.location.hash != "") { this.account = document.location.hash.replace("#", ""); this.addAccount(); }
     },
     methods: {
         appTick() {
@@ -127,7 +128,6 @@ var app = new Vue({
                     payout_per_day:0,
                     deposits: 0,
                     deposit_last: 0,
-                    next_hydrate: 0,
                     payout_max: 0,
                     claimed: 0,
                     reward_direct: 0,
@@ -153,9 +153,7 @@ var app = new Vue({
         remove(index) {
             return this.account_list.splice(index,1);
         },
-        toDrip(value) {
-            return this.toNum(value / 1000000000000000000); // 18 decimals
-        },
+        toDec18(value) { return value / 1000000000000000000; },
         toNum(value) {
             return parseFloat(value.toFixed(3));
         },
@@ -196,32 +194,30 @@ var app = new Vue({
             var account = this.account_list[index];
             $Contract_DripFaucet.methods.claimsAvailable(account.wallet).call(function(error, result) {
                 if (error) { console.log(error); return false; };
-                account.claims_available = app.toDrip(result);
-                account.next_hydrate = app.toNum(account.claims_available + account.deposits);
+                account.claims_available = app.toDec18(result);
             });
         },
         getAccount(index) {
             var account = this.account_list[index];
             $Contract_DripFaucet.methods.userInfo(account.wallet).call(function(error, result) {
                 if (error) { console.log(error); return false; };
-                account.deposits = app.toDrip(result.deposits);
-                account.payout_per_day = app.toNum(account.deposits * 0.01);
+                account.deposits = app.toDec18(result.deposits);
+                account.payout_per_day = account.deposits * 0.01;
                 //account.deposit_last = app.sinceDays(result.deposit_time); // UNUSED
-                payout_max = app.toDrip(result.deposits * 3.65);
+                payout_max = app.toDec18(result.deposits) * 3.65;
                 if (payout_max > 100000) { payout_max = 100000; }
                 account.payout_max = payout_max;
-                account.next_hydrate = app.toNum(account.claims_available + account.deposits);
-                account.claimed = app.toDrip(result.payouts);
-                account.reward_direct = app.toDrip(result.direct_bonus);
-                account.reward_indirect = app.toDrip(result.match_bonus);
+                account.claimed = app.toDec18(result.payouts);
+                account.reward_direct = app.toDec18(result.direct_bonus);
+                account.reward_indirect = app.toDec18(result.match_bonus);
                 account.buddy_address = result.upline;
                 //console.log(result);
             });
             $Contract_DripFaucet.methods.airdrops(account.wallet).call(function(error, result) {
                 if (error) { console.log(error); return false; };
-                account.airdrop_sent = app.toDrip(result.airdrops);
+                account.airdrop_sent = app.toDec18(result.airdrops);
                 //account.airdrop_sent_last = app.sinceDays(result.last_airdrop); // UNUSED
-                account.airdrop_received = app.toDrip(result.airdrops_received);
+                account.airdrop_received = app.toDec18(result.airdrops_received);
                 //console.log(result);
             });
             $Contract_DripFaucet.methods.userInfoTotals(account.wallet).call(function(error, result) {
@@ -239,24 +235,24 @@ var app = new Vue({
         bnbBalance(index) {
             var account = this.account_list[index];
             $WEB3.eth.getBalance(account.wallet, function(error, result) {
-                account.bnb_balance = (result / 1000000000000000000);
+                account.bnb_balance = app.toDec18(result);
             });
         },
         br34pBalance(index) {
             var account = this.account_list[index];
             $Contract_BR34PToken.methods.balanceOf(account.wallet).call(function(error, result) {
                 if (error) { console.log(error); return false; };
-                account.br43p_balance = (result / 100000000).toFixed(2); // 8 decimals
+                account.br43p_balance = result / 100000000; // 8 decimals
             });
         },
         dripStats() {
             $Contract_DripLiquidity.methods.tokenBalance().call(function(error, result) {
                 if (error) { console.log(error); return false; };
-                app.drip_supply = (result / 1000000000000000000).toFixed(0); // + " DRIP"; // 18 decimals
+                app.drip_supply = app.toDec18(result);
             });
             $Contract_DripLiquidity.methods.bnbBalance().call(function(error, result) {
                 if (error) { console.log(error); return false; };
-                app.drip_contract_balance = (result / 1000000000000000000).toFixed(0); // + " BNB"; // 18 decimals
+                app.drip_contract_balance = app.toDec18(result);
             });
 
             $Contract_DripToken.methods.players().call(function(error, result){
@@ -274,6 +270,7 @@ var app = new Vue({
     filters: {
         DRIPtoUSD(value) { try { return app.formatNum((value * app.drip_usd).toFixed(2)) + "$"; } catch {} },
         BNBtoUSD(value) { try { return app.formatNum((value * app.bnb_usd).toFixed(2)) + "$"; } catch {} },
+        toNum0(value) { try { return app.formatNum(parseFloat(value).toFixed(0)); } catch {} },
         toNum2(value) { try { return app.formatNum(parseFloat(value).toFixed(2)); } catch {} },
         toNum3(value) { try { return app.formatNum(parseFloat(value).toFixed(3)); } catch {} }
 
