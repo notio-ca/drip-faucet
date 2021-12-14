@@ -93,7 +93,7 @@ var app = new Vue({
         if (document.location.hash != "") { this.account = document.location.hash.replace("#", ""); this.addAccount(); }
         //$Contract_BR34P_Pancake.methods.getReserves().call(function(error, result) { console.log(result._reserve1 / result._reserve0); });
 
-        // this.ping();
+        this.ping();
         $("#app").show();
     },
     methods: {
