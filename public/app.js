@@ -288,7 +288,8 @@ var app = new Vue({
         BNBtoUSD(value) { try { return app.formatNum((value * app.bnb_usd).toFixed(2)); } catch {} },
         toInt(value) { try { return app.formatNum(parseFloat(value).toFixed(0)); } catch {} },
         toNum2(value) { try { return app.formatNum(parseFloat(value).toFixed(2)); } catch {} },
-        toNum3(value) { try { return app.formatNum(parseFloat(value).toFixed(3)); } catch {} }
+        toNum3(value) { try { return app.formatNum(parseFloat(value).toFixed(3)); } catch {} },
+        walletFormat(value) { try { return value.substring(0, 5) + "..." + value.substring(42-5, 42); } catch {} }
     },
     computed: {
 
