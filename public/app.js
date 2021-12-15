@@ -78,6 +78,7 @@ var app = new Vue({
         currency_select: true,
         account_list: [],
         account: "",
+        total: { deposits: 0, available: 0, payout_max: 0 }
     },
     watch: {
         account_list: function () { this.userSave(); },
@@ -110,6 +111,14 @@ var app = new Vue({
                 this.getAccount(i);
                 this.br34pBalance(i);
                 this.bnbBalance(i);
+            }
+        },
+        updateTotals() {
+            this.total = { deposits: 0, available: 0, payout_max: 0 };
+            for (i=0; i < this.account_list.length; i++) {
+                this.total.deposits += this.account_list[i].deposits;
+                this.total.available += this.account_list[i].claims_available;
+                this.total.payout_max += this.account_list[i].payout_max;
             }
         },
         userDefault() {
@@ -214,6 +223,7 @@ var app = new Vue({
             $Contract_DripFaucet.methods.claimsAvailable(account.wallet).call(function(error, result) {
                 if (error) { console.log(error); return false; };
                 account.claims_available = app.toDec18(result);
+                app.updateTotals();
             });
         },
         getAccount(index) {
@@ -229,6 +239,7 @@ var app = new Vue({
                 account.reward_direct = app.toDec18(result.direct_bonus);
                 account.reward_indirect = app.toDec18(result.match_bonus);
                 account.buddy_address = result.upline;
+                app.updateTotals();
                 //console.log(result);
             });
             $Contract_DripFaucet.methods.airdrops(account.wallet).call(function(error, result) {

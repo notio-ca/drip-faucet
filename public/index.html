@@ -38,6 +38,13 @@
         <input type="text" v-model="account" v-on:change="addAccount()" v-on:keyup="addAccount()" placeholder="Add Wallet Address" />
     </div>
 
+    <div v-if="account_list.length > 1">
+        <div class="pills-info font-sm"> <div>Deposits</div><div><span v-if="!currency_select">{{ total.deposits|toNum2 }}</span><span v-else>{{ total.deposits|DRIPtoUSD }}</span></div> </div>
+        <div class="pills-info font-sm"> <div>Available</div><div><span v-if="!currency_select">{{ total.available|toNum2 }}</span><span v-else>{{ total.available|DRIPtoUSD }}</span></div> </div>
+        <div class="pills-info font-sm"> <div>Per Day</div><div><span v-if="!currency_select">{{ (total.deposits * 0.01)|toNum2 }}</span><span v-else>{{ (total.deposits * 0.01)|DRIPtoUSD }}</span></div> </div>
+        <div class="pills-info font-sm"> <div>Max Payout</div><div><span v-if="!currency_select">{{ total.payout_max|toNum2 }}</span><span v-else>{{ total.payout_max|DRIPtoUSD }}</span></div> </div>
+        <div class="clear"></div>
+    </div>
 
     <div v-for="(account, index) in account_list" v-bind:key="account.wallet">
 
