@@ -144,6 +144,7 @@ var app = new Vue({
                 this.account_list.push({
                     name: saved_data.account_list[i].name,
                     wallet: saved_data.account_list[i].wallet,
+                    drip_balance:0,
                     claims_available: 0,
                     deposits: 0,
                     payout_max: 0,
@@ -259,6 +260,12 @@ var app = new Vue({
             $Contract_BR34PToken.methods.balanceOf(account.wallet).call(function(error, result) {
                 if (error) { console.log(error); return false; };
                 account.br43p_balance = result / 100000000; // 8 decimals
+            });
+            $Contract_DripToken.methods.balanceOf(account.wallet).call(function(error, result) {
+                if (error) { console.log(error); return false; };
+                drip_balance = app.toDec18(result);
+                if (drip_balance < 0.001) { drip_balance = 0; }
+                account.drip_balance = drip_balance;
             });
         },
         dripStats() {

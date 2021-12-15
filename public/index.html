@@ -16,20 +16,20 @@
 <div id="app" style="display:none;">
 
     <div>
-        <div class="pills-info font-lg"> <div>DRIP</div><div>{{ drip_usd|toNum2 }}<span class="font-sm">$</span></div> </div>
-        <div class="float-right" style="position:relative; text-align:center; width:145px; margin:10px 0 10px 0;">
-            <div style="position:absolute; top:8px; left:0; font-size:14px;">DRIP</div>
+        <div class="pills-info font-lg"> <div>DRIP </div><div>{{ drip_usd|toNum2 }}<span class="font-sm">$</span></div> </div>
+        <div class="float-right" style="position:relative; text-align:center; width:150px; margin:10px 0 10px 0;">
+            <div style="position:absolute; top:8px; left:-6px; font-size:14px;">DRIP <i class="fas fa-tint"></i></div>
             <label class="switch">
                 <input v-model="currency_select" type="checkbox">
                 <span class="slider round"></span>
             </label>
-            <div style="position:absolute; top:8px; right:4px; font-size:14px;">USD</div>
+            <div style="position:absolute; top:8px; right:0; font-size:14px;">$ USD</div>
         </div>
     </div>
     <div class="clear"></div>
     <div class="pills-info font-sm"> <div>BNB</div><div>{{ bnb_usd|toNum2 }}$</div> </div>
     <div class="pills-info font-sm"> <div>Players</div><div>{{ drip_players|toInt }}</div> </div>
-    <div class="pills-info font-sm"> <div>Supply</div><div><span v-if="!currency_select">{{ drip_supply|toNum2 }}</span><span v-else>{{ drip_supply|DRIPtoUSD }}</span></div> </div>
+    <div class="pills-info font-sm"> <div>Supply &nbsp;<i class="fas fa-tint"></i></div><div>{{ drip_supply|toNum2 }}</div> </div>
     <div class="pills-info font-sm"> <div>Contract BNB</div><div><span v-if="!currency_select">{{ drip_contract_balance|toNum2 }}</span><span v-else>{{ drip_contract_balance|BNBtoUSD }}</span></div> </div>
     
     <div class="clear"></div>
@@ -48,7 +48,8 @@
                     <input class="text-edit" type="text" v-model="account.name" v-on:keyup="userSave()">
                 </div>
                 <div class="float-right">
-                    <span class="font-sm"> {{ account.wallet|walletFormat }}</span>
+                    <span class="font-sm">{{ account.drip_balance }} &nbsp;<i class="fas fa-tint"></i></span> &nbsp;
+                    <span class="font-sm">{{ account.wallet|walletFormat }}</span> &nbsp;
                     <span v-on:click="moveUp(index)" class="clickable"><i class="fas fa-chevron-circle-up"></i></span>
                     <span v-on:click="remove(index)" class="clickable"><i class="fas fa-times-circle"></i></span>
                 </div>
@@ -58,7 +59,7 @@
             <div class="clear"></div>
 
             <div class="panel-body">
-
+                
                 <div class="box-info">
                     <div class="box-info-title">Deposits</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ account.deposits|toNum2 }}</span><span v-else>{{ account.deposits|DRIPtoUSD }}</span></div>
@@ -127,7 +128,7 @@
 
                 <div class="clear"></div>
 
-                <div><span class="font-sm" style="color:#444;">Buddy: {{ account.buddy_address }}</span></div>
+                <div><span class="font-sm" style="color:#444; padding:5px 0 0 5px;">Buddy: {{ account.buddy_address }}</span></div>
 
             </div> <!-- PANEL BODY -->
 
