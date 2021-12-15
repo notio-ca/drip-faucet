@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: drip-scan.netlify.app
+Token: 5c8e03efd47451eb88cb7c1079613d52fd6b49f98cc81ef71f7995f100377b27
