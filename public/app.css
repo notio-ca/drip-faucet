@@ -30,13 +30,13 @@ input:checked + .slider:before { -webkit-transform: translateX(26px); -ms-transf
 
 .search-bar { margin:5px 0 15px 0; }
 .panel-title { background-color:#164c77; border-radius: 10px 10px 0 0 ; margin:10px 0 0 0; line-height:1; padding:5px 10px 5px 15px; }
-.panel-body { background-color:#111; padding:15px; margin: 0 0 10px 0; border-radius:0 0 10px 10px; }
+.panel-body { background-color:#111; padding:15px; margin: 0 0 10px 0; border-radius:0 0 10px 10px; overflow:hidden; }
 .box-info { min-width:100px; float:left; background-color:#2271b1; border-radius: 10px; margin:5px; line-height:1; }
-    .box-info-title { font-size:16px; text-align:center; padding:10px 20px 0 20px; color:#111; font-weight:700; white-space:nowrap; }
-    .box-info-value { font-size:32px; text-align:center; padding:5px 20px 10px 20px; white-space:nowrap; }
+    .box-info-title { font-size:16px; text-align:center; padding:10px 20px 0 20px; color:#111; font-weight:700; white-space:nowrap; overflow:hidden; }
+    .box-info-value { font-size:32px; text-align:center; padding:5px 20px 10px 20px; white-space:nowrap; overflow:hidden; }
 span.decimal { font-size:13px; }
 
-.footer { text-align:center; font-size:18px; color:#AAA; padding-top:20px; }
+.footer { text-align:center; font-size:18px; color:#AAA; padding-top:20px; overflow:hidden; }
 .footer a { color:#EEE; }
 
 @media all and (max-width: 650px) { 
