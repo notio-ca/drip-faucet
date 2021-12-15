@@ -75,7 +75,7 @@
     
                 <div class="box-info">
                     <div class="box-info-title">BNB</div>
-                    <div class="box-info-value"><span v-if="!currency_select">{{ account.bnb_balance|toNum2 }}</span><span v-else>{{ account.bnb_balance|BNBtoUSD }}</span></div>
+                    <div class="box-info-value"><span v-if="!currency_select">{{ account.bnb_balance|toNum2 }}</span><span v-else>{{ account.bnb_balance|BNBtoUSD }}<span class="font-sm">$</span></span></div>
                 </div>
 
                 <div class="clear"></div>

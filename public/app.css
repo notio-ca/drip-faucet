@@ -39,3 +39,7 @@ span.decimal { font-size:13px; }
 .footer { text-align:center; font-size:18px; color:#AAA; padding-top:20px; }
 .footer a { color:#EEE; }
 
+@media all and (max-width: 650px) { 
+    .box-info { width:45%; }
+}
+
