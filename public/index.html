@@ -101,10 +101,10 @@
                     <div class="box-info-title">Max Payout</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ account.payout_max|toNum2 }}</span><span v-else>{{ account.payout_max|DRIPtoUSD }}</span></div>
                 </div>
-                <div class="box-info bg-2">
+                <!-- <div class="box-info bg-2">
                     <div class="box-info-title">Net Deposits</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ account.transaction.net|toNum2 }}</span><span v-else>{{ account.transaction.net|DRIPtoUSD }}</span></div>
-                </div>
+                </div> -->
                 <div class="box-info bg-2">
                     <div class="box-info-title">Claimed</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ account.claimed|toNum2 }}</span><span v-else>{{ account.claimed|DRIPtoUSD }}</span></div>
