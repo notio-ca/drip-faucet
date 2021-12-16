@@ -167,7 +167,8 @@ var app = new Vue({
                     team_total: 0,
                     buddy_address: "",
                     br43p_balance: 0,
-                    bnb_balance: 0
+                    bnb_balance: 0,
+                    transaction: { credits:0, debits:0, net:0 }
                 });
             }
             
@@ -253,6 +254,13 @@ var app = new Vue({
                 if (error) { console.log(error); return false; };
                 account.team_direct = result.referrals;
                 account.team_total = result.total_structure;
+                //console.log(result);
+            });
+            $Contract_DripFaucet.methods.creditsAndDebits(account.wallet).call(function(error, result) {
+                if (error) { console.log(error); return false; };
+                account.transaction.credits = app.toDec18(result._credits);
+                account.transaction.debits = app.toDec18(result._debits);
+                account.transaction.net = app.toDec18(result._credits - result._debits);
                 //console.log(result);
             });
             //$Contract_DripFaucet.methods.contractInfo().call(function(error, result) { console.log(result); });

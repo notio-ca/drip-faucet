@@ -42,6 +42,7 @@
         <div class="pills-info font-sm"> <div>Deposits</div><div><span v-if="!currency_select">{{ total.deposits|toNum2 }}</span><span v-else>{{ total.deposits|DRIPtoUSD }}</span></div> </div>
         <div class="pills-info font-sm"> <div>Available</div><div><span v-if="!currency_select">{{ total.available|toNum2 }}</span><span v-else>{{ total.available|DRIPtoUSD }}</span></div> </div>
         <div class="pills-info font-sm"> <div>Per Day</div><div><span v-if="!currency_select">{{ (total.deposits * 0.01)|toNum2 }}</span><span v-else>{{ (total.deposits * 0.01)|DRIPtoUSD }}</span></div> </div>
+        <div class="pills-info font-sm"> <div>Per Week</div><div><span v-if="!currency_select">{{ (total.deposits * 0.01 * 7)|toNum2 }}</span><span v-else>{{ (total.deposits * 0.01 * 7)|DRIPtoUSD }}</span></div> </div>
         <div class="pills-info font-sm"> <div>Max Payout</div><div><span v-if="!currency_select">{{ total.payout_max|toNum2 }}</span><span v-else>{{ total.payout_max|DRIPtoUSD }}</span></div> </div>
         <div class="clear"></div>
     </div>
@@ -99,6 +100,10 @@
                 <div class="box-info bg-2">
                     <div class="box-info-title">Max Payout</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ account.payout_max|toNum2 }}</span><span v-else>{{ account.payout_max|DRIPtoUSD }}</span></div>
+                </div>
+                <div class="box-info bg-2">
+                    <div class="box-info-title">Net Deposits</div>
+                    <div class="box-info-value"><span v-if="!currency_select">{{ account.transaction.net|toNum2 }}</span><span v-else>{{ account.transaction.net|DRIPtoUSD }}</span></div>
                 </div>
                 <div class="box-info bg-2">
                     <div class="box-info-title">Claimed</div>
