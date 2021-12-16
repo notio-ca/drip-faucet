@@ -66,6 +66,7 @@
             <div class="clear"></div>
 
             <div class="panel-body">
+                <!-- <div class="box-info" style="height:73px; width:30px; min-width:0; position:relative;"><div style="font-size:14px; position:absolute; bottom:1px; transform:rotate(-90deg);">TRADE</div></div> -->
                 
                 <div class="box-info">
                     <div class="box-info-title">Deposits</div>
@@ -77,7 +78,7 @@
                 </div>
                 <div class="box-info">
                     <div class="box-info-title">Next Hydrate</div>
-                    <div class="box-info-value"><span v-if="!currency_select">{{ (account.claims_available + account.deposits)|toNum2 }}</span><span v-else>{{ (account.claims_available + account.deposits)|DRIPtoUSD }}</span></div>
+                    <div class="box-info-value"><span v-if="!currency_select">{{ ((account.claims_available * 0.95) + account.deposits)|toNum2 }}</span><span v-else>{{ ((account.claims_available * 0.95) + account.deposits)|DRIPtoUSD }}</span></div>
                 </div>
     
                 <div class="box-info">
@@ -85,50 +86,48 @@
                     <div class="box-info-value"><span v-if="!currency_select">{{ account.bnb_balance|toNum2 }}</span><span v-else>{{ account.bnb_balance|BNBtoUSD }}<span class="font-sm">$</span></span></div>
                 </div>
 
-                <div class="clear"></div>
+                <!-- <div class="clear"></div> -->
 
-                <div class="box-info">
+                <div class="box-info bg-2">
                     <div class="box-info-title">Per Day</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ (account.deposits * 0.01)|toNum3 }}</span><span v-else>{{ (account.deposits * 0.01)|DRIPtoUSD }}</span></div>
                 </div>
-                <div class="box-info">
+                <div class="box-info bg-2">
                     <div class="box-info-title">Per Week</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ (account.deposits * 0.01 * 7)|toNum3 }}</span><span v-else>{{ (account.deposits * 0.01 * 7)|DRIPtoUSD }}</span></div>
                 </div>
-                <div class="box-info">
+                <div class="box-info bg-2">
                     <div class="box-info-title">Max Payout</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ account.payout_max|toNum2 }}</span><span v-else>{{ account.payout_max|DRIPtoUSD }}</span></div>
                 </div>
-                <div class="box-info">
+                <div class="box-info bg-2">
                     <div class="box-info-title">Claimed</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ account.claimed|toNum2 }}</span><span v-else>{{ account.claimed|DRIPtoUSD }}</span></div>
                 </div>
 
-                <div class="clear"></div>
+                <!-- <div class="clear"></div> -->
 
-                <div class="box-info">
+                <div class="box-info bg-3">
                     <div class="box-info-title">Reward</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ (account.reward_direct + account.reward_indirect)|toNum2 }}</span><span v-else>{{ (account.reward_direct + account.reward_indirect)|DRIPtoUSD }}</span></div>
                 </div>
 
-                <div class="box-info">
+                <div class="box-info bg-3">
                     <div class="box-info-title">Airdrop In</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ account.airdrop_received|toNum3 }}</span><span v-else>{{ account.airdrop_received|DRIPtoUSD }}</span></div>
                 </div>
 
-                <div class="box-info">
+                <div class="box-info bg-3">
                     <div class="box-info-title">Airdrop Out</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ account.airdrop_sent|toNum3 }}</span><span v-else>{{ account.airdrop_sent|DRIPtoUSD }}</span></div>
                 </div>
 
-
-
-                <div class="box-info">
+                <div class="box-info bg-3">
                     <div class="box-info-title">Team</div>
                     <div class="box-info-value">{{ account.team_total }}<span class="font-sm"> / {{ account.team_direct }}</span></div>
                 </div>
 
-                <div class="box-info">
+                <div class="box-info bg-3">
                     <div class="box-info-title">BR34P</div>
                     <div class="box-info-value">{{ account.br43p_balance|toNum2 }}</div>
                 </div>

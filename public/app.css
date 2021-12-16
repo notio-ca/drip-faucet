@@ -28,6 +28,7 @@ input:checked + .slider:before { -webkit-transform: translateX(26px); -ms-transf
 .pills-info > div:first-child { background-color:#2271b1; border-radius: 10px 0 0 10px; padding:5px 10px 5px 15px; }
 .pills-info > div:last-child { background-color:#164c77; border-radius: 0 10px 10px 0; padding:5px 15px 5px 10px; }
 
+
 .search-bar { margin:5px 0 15px 0; }
 .panel-title { background-color:#164c77; border-radius: 10px 10px 0 0 ; margin:10px 0 0 0; line-height:1; padding:5px 10px 5px 15px; }
 .panel-body { background-color:#111; padding:15px; margin: 0 0 10px 0; border-radius:0 0 10px 10px; overflow:hidden; }
@@ -35,6 +36,9 @@ input:checked + .slider:before { -webkit-transform: translateX(26px); -ms-transf
     .box-info-title { font-size:16px; text-align:center; padding:10px 20px 0 20px; color:#111; font-weight:700; white-space:nowrap; overflow:hidden; }
     .box-info-value { font-size:32px; text-align:center; padding:5px 20px 10px 20px; white-space:nowrap; overflow:hidden; }
 span.decimal { font-size:13px; }
+
+.bg-2 { background-color:#103e62; }
+.bg-3 { background-color:#29445a; }
 
 .footer { text-align:center; font-size:18px; color:#AAA; padding-top:20px; overflow:hidden; }
 .footer a { color:#EEE; }
