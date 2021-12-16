@@ -30,7 +30,7 @@
     <div class="pills-info font-sm"> <div>BNB</div><div>{{ bnb_usd|toNum2 }}$</div> </div>
     <div class="pills-info font-sm"> <div>Players</div><div>{{ drip_players|toInt }}</div> </div>
     <div class="pills-info font-sm"> <div>Supply &nbsp;<i class="fas fa-tint"></i></div><div>{{ drip_supply|toNum2 }}</div> </div>
-    <div class="pills-info font-sm"> <div>Contract BNB</div><div><span v-if="!currency_select">{{ drip_contract_balance|toNum2 }}</span><span v-else>{{ drip_contract_balance|BNBtoUSD }}</span></div> </div>
+    <div class="pills-info font-sm"> <div>Contract BNB</div><div><span v-if="!currency_select">{{ drip_contract_balance|toNum2 }}</span><span v-else>{{ drip_contract_balance|BNBtoUSD }}$</span></div> </div>
     
     <div class="clear"></div>
 
