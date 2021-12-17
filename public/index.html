@@ -98,6 +98,10 @@
                     <div class="box-info-value"><span v-if="!currency_select">{{ (account.deposits * 0.01 * 7)|toNum3 }}</span><span v-else>{{ (account.deposits * 0.01 * 7)|DRIPtoUSD }}</span></div>
                 </div>
                 <div class="box-info bg-2">
+                    <div class="box-info-title">Per Month</div>
+                    <div class="box-info-value"><span v-if="!currency_select">{{ ((account.deposits*0.01*7*52)/12)|toNum3 }}</span><span v-else>{{ ((account.deposits*0.01*7*52)/12)|DRIPtoUSD }}</span></div>
+                </div>
+                <div class="box-info bg-2">
                     <div class="box-info-title">Max Payout</div>
                     <div class="box-info-value"><span v-if="!currency_select">{{ account.payout_max|toNum2 }}</span><span v-else>{{ account.payout_max|DRIPtoUSD }}</span></div>
                 </div>
