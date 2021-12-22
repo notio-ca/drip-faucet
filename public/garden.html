@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>DRIP Garden</title>
+	<title>Garden - DRIP</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <link rel="icon" href="favicon.ico">
@@ -20,7 +20,7 @@
 </head>
 <body>
     <div id="app">
-      <h1>DRIP Garden</h1>
+      <h1>DRIP Garden <span class="font-sm">Schedule</span></h1>
       <table>
         <tr> <td>Plants grown</td> <td><input v-model="user.plants" v-on:keyup="userSave()" /></td> </tr>
         <tr> <td>Seeds available <div class="font-sm">1 plant = 2 592 200 seeds</div></td> <td><input v-model="user.seeds" v-on:keyup="userSave()" /></td> </tr>
@@ -28,8 +28,7 @@
         <tr> <td>Plants ready</td> <td><div>{{ plants_ready }}</div></td> </tr>
         <tr> <td>Seeds needed <div class="font-sm">For next plant</div></td> <td><div>{{ seeds_needed|numSpace }}</div></td> </tr>
         <tr> <td>Seeds lost <div class="font-sm">If planted now</div></td> <td><div>{{ seeds_lost|numSpace }}</div></td> </tr>
-        <tr> <td>Next Plant</td> <td><div>{{ plant_next_date }}</div></td> </tr>
-        
+        <tr v-for="(nextplant, index) in plant_next_date"> <td>Next plant +{{ nextplant.plant }}</td> <td><div>{{ nextplant.hours|minToDate }}</div></td> </tr>
         
       </table>
     </div><!-- APP -->
@@ -91,7 +90,7 @@ var app = new Vue({
       plants_ready: 0,
       seeds_lost: 0,
       seeds_needed: 0,
-      plant_next_date: 0
+      plant_next_date: []
     },
     watch: {
         user: function () { this.userSave(); }
@@ -108,8 +107,14 @@ var app = new Vue({
         this.seeds_needed = 2592200 - this.seeds_lost;
         seeds_per_minute = this.seeds_per_day / 24 / 60;
         plant_next_minute = this.seeds_needed / seeds_per_minute;
-        this.plant_next_date = moment().add(plant_next_minute, 'minutes').format('MMM D h:mm A');
-        if (this.plant_next_date.indexOf("NaN") != -1) { this.plant_next_date = ""; }
+
+        multi = 1;
+        this.plant_next_date = [];
+        if (this.plant_next_date.indexOf("NaN") == -1) {
+          for (i = 1; i <= 10; i++) {
+            this.plant_next_date.push({plant:i, hours:(plant_next_minute * i)});
+          }
+        }
       },
       action(event, cmd) {
         var val = event.target.getAttribute("data-val");
@@ -144,6 +149,9 @@ var app = new Vue({
       },
       numSpace(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      },
+      minToDate(hours) {
+        return moment().add(hours, 'minutes').format('MMM D h:mm A');
       }
     }
   });
