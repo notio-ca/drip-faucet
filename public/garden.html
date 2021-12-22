@@ -25,10 +25,13 @@
         <tr> <td>Plants grown</td> <td><input v-model="user.plants" v-on:keyup="userSave()" /></td> </tr>
         <tr> <td>Seeds available <div class="font-sm">1 plant = 2 592 200 seeds</div></td> <td><input v-model="user.seeds" v-on:keyup="userSave()" /></td> </tr>
         <tr> <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> <td><div>{{ seeds_per_day|numSpace }}</div></td> </tr>
+        <tr> <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|decimal_3 }} hours / plant</div></td> <td><div>{{ plant_per_day|decimal_3 }}</div></td> </tr>
         <tr> <td>Plants ready</td> <td><div>{{ plants_ready }}</div></td> </tr>
         <tr> <td>Seeds needed <div class="font-sm">For next plant</div></td> <td><div>{{ seeds_needed|numSpace }}</div></td> </tr>
         <tr> <td>Seeds lost <div class="font-sm">If planted now</div></td> <td><div>{{ seeds_lost|numSpace }}</div></td> </tr>
-        <tr v-for="(nextplant, index) in plant_next_date"> <td>Next plant +{{ nextplant.plant }}</td> <td><div>{{ nextplant.hours|minToDate }}</div></td> </tr>
+        <tr v-for="(nextplant, index) in plant_next_date">
+          <td>Next plant +{{ nextplant.plant }}</td> <td><div>{{ nextplant.minutes|minToDate }}</div></td>
+        </tr>
         
       </table>
     </div><!-- APP -->
@@ -87,10 +90,12 @@ var app = new Vue({
         seeds: 3000000
       },
       seeds_per_day: 0,
+      plant_per_day:0,
       plants_ready: 0,
       seeds_lost: 0,
       seeds_needed: 0,
-      plant_next_date: []
+      plant_next_date: [],
+      plant_full_minute: 0
     },
     watch: {
         user: function () { this.userSave(); }
@@ -102,18 +107,19 @@ var app = new Vue({
     methods: {
       updateUI() {
         this.seeds_per_day = (this.user.plants * 86400);
+        this.plant_per_day = (this.seeds_per_day / 2592200);
         this.plants_ready = Math.floor(this.user.seeds / 2592200);
         this.seeds_lost = this.user.seeds - (this.plants_ready * 2592200);
         this.seeds_needed = 2592200 - this.seeds_lost;
         seeds_per_minute = this.seeds_per_day / 24 / 60;
         plant_next_minute = this.seeds_needed / seeds_per_minute;
-        plant_full_minute = 2592200 / seeds_per_minute;
+        this.plant_full_minute = 2592200 / seeds_per_minute;
 
         multi = 1;
         this.plant_next_date = [];
         if (this.plant_next_date.indexOf("NaN") == -1) {
           for (i = 0; i < 10; i++) {
-            this.plant_next_date.push({plant:i, hours:(plant_next_minute + (plant_full_minute * i))});
+            this.plant_next_date.push({plant:(i+1), minutes:(plant_next_minute + (this.plant_full_minute * i))});
           }
         }
       },
@@ -151,8 +157,9 @@ var app = new Vue({
       numSpace(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
       },
-      minToDate(hours) {
-        return moment().add(hours, 'minutes').format('MMM D h:mm A');
+      minToDate(minutes) {
+        //return minutes / 60;
+        return moment().add(minutes, 'minutes').format('MMM D h:mm A');
       }
     }
   });
