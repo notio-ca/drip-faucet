@@ -107,12 +107,13 @@ var app = new Vue({
         this.seeds_needed = 2592200 - this.seeds_lost;
         seeds_per_minute = this.seeds_per_day / 24 / 60;
         plant_next_minute = this.seeds_needed / seeds_per_minute;
+        plant_full_minute = 2592200 / seeds_per_minute;
 
         multi = 1;
         this.plant_next_date = [];
         if (this.plant_next_date.indexOf("NaN") == -1) {
-          for (i = 1; i <= 10; i++) {
-            this.plant_next_date.push({plant:i, hours:(plant_next_minute * i)});
+          for (i = 0; i < 10; i++) {
+            this.plant_next_date.push({plant:i, hours:(plant_next_minute + (plant_full_minute * i))});
           }
         }
       },
