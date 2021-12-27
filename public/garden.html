@@ -23,8 +23,9 @@
       <h1>DRIP Garden <span class="font-sm">Schedule</span></h1>
       <table>
         <tr> <td>Wallet Address</td> <td><input v-model="user.wallet" v-on:keyup="userSave()" /></td> </tr>
+        <tr> <td>Contract Balance</td> <td><div>{{ contract_balance|numSpace|removeDec }}</div></td> </tr>
         <tr> <td>Plants grown</td> <td><div>{{ user.plants }}</div></td> </tr>
-        <tr> <td>Seeds available <div class="font-sm">1 plant = 2 592 200 seeds</div></td> <td><div>{{ user.seeds }}</div></td> </tr>
+        <tr> <td>Seeds available <div class="font-sm">1 plant = {{ seeds_per_plant|numSpace }} seeds</div></td> <td><div>{{ user.seeds|numSpace }}</div></td> </tr>
         <tr> <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> <td><div>{{ seeds_per_day|numSpace }}</div></td> </tr>
         <tr> <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|decimal_2 }} hours / plant</div></td> <td><div>{{ plant_per_day|decimal_3 }}</div></td> </tr>
         <tr> <td>Plants ready</td> <td><div>{{ plants_ready }}</div></td> </tr>
@@ -97,6 +98,8 @@ var app = new Vue({
         plants: 10,
         seeds: 3000000
       },
+      contract_balance: 0,
+      seeds_per_plant: 2592000,
       seeds_per_day: 0,
       plant_per_day:0,
       plants_ready: 0,
@@ -120,13 +123,13 @@ var app = new Vue({
       },
       updateUI() {
         this.seeds_per_day = (this.user.plants * 86400);
-        this.plant_per_day = (this.seeds_per_day / 2592200);
-        this.plants_ready = Math.floor(this.user.seeds / 2592200);
-        this.seeds_lost = this.user.seeds - (this.plants_ready * 2592200);
-        this.seeds_needed = 2592200 - this.seeds_lost;
+        this.plant_per_day = (this.seeds_per_day / this.seeds_per_plant);
+        this.plants_ready = Math.floor(this.user.seeds / this.seeds_per_plant);
+        this.seeds_lost = this.user.seeds - (this.plants_ready * this.seeds_per_plant);
+        this.seeds_needed = this.seeds_per_plant - this.seeds_lost;
         seeds_per_minute = this.seeds_per_day / 24 / 60;
         plant_next_minute = this.seeds_needed / seeds_per_minute;
-        this.plant_full_minute = 2592200 / seeds_per_minute;
+        this.plant_full_minute = this.seeds_per_plant / seeds_per_minute;
 
         multi = 1;
         this.plant_next_date = [];
@@ -149,7 +152,16 @@ var app = new Vue({
           app.user.plants = result;
           app.updateUI();
         });
-        // $Contract.methods.lastPlant(this.user.wallet).call(function(error, result) {
+        $Contract.methods.getBalance().call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          //console.log(result);
+          app.contract_balance = app.toDec18(result);
+        });
+        $Contract.methods.SEEDS_TO_GROW_1PLANT().call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          app.seeds_per_plant = result;
+        });
+        // $Contract.methods.marketSeeds().call(function(error, result) {
         //   if (error) { console.log(error); return false; };
         //   console.log(result);
         // });
@@ -175,14 +187,18 @@ var app = new Vue({
         console.log("User Saved");
         this.updateUI();
         this.updateData();
+      },
+      toDec18(num) {
+        return num / 1000000000000000000;
       }
     },    
     computed: {
 
     },
     filters: {
-      decimal_3: function (value) { value = parseFloat(value).toFixed(3); if (value == "NaN") { value = 0; } return value; },
-      decimal_2: function (value) { value = parseFloat(value).toFixed(2); if (value == "NaN") { value = 0; } return value; },
+      decimal_3(value) { value = parseFloat(value).toFixed(3); if (value == "NaN") { value = 0; } return value; },
+      decimal_2(value) { value = parseFloat(value).toFixed(2); if (value == "NaN") { value = 0; } return value; },
+      removeDec(num) { return num.toString().split(".")[0]; },
       numSpace(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
       },
