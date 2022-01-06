@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dashboard</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <link rel="icon" href="https://drip.community/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <style>
+        body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; padding:10px; }
+        .ticker { border-radius:20px; font-size:100px; margin:10px; background-color:#2e6fb1; padding:0 30px 13px 30px; display:inline-block; line-height:1; }
+        .ticker-name { font-size:20px; background-color:#1a3d60; padding:4px; border-radius:0 0 10px 10px; line-height:1; text-align:center; margin-bottom:5px; }
+        .clear { float:none; clear:both; }
+        
+    </style>
+</head>
+<body>
+    <div id="app" v-on:click="popup()">
+        <div class="ticker" v-for="ticker in prices">
+          <div class="ticker-name">{{ ticker.symbol }}</div>
+          <div>{{ ticker.price }}</div>
+        </div>
+    </div><!-- APP -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script><!-- PROD <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+var app = new Vue({
+    el: '#app',
+    data: {
+        prices: [
+            { symbol:"DRIP", price:0.00 },
+            { symbol:"OSMO", price:0.00 },
+            { symbol:"ATOM", price:0.00 },
+            { symbol:"BNB", price:0.00 }
+        ]
+    },
+    created: function () {
+      setInterval(function() { app.getPrices(); }, 10000);
+      this.getPrices();
+    },
+
+    methods: {
+      popup() { window.open(document.location.href,'popUpWindow','width=740,height=525,left=0,top=0,resizable=yes,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no'); },
+      getPrices() {
+        for (i=0; i < this.prices.length; i++) {
+            switch (this.prices[i].symbol) {
+                case "DRIP":
+                    var drip = this.prices[i];        
+                    API_Get("https://api.drip.community/prices/", function (data) {
+                        drip.price = data[data.length-1].value.toFixed(2);
+                    });
+                    break;
+                case "OSMO":
+                    var osmo = this.prices[i]; 
+                    API_Get("https://crypto.xqub.ca/spot/price/osmosis", function (data) {
+                        osmo.price = data.toFixed(2);
+                    });
+                    break;
+                case "ATOM":
+                    var atom = this.prices[i];        
+                    API_Get("https://api.binance.com/api/v3/ticker/price?symbol=ATOMBUSD", function (data) {
+                        atom.price = parseFloat(data.price).toFixed(2);
+                    });
+                    break;
+                case "BNB":
+                    var bnb = this.prices[i];        
+                    API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD", function (data) {
+                        bnb.price = parseFloat(data.price).toFixed(2);
+                    });
+                    break;
+            }
+        }
+      }
+    },
+    filters: {
+      decimal_2: function (value) {
+        value = parseFloat(value).toFixed(2);
+        if (value == "NaN") { value = 0; } 
+        return value;
+      }
+
+    }
+  });
+
+// ----------------------------------------------------------------------------------------
+// -- TOOLS -------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
+async function API_Get(url, callback) {
+    req = await fetch(url);
+    res = await req.json();
+    callback(res);
+}
+
+</script>
+</body>
+</html>
+
