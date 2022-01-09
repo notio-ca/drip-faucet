@@ -49,7 +49,8 @@ var app = new Vue({
     },
     created: function () {
         $Session.init("USER");
-        this.drip_wallet = $Session.get("account_list")[0].wallet;
+        this.drip = $Session.get("account_list")[0];
+        this.prices[4].symbol = this.drip.name + " Net";
         setInterval(function() { app.getPrices(); }, 10000);
         this.getPrices();
     },
@@ -83,9 +84,9 @@ var app = new Vue({
                         bnb.price = parseFloat(data.price).toFixed(2);
                     });
                     break;
-                case "DRIP Net":
+                case this.drip.name + " Net":
                     var drip_available = this.prices[i];
-                    $Contract_DripFaucet.methods.claimsAvailable(this.drip_wallet).call(function(error, result) {
+                    $Contract_DripFaucet.methods.claimsAvailable(this.drip.wallet).call(function(error, result) {
                         if (error) { console.log(error); return false; };
                         drip_available.price = (((result * 0.81) / 1000000000000000000) * drip.price).toFixed(2);
                     });
