@@ -48,13 +48,16 @@ var app = new Vue({
             { symbol:"OSMO", price:0.00 },
             { symbol:"DRIP Net", price:0.00 }
         ],
-        drip: null,
+        drip: { name:"No Drip", wallet:"" },
         drip_available: 0,
         drip_balance: 0,
     },
     created: function () {
         $Session.init("USER");
-        this.drip = $Session.get("account_list")[0];
+        try {
+            drip_account = $Session.get("account_list")[0];
+            this.drip = drip_account;
+        } catch(e) {}
         this.prices[4].symbol = this.drip.name + " Net";
         setInterval(function() { app.getPrices(); }, 10000);
         this.getPrices();
@@ -70,6 +73,7 @@ var app = new Vue({
                 case "BNB":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD", function (data) { app.prices[2].price = parseFloat(data.price); }); break;
                 case "OSMO": API_Get("https://api-osmosis.imperator.co/search/v1/pools", function (data) { app.prices[3].price = data["1"]["1"].price; }); break;
                 case this.drip.name + " Net":
+                    if (this.drip.wallet == "") { break; }
                     $Contract_DripFaucet.methods.claimsAvailable(this.drip.wallet).call(function(error, result) {
                         if (error) { console.log(error); return false; };
                         app.drip_available = result / 1000000000000000000;
@@ -80,6 +84,7 @@ var app = new Vue({
                         app.drip_balance = result / 1000000000000000000;
                         app.prices[4].price = ( (app.drip_available * 0.81) + (app.drip_balance * 0.9) ) * app.prices[0].price;
                     });
+                    break;
             }
         }
       }
