@@ -25,7 +25,7 @@
         <tr> <td>Wallet Address</td> <td><input v-model="user.wallet" v-on:keyup="userSave()" /></td> </tr>
         <tr> <td>Contract Balance</td> <td><div>{{ contract_balance|numSpace|removeDec }}</div></td> </tr>
         <tr> <td>Plants grown</td> <td><div>{{ user.plants }}</div></td> </tr>
-        <tr> <td>Seeds available <div class="font-sm">1 plant = {{ seeds_per_plant|numSpace }} seeds</div></td> <td><div>{{ user.seeds|numSpace }}</div></td> </tr>
+        <tr> <td>Seeds available <div class="font-sm">1 plant = {{ seeds_per_plant|numSpace }} seeds</div></td> <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ user_lp|decimal_3 }} LP ({{ rate_plant_lp|decimal_3 }} / Plant)</div></div></td> </tr>
         <tr> <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> <td><div>{{ seeds_per_day|numSpace }}</div></td> </tr>
         <tr> <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|decimal_2 }} hours / plant</div></td> <td><div>{{ plant_per_day|decimal_3 }}</div></td> </tr>
         <tr> <td>Plants ready</td> <td><div>{{ plants_ready }}</div></td> </tr>
@@ -37,6 +37,7 @@
         
       </table>
     </div><!-- APP -->
+    <div id="log"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script><!-- PROD <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script> -->
@@ -98,6 +99,8 @@ var app = new Vue({
         plants: 10,
         seeds: 3000000
       },
+      user_lp: 0,
+      rate_plant_lp: 0,
       contract_balance: 0,
       seeds_per_plant: 2592000,
       seeds_per_day: 0,
@@ -106,7 +109,8 @@ var app = new Vue({
       seeds_lost: 0,
       seeds_needed: 0,
       plant_next_date: [],
-      plant_full_minute: 0
+      plant_full_minute: 0,
+      log: []
     },
     watch: {
         user: function () { this.userSave(); }
@@ -114,7 +118,7 @@ var app = new Vue({
     created: function () {
       this.userLoad();
       this.appTick();
-      setInterval(this.appTick, 1 * 30 * 1000);
+      setInterval(this.appTick, 1 * 60 * 1000);
     },
 
     methods: {
@@ -169,6 +173,16 @@ var app = new Vue({
         //   if (error) { console.log(error); return false; };
         //   console.log(result);
         // });
+        $Contract.methods.calculateSeedSell(2592000).call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          app.rate_plant_lp = app.toDec18(result);
+        });
+        $Contract.methods.calculateSeedSell(this.user.seeds).call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          app.user_lp = app.toDec18(result);
+        });
+
+        
       },
       action(event, cmd) {
         var val = event.target.getAttribute("data-val");
@@ -195,9 +209,6 @@ var app = new Vue({
       toDec18(num) {
         return num / 1000000000000000000;
       }
-    },    
-    computed: {
-
     },
     filters: {
       decimal_3(value) { value = parseFloat(value).toFixed(3); if (value == "NaN") { value = 0; } return value; },
@@ -212,6 +223,17 @@ var app = new Vue({
       }
     }
   });
+
+
+function hourChanged() {
+  $Contract.methods.calculateSeedSell(2592000).call(function(error, result) {
+    if (error) { console.log(error); return false; };
+    app.rate_plant_lp = app.toDec18(result);
+    $("#log").append(app.rate_plant_lp + "<br>");
+  });
+}
+var $lastHour = new Date().getHours();
+setInterval(function () { if (new Date().getHours() != $lastHour) { $lastHour = new Date().getHours(); hourChanged(); } }, 1000);
 
 // ----------------------------------------------------------------------------------------
 // -- TOOLS -------------------------------------------------------------------------------

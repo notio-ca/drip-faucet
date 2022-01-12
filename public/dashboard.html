@@ -46,7 +46,8 @@ var app = new Vue({
             { symbol:"ATOM", price:0.00 },
             { symbol:"BNB", price:0.00 },
             { symbol:"OSMO", price:0.00 },
-            { symbol:"DRIP Net", price:0.00 }
+            { symbol:"DRIP Net", price:0.00 },
+            { symbol:"BTC", price:0.00 }
         ],
         drip: { name:"No Drip", wallet:"" },
         drip_available: 0,
@@ -71,6 +72,7 @@ var app = new Vue({
                 case "DRIP": API_Get("https://api.drip.community/prices/", function (data) { app.prices[0].price = data[data.length-1].value; }); break;
                 case "ATOM": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=ATOMBUSD", function (data) { app.prices[1].price = parseFloat(data.price); }); break;
                 case "BNB":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD", function (data) { app.prices[2].price = parseFloat(data.price); }); break;
+                case "BTC":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BTCBUSD", function (data) { app.prices[5].price = parseFloat(data.price) / 1000; }); break;
                 case "OSMO": API_Get("https://api-osmosis.imperator.co/search/v1/pools", function (data) { app.prices[3].price = data["1"]["1"].price; }); break;
                 case this.drip.name + " Net":
                     if (this.drip.wallet == "") { break; }
