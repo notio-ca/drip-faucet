@@ -229,7 +229,7 @@ function hourChanged() {
   $Contract.methods.calculateSeedSell(2592000).call(function(error, result) {
     if (error) { console.log(error); return false; };
     app.rate_plant_lp = app.toDec18(result);
-    $("#log").append(new Date().getHours() + ":00 LP / Day: " + (app.rate_plant_lp * app.plant_per_day).toFixed(3) + "<br>");
+    //$("#log").append(new Date().getHours() + ":00 LP / Day: " + (app.rate_plant_lp * app.plant_per_day).toFixed(3) + "<br>");
   });
 }
 var $lastHour = new Date().getHours();
