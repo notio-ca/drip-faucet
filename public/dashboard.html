@@ -44,8 +44,8 @@ var app = new Vue({
         prices: [
             { symbol:"DRIP", price:0.00 },
             { symbol:"ATOM", price:0.00 },
-            { symbol:"BNB", price:0.00 },
             { symbol:"OSMO", price:0.00 },
+            { symbol:"BNB", price:0.00 },
             { symbol:"DRIP Net", price:0.00 },
             { symbol:"BTC", price:0.00 },
             { symbol:"REVolution", price:0.00 },
@@ -73,8 +73,8 @@ var app = new Vue({
             switch (this.prices[i].symbol) {
                 case "DRIP": API_Get("https://api.drip.community/prices/", function (data) { app.prices[0].price = data[data.length-1].value; }); break;
                 case "ATOM": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=ATOMBUSD", function (data) { app.prices[1].price = parseFloat(data.price); }); break;
-                case "BNB":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD", function (data) { app.prices[2].price = parseFloat(data.price); }); break;
-                case "OSMO": API_Get("https://api-osmosis.imperator.co/search/v1/pools", function (data) { app.prices[3].price = data["1"]["1"].price; }); break;
+                case "OSMO": API_Get("https://api-osmosis.imperator.co/search/v1/pools", function (data) { app.prices[2].price = data["1"]["1"].price; }); break;
+                case "BNB":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD", function (data) { app.prices[3].price = parseFloat(data.price); }); break;
                 case "BTC":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BTCBUSD", function (data) { app.prices[5].price = parseFloat(data.price) / 1000; }); break;
                 case "REVolution":  API_Get("https://api.coingecko.com/api/v3/simple/token_price/binance-smart-chain?vs_currencies=usd&contract_addresses=0x276b440fdb4c54631c882cac9e4317929e751ff8", function (data) { app.prices[6].price = parseFloat(data["0x276b440fdb4c54631c882cac9e4317929e751ff8"].usd); }); break;
                 case "Desmos":  API_Get("https://api.coingecko.com/api/v3/simple/token_price/cosmos?vs_currencies=usd&contract_addresses=ibc/EA4C0A9F72E2CEDF10D0E7A9A6A22954DB3444910DB5BE980DF59B05A46DAD1C", function (data) { app.prices[7].price = parseFloat(data["ibc/EA4C0A9F72E2CEDF10D0E7A9A6A22954DB3444910DB5BE980DF59B05A46DAD1C"].usd); }); break;
