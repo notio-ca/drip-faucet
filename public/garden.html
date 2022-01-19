@@ -179,7 +179,7 @@ var app = new Vue({
         });
         $Contract.methods.calculateSeedSell(this.user.seeds).call(function(error, result) {
           if (error) { console.log(error); return false; };
-          app.user_lp = app.toDec18(result * 0.95);
+          app.user_lp = app.toDec18(result);
         });
 
         
