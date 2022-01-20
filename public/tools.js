@@ -1,6 +1,12 @@
 // ----------------------------------------------------------------------------------------
 // -- TOOLS -------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function() {
+    if ($is_RedirectHTML && document.location.pathname.indexOf(".html") != -1 && document.location.host.indexOf("localhost") == -1) { 
+        window.location.replace(document.location.href.replace(".html", "")); 
+    }
+});
+
 async function API_Get(url, callback) {
     //try {
         req = await fetch(url);
