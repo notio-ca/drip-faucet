@@ -35,7 +35,7 @@
     <div class="clear"></div>
 
     <div class="search-bar">
-        <input type="text" v-model="account" v-on:change="addAccount()" v-on:keyup="addAccount()" placeholder="Add Wallet Address" />
+        <input type="text" v-model="account" v-on:change="addAccount()" v-on:keyup="addAccount()" v-on:paste="addAccount()" placeholder="Add Wallet Address" />
     </div>
 
     <div v-if="account_list.length > 1">
