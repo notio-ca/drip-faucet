@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Garden - DRIP</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <link rel="icon" href="https://themanor.farm/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+<style>
+  body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; padding:20px; font-size:20px; line-height:105%; }
+  input { background-color:#444; color:#FFF; width:160px; text-align:right; padding:5px 10px 5px 10px; outline:none; border-style:solid; border:0; }
+  td { padding:10px 10px;  border-bottom:5px solid #222; }
+  td:first-child { background-color:#111; }
+  td:last-child { text-align:right; background-color:#282828; }
+  td > div { padding-right:10px; }
+  .font-sm { font-size:13px; }
+
+  .footer { text-align:center; font-size:18px; color:#AAA; padding-top:20px; overflow:hidden; }
+  .footer a { color:#EEE; }
+</style>
+</head>
+<body>
+    <div id="app">
+      <h1>DRIP Garden <span class="font-sm">Schedule</span></h1>
+      <table>
+        <tr> <td>Wallet Address</td> <td><input v-model="user.wallet" v-on:keyup="userSave()" v-on:paste="userSave()" /></td> </tr>
+        <tr> <td>Contract Balance</td> <td><div>{{ contract_balance|numSpace|removeDec }}</div></td> </tr>
+        <tr> <td>Plants grown</td> <td><div>{{ user.plants }}</div></td> </tr>
+        <tr> <td>Seeds available <div class="font-sm">1 plant = {{ seeds_per_plant|numSpace }} seeds</div></td> <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ user_lp|decimal_3 }} LP ({{ rate_plant_lp|decimal_3 }} / Plant)</div></div></td> </tr>
+        <tr> <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> <td><div>{{ seeds_per_day|numSpace }}</div></td> </tr>
+        <tr> <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|decimal_2 }} hours / plant</div></td> <td><div>{{ plant_per_day|decimal_3 }}</div></td> </tr>
+        <tr> <td>Plants ready</td> <td><div>{{ plants_ready }}</div></td> </tr>
+        <tr> <td>Seeds needed <div class="font-sm">For next plant</div></td> <td><div>{{ seeds_needed|numSpace }} <div class="font-sm">In {{ (seeds_needed / (seeds_per_day/24))|decimal_2 }} hours</div></div></td> </tr>
+        <tr> <td>Seeds lost <div class="font-sm">If planted now</div></td> <td><div>{{ seeds_lost|numSpace }}</div></td> </tr>
+        <tr v-for="(nextplant, index) in plant_next_date">
+          <td>Next plant +{{ nextplant.plant }}</td> <td><div>{{ nextplant.minutes|minToDate }}</div></td>
+        </tr>
+        
+      </table>
+    </div><!-- APP -->
+    <div id="log"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script><!-- PROD <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3js-cdn@latest/web3.min.js"></script>
+<script>
+var $WEB3 = new Web3(new Web3.providers.HttpProvider("https://bsc-dataseed.binance.org:443"));
+// https://abi.hashex.org/
+$ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"address","name":"ref","type":"address"},{"indexed":false,"internalType":"uint256","name":"amountBNB","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amountEggs","type":"uint256"}],"name":"SeedsBought","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"address","name":"ref","type":"address"},{"indexed":false,"internalType":"uint256","name":"seedsUsed","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"marketSeeds","type":"uint256"}],"name":"SeedsPlanted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"seedsSold","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"seedValue","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"marketSeeds","type":"uint256"}],"name":"SeedsSold","type":"event"},{"inputs":[],"name":"BusdAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DripAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DripBusdLp","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DripVaultAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MarketingAndDevelopmentAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PancakeSwapRouter","outputs":[{"internalType":"contract IUniswapV2Router01","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PancakeSwapRouterAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"SEEDS_TO_GROW_1PLANT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"ref","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buySeeds","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"seeds","type":"uint256"}],"name":"calculateSeedSell","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"},{"internalType":"uint256","name":"contractBalance","type":"uint256"}],"name":"calculateSeedsBuy","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"}],"name":"calculateSeedsBuySimple","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"}],"name":"calculateSeedsBuySimpleBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"}],"name":"calculateSeedsBuySimpleTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"}],"name":"calculateSeedsBuySimpleTotal","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"},{"internalType":"uint256","name":"contractBalance","type":"uint256"}],"name":"calculateSeedsBuyTotal","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"rt","type":"uint256"},{"internalType":"uint256","name":"rs","type":"uint256"},{"internalType":"uint256","name":"bs","type":"uint256"}],"name":"calculateTrade","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"claimedSeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"currentBalanceMultiplier","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"currentTimeMultiplier","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"devFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getMyPlants","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getMySeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"adr","type":"address"}],"name":"getSeedsSinceLastPlant","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserSeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"hatcheryPlants","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"initialized","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"lastPlant","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"marketSeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"ref","type":"address"}],"name":"plantSeeds","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"referrals","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"seedMarket","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"sellSeeds","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_top","type":"uint256"},{"internalType":"uint256","name":"multiplier","type":"uint256"}],"name":"setBalanceMultiplier","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_seed","type":"uint256"}],"name":"setSeedAmount","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"startTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+var $Contract = new $WEB3.eth.Contract($ABI, "0x685BFDd3C2937744c13d7De0821c83191E3027FF");
+
+// ----------------------------------------------------------------------------------------
+// -- TOOLS -------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
+async function API_Get(url, callback) {
+    //try {
+        req = await fetch(url);
+        res = await req.json();
+    //} catch { callback({}); }
+
+    callback(res);
+}
+
+$Cookie = {
+    get: function (c_name) {
+        var i,x,y,ARRcookies=document.cookie.split(";");
+        for (i=0;i<ARRcookies.length;i++) {
+            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+            x=x.replace(/^\s+|\s+$/g,"");
+            if (x==c_name) { return unescape(y); }
+        }
+    },
+    set: function (c_name, value, exdays)  {
+        if (!exdays) { exdays = 365; }
+        var exdate=new Date();
+        exdate.setDate(exdate.getDate() + exdays);
+        var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+        document.cookie=c_name + "=" + c_value + "; path=/";
+    },
+    delete: function (name) {  
+        FW.Cookie.Set(name, "");
+    }
+};
+
+String.prototype.replaceAll = function (search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+}
+
+// ----------------------------------------------------------------------------------------
+// -- APP ---------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
+var app = new Vue({
+    el: '#app',
+    data: {
+      user: {
+        wallet: "",
+        plants: 10,
+        seeds: 3000000
+      },
+      user_lp: 0,
+      rate_plant_lp: 0,
+      contract_balance: 0,
+      seeds_per_plant: 2592000,
+      seeds_per_day: 0,
+      plant_per_day:0,
+      plants_ready: 0,
+      seeds_lost: 0,
+      seeds_needed: 0,
+      plant_next_date: [],
+      plant_full_minute: 0,
+      log: []
+    },
+    watch: {
+        user: function () { this.userSave(); }
+    },
+    created: function () {
+      this.userLoad();
+      this.appTick();
+      setInterval(this.appTick, 1 * 60 * 1000);
+      setTimeout(this.appTick, 1000);
+    },
+
+    methods: {
+      appTick() {
+        this.updateData();
+      },
+      updateUI() {
+        this.seeds_per_day = (this.user.plants * 86400);
+        this.plant_per_day = (this.seeds_per_day / this.seeds_per_plant);
+        this.plants_ready = Math.floor(this.user.seeds / this.seeds_per_plant);
+        this.seeds_lost = this.user.seeds - (this.plants_ready * this.seeds_per_plant);
+        this.seeds_needed = this.seeds_per_plant - this.seeds_lost;
+        seeds_per_minute = this.seeds_per_day / 24 / 60;
+        plant_next_minute = this.seeds_needed / seeds_per_minute;
+        this.plant_full_minute = this.seeds_per_plant / seeds_per_minute;
+
+        multi = 1;
+        this.plant_next_date = [];
+        if (this.plant_next_date.indexOf("NaN") == -1) {
+          for (i = 0; i < 10; i++) {
+            this.plant_next_date.push({plant:(i+1), minutes:(plant_next_minute + (this.plant_full_minute * i))});
+          }
+        }
+      },
+      updateData() {
+        this.user.wallet = this.user.wallet.replaceAll(" ", "");
+        if (this.user.wallet.length != 42) { console.log("Wrong Wallet Address"); return false; }
+        $Contract.methods.getUserSeeds(this.user.wallet).call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          app.user.seeds = result;
+          app.updateUI();
+        });
+        $Contract.methods.hatcheryPlants(this.user.wallet).call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          app.user.plants = result;
+          app.updateUI();
+        });
+        $Contract.methods.getBalance().call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          //console.log(result);
+          app.contract_balance = app.toDec18(result);
+        });
+        $Contract.methods.SEEDS_TO_GROW_1PLANT().call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          app.seeds_per_plant = result;
+        });
+        // $Contract.methods.marketSeeds().call(function(error, result) {
+        //   if (error) { console.log(error); return false; };
+        //   app.seeds_market = app.toDec18(result);
+        // });
+        // $Contract.methods.getMyPlants().call(function(error, result) {
+        //   if (error) { console.log(error); return false; };
+        //   console.log(result);
+        // });
+        $Contract.methods.calculateSeedSell(2592000).call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          app.rate_plant_lp = app.toDec18(result * 0.95);
+        });
+        $Contract.methods.calculateSeedSell(this.user.seeds).call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          app.user_lp = app.toDec18(result * 0.95);
+        });
+
+        
+      },
+      action(event, cmd) {
+        var val = event.target.getAttribute("data-val");
+        this.execute(cmd, val);
+      },
+      execute(cmd, val) {
+        switch (cmd) {
+            //case "test":           this.test(val); break;
+        }
+      },
+      userLoad() {
+        saved_data = $Cookie.get("USER-GARDEN");
+        if (saved_data == undefined) { saved_data = JSON.stringify(this.user); }
+        saved_data = JSON.parse(saved_data);
+        this.user = saved_data;
+        this.updateUI();
+      },
+      userSave() {
+        $Cookie.set("USER-GARDEN", JSON.stringify(this.user));
+        console.log("User Saved");
+        this.updateUI();
+        this.updateData();
+      },
+      toDec18(num) {
+        return num / 1000000000000000000;
+      }
+    },
+    filters: {
+      decimal_3(value) { value = parseFloat(value).toFixed(3); if (value == "NaN") { value = 0; } return value; },
+      decimal_2(value) { value = parseFloat(value).toFixed(2); if (value == "NaN") { value = 0; } return value; },
+      removeDec(num) { return num.toString().split(".")[0]; },
+      numSpace(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      },
+      minToDate(minutes) {
+        //return minutes / 60;
+        return moment().add(minutes, 'minutes').format('MMM D h:mm A');
+      }
+    }
+  });
+
+
+function hourChanged() {
+  $Contract.methods.calculateSeedSell(2592000).call(function(error, result) {
+    if (error) { console.log(error); return false; };
+    app.rate_plant_lp = app.toDec18(result);
+    //$("#log").append(new Date().getHours() + ":00 LP / Day: " + (app.rate_plant_lp * app.plant_per_day).toFixed(3) + "<br>");
+  });
+}
+var $lastHour = new Date().getHours();
+setInterval(function () { if (new Date().getHours() != $lastHour) { $lastHour = new Date().getHours(); hourChanged(); } }, 1000);
+
+// ----------------------------------------------------------------------------------------
+// -- TOOLS -------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------
+async function API_Get(url, callback) {
+    req = await fetch(url);
+    res = await req.json();
+    callback(res);
+}
+
+</script>
+
+
+<div class="footer">
+  <div>This app is based on <img src="https://drip.community/img/dropLogo.cea61927.png" style="height:30px;"> <a href="https://drip.community/faucet?buddy=0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08" target="_blank">DRIP Network</a></div>
+  <div style="font-size:13px; padding-top:5px;">
+      Like it? Airdrop me a coffee <i class="fas fa-coffee"></i> at 0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08 &nbsp;|&nbsp; Dev by <i class="fab fa-telegram-plane"></i>&nbsp; <a href="https://t.me/LukeCharters">@LukeCharters</a>
+  </div>
+</div>
+</body>
+</html>
+
