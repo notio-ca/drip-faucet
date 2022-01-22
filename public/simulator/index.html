@@ -26,7 +26,7 @@
         
                 <div class="bg-dark"> <div>Deposit</div> <div></div> </div>
                 <div> 
-                    <div>Balance</div>
+                    <div>Balance<div style="font-size:13px; color:#0d6efd;">1 DRIP = 1 USD</div></div>
                     <div> 
                         <input v-model.number="balance_drip" type="text">
                         <span><div class="btn btn-primary my-1" @click="action($event, 'deposit')" :data-val="balance_drip">DEPOSIT</div></span>
@@ -42,7 +42,7 @@
                         {{ faucet.available|decimal_3 }}
                         <div id="but-claim" class="btn btn-primary mr-1" :class="(faucet.available == 0)?'disabled':''" @click="action($event, 'withdraw')" :data-val="faucet.available">CLAIM</div>
                         <div class="btn btn-primary mr-1" :class="(faucet.available == 0)?'disabled':''" @click="action($event, 'compound')" :data-val="faucet.available">HYDRATE</div>
-                        <span v-if="faucet.available == 0" style="font-size:13px;"><br>To claim, set hydrate to stop and step forward.</span>
+                        <span v-if="faucet.available == 0" style="font-size:13px; color:#0d6efd;"><br>* To claim, set hydrate to stop and step forward.</span>
                     </div> 
                 </div>
                 <div> <div>Claimed</div> <div>{{ faucet.claimed|decimal_3 }}</div> </div>
