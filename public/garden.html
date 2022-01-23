@@ -30,12 +30,12 @@
         <tr> <td>Plants grown</td> <td><div>{{ user.plants }}</div></td> </tr>
         <tr> <td>Seeds available <div class="font-sm">1 plant = {{ seeds_per_plant|numSpace }} seeds</div></td> <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ user_lp|decimal_3 }} LP ({{ rate_plant_lp|decimal_3 }} / Plant)</div></div></td> </tr>
         <tr> <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> <td><div>{{ seeds_per_day|numSpace }}</div></td> </tr>
-        <tr> <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|decimal_2 }} hours / plant</div></td> <td><div>{{ plant_per_day|decimal_3 }}</div></td> </tr>
-        <tr> <td>Plants ready</td> <td><div>{{ plants_ready }}</div></td> </tr>
-        <tr> <td>Seeds needed <div class="font-sm">For next plant</div></td> <td><div>{{ seeds_needed|numSpace }} <div class="font-sm">In {{ (seeds_needed / (seeds_per_day/24))|decimal_2 }} hours</div></div></td> </tr>
+        <tr> <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / plant</div></td> <td><div>{{ plant_per_day|decimal_3 }}</div></td> </tr>
+        <tr> <td>Seeds needed <div class="font-sm">For next plant</div></td> <td><div>{{ seeds_needed|numSpace }} <div class="font-sm">In {{ (seeds_needed / (seeds_per_day/24))|hourToTime }}</div></div></td> </tr>
         <tr> <td>Seeds lost <div class="font-sm">If planted now</div></td> <td><div>{{ seeds_lost|numSpace }}</div></td> </tr>
+        <tr> <td>Plants ready</td> <td><div>{{ plants_ready }}</div></td> </tr>
         <tr v-for="(nextplant, index) in plant_next_date">
-          <td>Next plant +{{ nextplant.plant }}</td> <td><div>{{ nextplant.minutes|minToDate }}</div></td>
+          <td>Next plant {{ (nextplant.plant+plants_ready) }}</td> <td><div>{{ nextplant.minutes|minToDate }}</div></td>
         </tr>
         
       </table>
@@ -187,6 +187,13 @@ var app = new Vue({
       minToDate(minutes) {
         //return minutes / 60;
         return moment().add(minutes, 'minutes').format('MMM D h:mm A');
+      },
+      hourToTime(hour) {
+        days = moment.duration(hour, 'hours').days() + "d ";
+        if (days == "0d ") { days = ""; };
+        min = moment.duration(hour, 'hours').minutes();
+        if (min <= 9) { min = "0" + min; }
+        return days + moment.duration(hour, 'hours').hours() + ":" + min;
       }
     }
   });
@@ -196,7 +203,9 @@ function hourChanged() {
   $Contract.methods.calculateSeedSell(2592000).call(function(error, result) {
     if (error) { console.log(error); return false; };
     app.rate_plant_lp = app.toDec18(result);
-    //$("#log").append(new Date().getHours() + ":00 LP / Day: " + (app.rate_plant_lp * app.plant_per_day).toFixed(3) + "<br>");
+    if (document.location.host == "localhost") {
+      $("#log").append(new Date().getHours() + ":00 LP / Day: " + (app.rate_plant_lp * app.plant_per_day).toFixed(3) + "<br>");
+    }
   });
 }
 var $lastHour = new Date().getHours();
