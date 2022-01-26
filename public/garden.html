@@ -9,11 +9,13 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 <style>
-  body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; padding:20px; font-size:20px; line-height:105%; }
+  body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; padding:20px; font-size:18px; line-height:105%; }
   input { background-color:#444; color:#FFF; width:160px; text-align:right; padding:5px 10px 5px 10px; outline:none; border-style:solid; border:0; }
   td { padding:10px 10px;  border-bottom:5px solid #222; }
-  td:first-child { background-color:#111; }
-  td:last-child { text-align:right; background-color:#282828; }
+  td { text-align:right; background-color:#282828; }
+  td:first-child { background-color:#111; text-align:left; }
+  td.blank { background-color:transparent; }
+  
   td > div { padding-right:10px; }
   .font-sm { font-size:13px; }
 
@@ -25,15 +27,52 @@
     <div id="app">
       <h1>DRIP Garden <span class="font-sm">Schedule</span></h1>
       <table>
-        <tr> <td>Wallet Address</td> <td><input v-model="user.wallet" v-on:keyup="userSave()" v-on:paste="userSave()" /></td> </tr>
-        <tr> <td>Contract Balance</td> <td><div>{{ contract_balance|numSpace|removeDec }}</div></td> </tr>
-        <tr> <td>Plants grown</td> <td><div>{{ user.plants }}</div></td> </tr>
-        <tr> <td>Seeds available <div class="font-sm">1 plant = {{ seeds_per_plant|numSpace }} seeds</div></td> <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ user_lp|decimal_3 }} LP ({{ rate_plant_lp|decimal_3 }} / Plant)</div></div></td> </tr>
-        <tr> <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> <td><div>{{ seeds_per_day|numSpace }}</div></td> </tr>
-        <tr> <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / plant</div></td> <td><div>{{ plant_per_day|decimal_3 }}</div></td> </tr>
-        <tr> <td>Seeds needed <div class="font-sm">For next plant</div></td> <td><div>{{ seeds_needed|numSpace }} <div class="font-sm">In {{ (seeds_needed / (seeds_per_day/24))|hourToTime }}</div></div></td> </tr>
-        <tr> <td>Seeds lost <div class="font-sm">If planted now</div></td> <td><div>{{ seeds_lost|numSpace }}</div></td> </tr>
-        <tr> <td>Plants ready</td> <td><div>{{ plants_ready }}</div></td> </tr>
+        <tr> 
+          <td>Wallet Address</td>
+          <td><input v-model="user.wallet" v-on:keyup="userSave()" v-on:paste="userSave()" /></td> 
+          <td>{{ drip_busd.price*user_balance|decimal_2 }}$ ({{ user_balance|decimal_3 }} LP)</td>
+        </tr>
+        <tr> 
+          <td>Contract Balance</td> 
+          <td><div>{{ contract_balance|numSpace|removeDec }}</div></td>
+          <td>DRIP/BUSD {{ drip_busd.price|decimal_2 }}$</td>
+        </tr>
+        <tr> 
+          <td>Plants grown</td> 
+          <td><div>{{ user.plants }}</div></td>
+          <td class="blank"></td>
+        </tr>
+        <tr> 
+          <td>Seeds available <div class="font-sm">1 plant = {{ seeds_per_plant|numSpace }} seeds</div></td> 
+          <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ user_lp|decimal_3 }} LP ({{ rate_plant_lp|decimal_3 }} / Plant)</div></div></td> 
+          <td class="blank"></td>
+        </tr>
+        <tr> 
+          <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> 
+          <td><div>{{ seeds_per_day|numSpace }}</div></td> 
+          <td class="blank"></td>
+        </tr>
+        <tr> 
+          <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / plant</div></td> 
+          <td><div>{{ plant_per_day|decimal_3 }}</div></td> 
+          <td class="blank"></td>
+        </tr>
+        <tr> 
+          <td>Seeds needed <div class="font-sm">For next plant</div></td> 
+          <td><div>{{ seeds_needed|numSpace }} <div class="font-sm">Next in {{ (seeds_needed / (seeds_per_day/24))|hourToTime }}</div></div></td> 
+          <td class="blank"></td>
+        </tr>
+        <tr> 
+          <td>Seeds lost <div class="font-sm">If planted now</div></td> 
+          <td><div>{{ seeds_lost|numSpace }}</div></td> 
+          <td class="blank"></td>
+        </tr>
+        <tr> 
+          <td>Plants ready</td> 
+          <td><div>{{ plants_ready }}</div></td> 
+          <td class="blank"></td>
+        </tr>
+
         <tr v-for="(nextplant, index) in plant_next_date">
           <td>Next plant {{ (nextplant.plant+plants_ready) }}</td> <td><div>{{ nextplant.minutes|minToDate }}</div></td>
         </tr>
@@ -54,6 +93,10 @@ var $WEB3 = new Web3(new Web3.providers.HttpProvider("https://bsc-dataseed.binan
 $ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"address","name":"ref","type":"address"},{"indexed":false,"internalType":"uint256","name":"amountBNB","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amountEggs","type":"uint256"}],"name":"SeedsBought","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"address","name":"ref","type":"address"},{"indexed":false,"internalType":"uint256","name":"seedsUsed","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"marketSeeds","type":"uint256"}],"name":"SeedsPlanted","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"seedsSold","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"seedValue","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"marketSeeds","type":"uint256"}],"name":"SeedsSold","type":"event"},{"inputs":[],"name":"BusdAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DripAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DripBusdLp","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"DripVaultAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"MarketingAndDevelopmentAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PancakeSwapRouter","outputs":[{"internalType":"contract IUniswapV2Router01","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"PancakeSwapRouterAddress","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"SEEDS_TO_GROW_1PLANT","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"ref","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"buySeeds","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"seeds","type":"uint256"}],"name":"calculateSeedSell","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"},{"internalType":"uint256","name":"contractBalance","type":"uint256"}],"name":"calculateSeedsBuy","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"}],"name":"calculateSeedsBuySimple","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"}],"name":"calculateSeedsBuySimpleBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"}],"name":"calculateSeedsBuySimpleTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"}],"name":"calculateSeedsBuySimpleTotal","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"bnb","type":"uint256"},{"internalType":"uint256","name":"contractBalance","type":"uint256"}],"name":"calculateSeedsBuyTotal","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"rt","type":"uint256"},{"internalType":"uint256","name":"rs","type":"uint256"},{"internalType":"uint256","name":"bs","type":"uint256"}],"name":"calculateTrade","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"claimedSeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"currentBalanceMultiplier","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"currentTimeMultiplier","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"devFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getMyPlants","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getMySeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"adr","type":"address"}],"name":"getSeedsSinceLastPlant","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserSeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"hatcheryPlants","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"initialized","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"lastPlant","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"marketSeeds","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"ref","type":"address"}],"name":"plantSeeds","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"referrals","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"seedMarket","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"sellSeeds","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_top","type":"uint256"},{"internalType":"uint256","name":"multiplier","type":"uint256"}],"name":"setBalanceMultiplier","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_seed","type":"uint256"}],"name":"setSeedAmount","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"startTime","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"}];
 var $Contract = new $WEB3.eth.Contract($ABI, "0x685BFDd3C2937744c13d7De0821c83191E3027FF");
 
+$ABI_LP = [{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"}],"name":"Burn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"sender","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount0In","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1In","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount0Out","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"amount1Out","type":"uint256"},{"indexed":true,"internalType":"address","name":"to","type":"address"}],"name":"Swap","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint112","name":"reserve0","type":"uint112"},{"indexed":false,"internalType":"uint112","name":"reserve1","type":"uint112"}],"name":"Sync","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"constant":true,"inputs":[],"name":"DOMAIN_SEPARATOR","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"MINIMUM_LIQUIDITY","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"PERMIT_TYPEHASH","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"burn","outputs":[{"internalType":"uint256","name":"amount0","type":"uint256"},{"internalType":"uint256","name":"amount1","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"factory","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getReserves","outputs":[{"internalType":"uint112","name":"_reserve0","type":"uint112"},{"internalType":"uint112","name":"_reserve1","type":"uint112"},{"internalType":"uint32","name":"_blockTimestampLast","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"_token0","type":"address"},{"internalType":"address","name":"_token1","type":"address"}],"name":"initialize","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"kLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"mint","outputs":[{"internalType":"uint256","name":"liquidity","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"nonces","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"},{"internalType":"uint256","name":"deadline","type":"uint256"},{"internalType":"uint8","name":"v","type":"uint8"},{"internalType":"bytes32","name":"r","type":"bytes32"},{"internalType":"bytes32","name":"s","type":"bytes32"}],"name":"permit","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"price0CumulativeLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"price1CumulativeLast","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"skim","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"uint256","name":"amount0Out","type":"uint256"},{"internalType":"uint256","name":"amount1Out","type":"uint256"},{"internalType":"address","name":"to","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"swap","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"sync","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"token0","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"token1","outputs":[{"internalType":"address","name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}];
+var $Contract_LP = new $WEB3.eth.Contract($ABI_LP, "0xa0feB3c81A36E885B6608DF7f0ff69dB97491b58");
+
+var $PCS_API = "https://api.pancakeswap.info/api/v2/tokens/";
 // ----------------------------------------------------------------------------------------
 // -- APP ---------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------
@@ -66,6 +109,7 @@ var app = new Vue({
         seeds: 3000000
       },
       user_lp: 0,
+      user_balance: 0,
       rate_plant_lp: 0,
       contract_balance: 0,
       seeds_per_plant: 2592000,
@@ -76,6 +120,16 @@ var app = new Vue({
       seeds_needed: 0,
       plant_next_date: [],
       plant_full_minute: 0,
+      drip_busd: {
+        step_calc: 0,
+        price: 0,
+        busd_price: 0,
+        busd_reserve: 0,
+        drip_price: 0,
+        drip_reserve: 0,
+        supply: 0,
+        lp_ratio: 0
+      },
       log: []
     },
     watch: {
@@ -86,6 +140,7 @@ var app = new Vue({
       this.appTick();
       setInterval(this.appTick, 1 * 60 * 1000);
       setTimeout(this.appTick, 1000);
+      this.updateDripBusd();
     },
 
     methods: {
@@ -111,6 +166,7 @@ var app = new Vue({
         }
       },
       updateData() {
+        if (!document.hasFocus()) { return false; }
         this.user.wallet = this.user.wallet.replaceAll(" ", "");
         if (this.user.wallet.length != 42) { console.log("Wrong Wallet Address"); return false; }
         $Contract.methods.getUserSeeds(this.user.wallet).call(function(error, result) {
@@ -121,6 +177,11 @@ var app = new Vue({
         $Contract.methods.hatcheryPlants(this.user.wallet).call(function(error, result) {
           if (error) { console.log(error); return false; };
           app.user.plants = result;
+          app.updateUI();
+        });
+        $Contract_LP.methods.balanceOf(this.user.wallet).call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          app.user_balance = app.toDec18(result);
           app.updateUI();
         });
         $Contract.methods.getBalance().call(function(error, result) {
@@ -150,6 +211,46 @@ var app = new Vue({
         });
 
         
+      },
+      updateDripBusd() {
+        this.drip_busd.step_calc = 0;
+
+        $Contract_LP.methods.totalSupply().call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          app.drip_busd.supply = app.toDec18(result);
+          app.drip_busd.step_calc++;
+          if (app.drip_busd.step_calc == 4) { app.calcDripBusd(); }
+        });        
+        $Contract_LP.methods.getReserves().call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          app.drip_busd.drip_reserve = result._reserve0;
+          app.drip_busd.busd_reserve = result._reserve1;
+          app.drip_busd.step_calc++;
+          if (app.drip_busd.step_calc == 4) { app.calcDripBusd(); }
+        });
+        $Contract_LP.methods.token0().call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          API_Get($PCS_API + result, function (data) { 
+            app.drip_busd.drip_price = data.data.price;
+            app.drip_busd.step_calc++;
+            if (app.drip_busd.step_calc == 4) { app.calcDripBusd(); }
+          });
+        });
+        $Contract_LP.methods.token1().call(function(error, result) {
+          if (error) { console.log(error); return false; };
+          API_Get($PCS_API + result, function (data) { 
+            app.drip_busd.busd_price = data.data.price;
+            app.drip_busd.step_calc++;
+            if (app.drip_busd.step_calc == 4) { app.calcDripBusd(); }
+          });
+        });
+
+      },
+      calcDripBusd() {
+        app.drip_busd.lp_ratio = 1 / app.drip_busd.supply;
+        app.drip_busd.price = (app.drip_busd.drip_reserve * app.drip_busd.lp_ratio * app.drip_busd.drip_price)
+                            + (app.drip_busd.busd_reserve * app.drip_busd.lp_ratio * app.drip_busd.busd_price);
+        app.drip_busd.price = app.toDec18(app.drip_busd.price);
       },
       action(event, cmd) {
         var val = event.target.getAttribute("data-val");
@@ -202,8 +303,8 @@ var app = new Vue({
 function hourChanged() {
   $Contract.methods.calculateSeedSell(2592000).call(function(error, result) {
     if (error) { console.log(error); return false; };
-    app.rate_plant_lp = app.toDec18(result);
-    if (document.location.host == "localhost") {
+    app.rate_plant_lp = app.toDec18(result * 0.95);
+    if (document.location.host.indexOf("localhost") != -1) {
       $("#log").append(new Date().getHours() + ":00 LP / Day: " + (app.rate_plant_lp * app.plant_per_day).toFixed(3) + "<br>");
     }
   });
@@ -211,14 +312,6 @@ function hourChanged() {
 var $lastHour = new Date().getHours();
 setInterval(function () { if (new Date().getHours() != $lastHour) { $lastHour = new Date().getHours(); hourChanged(); } }, 1000);
 
-// ----------------------------------------------------------------------------------------
-// -- TOOLS -------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------
-async function API_Get(url, callback) {
-    req = await fetch(url);
-    res = await req.json();
-    callback(res);
-}
 
 </script>
 
