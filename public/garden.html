@@ -45,7 +45,7 @@
         <tr> 
           <td>Seeds available <div class="font-sm">1 plant = {{ seeds_per_plant|numSpace }} seeds</div></td> 
           <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ user_lp|decimal_3 }} LP ({{ rate_plant_lp|decimal_3 }} / Plant)</div></div></td> 
-          <td class="blank"></td>
+          <td>{{ drip_busd.price*user_lp|decimal_2 }}$</td>
         </tr>
         <tr> 
           <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> 
