@@ -25,7 +25,7 @@
 </head>
 <body>
     <div id="app">
-      <h1>DRIP Garden <span class="font-sm">Schedule</span></h1>
+      <h1>DRIP Garden <span class="font-sm">Schedule</span></h1> <a href="/" class="btn-primary"></a>Like it? Click here</a>
       <table>
         <tr> 
           <td>Wallet Address</td>
@@ -85,7 +85,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script><!-- PROD <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/web3js-cdn@latest/web3.min.js"></script>
-    <script src="tools.js"></script>
+    <script src="tools.js?v=1"></script>
 <script>
 $is_RedirectHTML = true;
 var $WEB3 = new Web3(new Web3.providers.HttpProvider("https://bsc-dataseed.binance.org:443"));
@@ -146,6 +146,7 @@ var app = new Vue({
     methods: {
       appTick() {
         this.updateData();
+        this.updateDripBusd();
       },
       updateUI() {
         this.seeds_per_day = (this.user.plants * 86400);
@@ -166,7 +167,7 @@ var app = new Vue({
         }
       },
       updateData() {
-        if (!document.hasFocus()) { return false; }
+        //if (!document.hasFocus()) { return false; }
         this.user.wallet = this.user.wallet.replaceAll(" ", "");
         if (this.user.wallet.length != 42) { console.log("Wrong Wallet Address"); return false; }
         $Contract.methods.getUserSeeds(this.user.wallet).call(function(error, result) {
