@@ -49,8 +49,8 @@
         </tr>
         <tr> 
           <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> 
-          <td><div>{{ seeds_per_day|numSpace }}</div></td> 
-          <td class="blank"></td>
+          <td><div>{{ seeds_per_day|numSpace }}<div class="font-sm">{{ user_lp_per_day|decimal_3 }} LP / Day</div></div></td> 
+          <td>{{ drip_busd.price*user_lp_per_day|decimal_2 }}$</td>
         </tr>
         <tr> 
           <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / plant</div></td> 
@@ -109,6 +109,7 @@ var app = new Vue({
         seeds: 3000000
       },
       user_lp: 0,
+      user_lp_per_day: 0,
       user_balance: 0,
       rate_plant_lp: 0,
       contract_balance: 0,
@@ -179,6 +180,11 @@ var app = new Vue({
           if (error) { console.log(error); return false; };
           app.user.plants = result;
           app.updateUI();
+          $Contract.methods.calculateSeedSell(app.user.plants * 86400).call(function(error, result) {
+            if (error) { console.log(error); return false; };
+            app.user_lp_per_day = app.toDec18(result * 0.95);
+            app.updateUI();
+          });
         });
         $Contract_LP.methods.balanceOf(this.user.wallet).call(function(error, result) {
           if (error) { console.log(error); return false; };
@@ -210,8 +216,6 @@ var app = new Vue({
           if (error) { console.log(error); return false; };
           app.user_lp = app.toDec18(result * 0.95);
         });
-
-        
       },
       updateDripBusd() {
         this.drip_busd.step_calc = 0;
