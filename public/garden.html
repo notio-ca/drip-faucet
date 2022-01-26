@@ -252,7 +252,7 @@ var app = new Vue({
         app.drip_busd.price = (app.drip_busd.drip_reserve * app.drip_busd.lp_ratio * app.drip_busd.drip_price)
                             + (app.drip_busd.busd_reserve * app.drip_busd.lp_ratio * app.drip_busd.busd_price);
         app.drip_busd.price = app.toDec18(app.drip_busd.price);
-        print(app.drip_busd);
+        console.log(app.drip_busd);
       },
       action(event, cmd) {
         var val = event.target.getAttribute("data-val");
