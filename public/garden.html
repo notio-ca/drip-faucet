@@ -15,22 +15,21 @@
   td { text-align:right; background-color:#282828; }
   td:first-child { background-color:#111; text-align:left; }
   td.blank { background-color:transparent; }
-  
-  td > div { padding-right:10px; }
-  .font-sm { font-size:13px; }
+  .font-sm { font-size:13px; line-height:1; }
 
   .footer { text-align:center; font-size:18px; color:#AAA; padding-top:20px; overflow:hidden; }
   .footer a { color:#EEE; }
 </style>
 </head>
 <body>
+    <div style="position:absolute; right:0; top:0;"><a href="/" style="display:block; font-size:24px; background-color:#000; color:#2e6fb1; padding:5px; margin:10px; line-height:1; border-radius:6px;"><i class="fas fa-home"></i></a></div>
     <div id="app">
-      <h1>DRIP Garden <span class="font-sm">Schedule</span></h1> <!--<a href="/" class="btn-primary"></a>Like it? Click here</a>-->
+      <h1>DRIP Garden <span class="font-sm">Schedule</span></h1>
       <table>
         <tr> 
           <td>Wallet Address</td>
           <td><input v-model="user.wallet" v-on:keyup="userSave()" v-on:paste="userSave()" /></td> 
-          <td><span class="font-sm">{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2 }}$</td>
+          <td><span class="font-sm">{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2|numSpace }}$</td>
         </tr>
         <tr> 
           <td>Contract Balance</td> 
@@ -39,18 +38,18 @@
         </tr>
         <tr> 
           <td>Plants grown</td> 
-          <td><div>{{ user.plants }}</div></td>
-          <td><span class="font-sm">Worth</span> {{ (drip_busd.price*user.plants*rate_plant_lp)|decimal_2 }}$</td>
+          <td><div>{{ user.plants|numSpace }}</div></td>
+          <td><span class="font-sm">Worth</span> {{ (drip_busd.price*user.plants*rate_plant_lp)|decimal_2|numSpace }}$</td>
         </tr>
         <tr> 
           <td>Seeds available <div class="font-sm">1 plant = {{ seeds_per_plant|numSpace }} seeds</div></td> 
-          <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ user_lp|decimal_3 }} LP ({{ rate_plant_lp|decimal_3 }} / Plant)</div></div></td> 
-          <td><span class="font-sm">Growing</span> {{ drip_busd.price*user_lp|decimal_2 }}$</td>
+          <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ rate_plant_lp|decimal_3 }} / Plant</div></div></td> 
+          <td><span class="font-sm">Growing</span> {{ drip_busd.price*user_lp|decimal_2 }}$<div class="font-sm">{{ user_lp|decimal_3 }} LP</div></td>
         </tr>
         <tr> 
           <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> 
-          <td><div>{{ seeds_per_day|numSpace }}<div class="font-sm">{{ user_lp_per_day|decimal_3 }} LP / Day</div></div></td> 
-          <td><span class="font-sm">By day</span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$</td>
+          <td><div>{{ seeds_per_day|numSpace }}</div></td> 
+          <td><span class="font-sm">By day</span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$<div class="font-sm">{{ user_lp_per_day|decimal_3 }} LP</div></td>
         </tr>
         <tr> 
           <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / plant</div></td> 
@@ -256,16 +255,11 @@ var app = new Vue({
         app.drip_busd.price = (app.drip_busd.drip_reserve * app.drip_busd.lp_ratio * app.drip_busd.drip_price)
                             + (app.drip_busd.busd_reserve * app.drip_busd.lp_ratio * app.drip_busd.busd_price);
         app.drip_busd.price = app.toDec18(app.drip_busd.price);
-        console.log(app.drip_busd);
+        //console.log(app.drip_busd);
       },
       action(event, cmd) {
         var val = event.target.getAttribute("data-val");
         this.execute(cmd, val);
-      },
-      execute(cmd, val) {
-        switch (cmd) {
-            //case "test":           this.test(val); break;
-        }
       },
       userLoad() {
         saved_data = $Cookie.get("USER-GARDEN");
@@ -311,7 +305,7 @@ function hourChanged() {
     if (error) { console.log(error); return false; };
     app.rate_plant_lp = app.toDec18(result * 0.95);
     if (document.location.host.indexOf("localhost") != -1) {
-      $("#log").append(new Date().getHours() + ":00 LP / Day: " + (app.rate_plant_lp * app.plant_per_day).toFixed(3) + "<br>");
+      $("#log").append(new Date().getHours() + ":00 LP / Day: " + (app.rate_plant_lp * app.plant_per_day).toFixed(3) + " - " + (app.rate_plant_lp * app.plant_per_day * app.drip_busd.price).toFixed(2) + "$<br>");
     }
   });
 }
