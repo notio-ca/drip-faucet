@@ -30,27 +30,27 @@
         <tr> 
           <td>Wallet Address</td>
           <td><input v-model="user.wallet" v-on:keyup="userSave()" v-on:paste="userSave()" /></td> 
-          <td>{{ drip_busd.price*user_balance|decimal_2 }}$ ({{ user_balance|decimal_3 }} LP)</td>
+          <td><span class="font-sm">{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2 }}$</td>
         </tr>
         <tr> 
           <td>Contract Balance</td> 
           <td><div>{{ contract_balance|numSpace|removeDec }}</div></td>
-          <td>DRIP/BUSD {{ drip_busd.price|decimal_2 }}$</td>
+          <td><span class="font-sm">DRIP/BUSD</span> {{ drip_busd.price|decimal_2 }}$</td>
         </tr>
         <tr> 
           <td>Plants grown</td> 
           <td><div>{{ user.plants }}</div></td>
-          <td class="blank"></td>
+          <td><span class="font-sm">Worth</span> {{ (drip_busd.price*user.plants*rate_plant_lp)|decimal_2 }}$</td>
         </tr>
         <tr> 
           <td>Seeds available <div class="font-sm">1 plant = {{ seeds_per_plant|numSpace }} seeds</div></td> 
           <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ user_lp|decimal_3 }} LP ({{ rate_plant_lp|decimal_3 }} / Plant)</div></div></td> 
-          <td>{{ drip_busd.price*user_lp|decimal_2 }}$</td>
+          <td><span class="font-sm">Growing</span> {{ drip_busd.price*user_lp|decimal_2 }}$</td>
         </tr>
         <tr> 
           <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> 
           <td><div>{{ seeds_per_day|numSpace }}<div class="font-sm">{{ user_lp_per_day|decimal_3 }} LP / Day</div></div></td> 
-          <td>{{ drip_busd.price*user_lp_per_day|decimal_2 }}$</td>
+          <td><span class="font-sm">By day</span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$</td>
         </tr>
         <tr> 
           <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / plant</div></td> 
