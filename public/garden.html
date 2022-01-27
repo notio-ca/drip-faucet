@@ -9,14 +9,14 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 <style>
-  body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; padding:20px; font-size:18px; line-height:105%; }
-  input { background-color:#444; color:#FFF; width:160px; text-align:right; padding:5px 10px 5px 10px; outline:none; border-style:solid; border:0; }
+  body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; padding:10px; font-size:18px; line-height:105%; }
+  input { background-color:#444; color:#FFF; width:90%; text-align:right; padding:5px 10px 5px 10px; outline:none; border-style:solid; border:0; }
   td { padding:10px 10px;  border-bottom:5px solid #222; }
   td { text-align:right; background-color:#282828; }
-  td:first-child { background-color:#111; text-align:left; }
+  td:first-child { background-color:#111; text-align:left; white-space:nowrap; }
   td.blank { background-color:transparent; }
   .font-sm { font-size:13px; line-height:1; }
-
+  .no-wrap { white-space:nowrap; }
   .footer { text-align:center; font-size:18px; color:#AAA; padding-top:20px; overflow:hidden; }
   .footer a { color:#EEE; }
 </style>
@@ -27,32 +27,32 @@
       <h1>DRIP Garden <span class="font-sm">Schedule</span></h1>
       <table>
         <tr> 
-          <td>Wallet Address</td>
+          <td>Wallet <span class="font-sm">Address</span></td>
           <td><input v-model="user.wallet" v-on:keyup="userSave()" v-on:paste="userSave()" /></td> 
-          <td><span class="font-sm">{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2|numSpace }}$</td>
+          <td><span class="font-sm no-wrap">{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2|numSpace }}$</td>
         </tr>
         <tr> 
-          <td>Contract Balance</td> 
+          <td>Contract <span class="font-sm">Balance</span></td> 
           <td><div>{{ contract_balance|numSpace|removeDec }}</div></td>
           <td><span class="font-sm">DRIP/BUSD</span> {{ drip_busd.price|decimal_2 }}$</td>
         </tr>
         <tr> 
           <td>Plants grown</td> 
           <td><div>{{ user.plants|numSpace }}</div></td>
-          <td><span class="font-sm">Worth</span> {{ (drip_busd.price*user.plants*rate_plant_lp)|decimal_2|numSpace }}$</td>
+          <td><span class="font-sm">Worth</span> <span class="no-wrap">{{ (drip_busd.price*user.plants*rate_plant_lp)|decimal_2|numSpace }}$</span></td>
         </tr>
         <tr> 
-          <td>Seeds available <div class="font-sm">1 plant = {{ seeds_per_plant|numSpace }} seeds</div></td> 
-          <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ rate_plant_lp|decimal_3 }} / Plant</div></div></td> 
+          <td>Seeds available <div class="font-sm">1 <i class="fas fa-seedling"></i> = {{ seeds_per_plant|numSpace }} seeds</div></td> 
+          <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ rate_plant_lp|decimal_3 }} LP / <i class="fas fa-seedling"></i></div></div></td> 
           <td><span class="font-sm">Growing</span> {{ drip_busd.price*user_lp|decimal_2 }}$<div class="font-sm">{{ user_lp|decimal_3 }} LP</div></td>
         </tr>
         <tr> 
-          <td>Seeds / day <div class="font-sm">1 plant = 86 400 seeds / day</div></td> 
+          <td>Seeds / day <div class="font-sm">1 <i class="fas fa-seedling"></i> = 86.4k seeds / day</div></td> 
           <td><div>{{ seeds_per_day|numSpace }}</div></td> 
           <td><span class="font-sm">By day</span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$<div class="font-sm">{{ user_lp_per_day|decimal_3 }} LP</div></td>
         </tr>
         <tr> 
-          <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / plant</div></td> 
+          <td>Plants / day<div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / <i class="fas fa-seedling"></i></div></td> 
           <td><div>{{ plant_per_day|decimal_3 }}</div></td> 
           <td class="blank"></td>
         </tr>
@@ -63,7 +63,7 @@
         </tr>
         <tr> 
           <td>Seeds lost <div class="font-sm">If planted now</div></td> 
-          <td><div>{{ seeds_lost|numSpace }}</div></td> 
+          <td><div>-{{ seeds_lost|numSpace }}</div></td> 
           <td class="blank"></td>
         </tr>
         <tr> 
@@ -72,7 +72,7 @@
           <td class="blank"></td>
         </tr>
 
-        <tr v-for="(nextplant, index) in plant_next_date">
+        <tr v-for="(nextplant, index) in plant_next_date" class="font-sm">
           <td>Next plant {{ (nextplant.plant+plants_ready) }}</td> <td><div>{{ nextplant.minutes|minToDate }}</div></td>
         </tr>
         
