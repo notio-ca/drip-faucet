@@ -28,7 +28,7 @@
       <table>
         <tr> 
           <td>Wallet <span class="font-sm">Address</span></td>
-          <td><input v-model="user.wallet" v-on:keyup="userSave()" v-on:paste="userSave()" /></td> 
+          <td><input v-model="user.wallet" v-on:keyup="userSave()" v-on:paste="userSave()" placeholder="Paste Here" /></td> 
           <td><span class="font-sm no-wrap">{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2|numSpace }}$</td>
         </tr>
         <tr> 
