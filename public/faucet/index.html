@@ -57,7 +57,7 @@
                     <input class="text-edit" type="text" v-model="account.name" v-on:keyup="userSave()">
                 </div>
                 <div class="float-right">
-                    <span class="font-sm">{{ account.drip_balance }} &nbsp;<i class="fas fa-tint"></i></span> &nbsp;
+                    <span class="font-sm">{{ account.drip_balance|toNum3 }} &nbsp;<i class="fas fa-tint"></i></span> &nbsp;
                     <span class="font-sm">{{ account.wallet|walletFormat }}</span> &nbsp;
                     <span v-on:click="moveUp(index)" class="clickable"><i class="fas fa-chevron-circle-up"></i></span>
                     <span v-on:click="remove(index)" class="clickable"><i class="fas fa-times-circle"></i></span>
