@@ -19,6 +19,7 @@
   .no-wrap { white-space:nowrap; }
   .footer { text-align:center; font-size:18px; color:#AAA; padding-top:20px; overflow:hidden; }
   .footer a { color:#EEE; }
+  .blue { color:#2e6fb1 }
 </style>
 </head>
 <body>
@@ -34,7 +35,7 @@
         <tr> 
           <td>Contract <span class="font-sm">Balance</span></td> 
           <td><div>{{ contract_balance|numSpace|removeDec }}</div></td>
-          <td><span class="font-sm">DRIP/BUSD</span> {{ drip_busd.price|decimal_2 }}$</td>
+          <td><span class="font-sm">DRIP/BUSD</span> <span class="blue">{{ drip_busd.price|decimal_2 }}$</span></td>
         </tr>
         <tr> 
           <td>Plants grown</td> 
@@ -43,7 +44,7 @@
         </tr>
         <tr> 
           <td>Seeds available <div class="font-sm">1 <i class="fas fa-seedling"></i> = {{ seeds_per_plant|numSpace }} seeds</div></td> 
-          <td><div>{{ user.seeds|numSpace }} <div class="font-sm">{{ rate_plant_lp|decimal_3 }} LP / <i class="fas fa-seedling"></i></div></div></td> 
+          <td><div>{{ user.seeds|numSpace }} <div class="font-sm blue">{{ rate_plant_lp|decimal_3 }} LP / <i class="fas fa-seedling"></i></div></div></td> 
           <td><span class="font-sm">Growing</span> {{ drip_busd.price*user_lp|decimal_2 }}$<div class="font-sm">{{ user_lp|decimal_3 }} LP</div></td>
         </tr>
         <tr> 
