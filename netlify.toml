@@ -1,7 +1,7 @@
 # example netlify.toml
 [build]
   command = "# no build command"
-  functions = "netlify/api"
+  functions = "netlify/functions"
   publish = "public"
 
   ## Uncomment to use this redirect for Single Page Applications like create-react-app.
