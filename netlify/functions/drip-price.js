@@ -7,7 +7,7 @@ exports.handler = async (event, context) => {
   try {
     res = await fetch(API_ENDPOINT);
     data = await res.json();
-    data = { symbol:"drip", price: Math.round(data[data.length-1].value, 2) };
+    data = { symbol:"drip", price: Math.round(data[data.length-1].value * 100) / 100 };
     
   } catch (err) {
     return {
