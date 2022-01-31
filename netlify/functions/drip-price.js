@@ -3,9 +3,10 @@ const fetch = require('node-fetch')
 const API_ENDPOINT = 'https://api.drip.community/prices/'
 
 exports.handler = async (event, context) => {
-  let res
+  let res, data
   try {
     res = await fetch(API_ENDPOINT)
+    data = await res.json();
     
   } catch (err) {
     return {
@@ -19,7 +20,7 @@ exports.handler = async (event, context) => {
   return {
     statusCode: 200,
     body: JSON.stringify({
-      data: res
+      data: data
     })
   }
 }
