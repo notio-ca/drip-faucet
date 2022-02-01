@@ -7,7 +7,9 @@ exports.handler = async (event, context) => {
   try {
     res = await fetch(API_ENDPOINT);
     data_api = await res.json();
-    data = { data_api:data, url:event.path };
+    param = event.path.split("/");
+    param = param[param.length-1];
+    data = { data_api:data_api, url:param };
     
   } catch (err) {
     return {
