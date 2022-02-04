@@ -73,7 +73,7 @@ var app = new Vue({
       getPrices() {
         for (i=0; i < this.prices.length; i++) {
             switch (this.prices[i].symbol) {
-                case "DRIP": API_Get("https://api.drip.community/prices/", function (data) { app.prices[0].price = data.price; }); break;
+                case "DRIP": API_Get("https://drip-scan.netlify.app/.netlify/functions/drip-price", function (data) { app.prices[0].price = data.price; }); break;
                 case "ATOM": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=ATOMBUSD", function (data) { app.prices[1].price = parseFloat(data.price); }); break;
                 case "OSMO": API_Get("https://api-osmosis.imperator.co/search/v1/pools", function (data) { app.prices[2].price = data["1"]["1"].price; }); break;
                 case "BNB":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD", function (data) { app.prices[3].price = parseFloat(data.price); }); break;
