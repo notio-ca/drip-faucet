@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <style>
         body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; padding:10px 0 0 10px; }
-        .ticker { border-radius:20px; font-size:70px; margin:10px; background-color:#2e6fb1; padding:0 30px 13px 30px; display:inline-block; line-height:1; }
-        .ticker-name { font-size:20px; background-color:#1a3d60; padding:4px; border-radius:0 0 10px 10px; line-height:1; text-align:center; margin-bottom:5px; }
+        .ticker { border-radius:20px; font-size:60px; margin:10px; background-color:#2e6fb1; padding:0 25px 8px 25px; display:inline-block; line-height:1; }
+        .ticker-name { font-size:16px; background-color:#1a3d60; padding:4px; border-radius:0 0 10px 10px; line-height:1; text-align:center; margin-bottom:5px; }
         .clear { float:none; clear:both; }
         
     </style>
@@ -50,7 +50,9 @@ var app = new Vue({
             { symbol:"DRIP Net", price:0.00 },
             { symbol:"BTC", price:0.00 },
             { symbol:"BR34P", price:0.00 },
-            { symbol:"LUNA", price:0.00 }
+            { symbol:"LUNA", price:0.00 },
+            { symbol:"PIGS", price:0.00 },
+            { symbol:"DOGS", price:0.00 }
         ],
         drip: { name:"No Drip", wallet:"" },
         drip_available: 0,
@@ -79,6 +81,8 @@ var app = new Vue({
                 case "BR34P":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0xa86d305A36cDB815af991834B46aD3d7FbB38523", function (data) { app.prices[6].price = parseFloat(data.price); }); break;
                 //case "Desmos":  API_Get("https://api.coingecko.com/api/v3/simple/token_price/cosmos?vs_currencies=usd&contract_addresses=ibc/EA4C0A9F72E2CEDF10D0E7A9A6A22954DB3444910DB5BE980DF59B05A46DAD1C", function (data) { app.prices[6].price = parseFloat(data["ibc/EA4C0A9F72E2CEDF10D0E7A9A6A22954DB3444910DB5BE980DF59B05A46DAD1C"].usd); }); break;
                 case "LUNA": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=LUNABUSD", function (data) { app.prices[7].price = parseFloat(data.price); }); break;
+                case "PIGS":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0x3a4c15f96b3b058ab3fb5faf1440cc19e7ae07ce", function (data) { app.prices[8].price = parseFloat(data.price); }); break;
+                case "DOGS":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0xDBdC73B95cC0D5e7E99dC95523045Fc8d075Fb9e", function (data) { app.prices[9].price = parseFloat(data.price); }); break;
                 case this.drip.name + " Net":
                     if (this.drip.wallet == "") { break; }
                     $Contract_DripFaucet.methods.claimsAvailable(this.drip.wallet).call(function(error, result) {
