@@ -44,15 +44,15 @@ var app = new Vue({
     data: {
         prices: [
             { symbol:"DRIP", price:0.00 },
-            { symbol:"ATOM", price:0.00 },
-            { symbol:"OSMO", price:0.00 },
-            { symbol:"BNB", price:0.00 },
             { symbol:"DRIP Net", price:0.00 },
-            { symbol:"BTC", price:0.00 },
-            { symbol:"BR34P", price:0.00 },
+            { symbol:"OSMO", price:0.00 },
+            { symbol:"ATOM", price:0.00 },
             { symbol:"LUNA", price:0.00 },
+            { symbol:"BTC", price:0.00 },
+            { symbol:"BNB", price:0.00 },
             { symbol:"PIGS", price:0.00 },
-            { symbol:"DOGS", price:0.00 }
+            { symbol:"DOGS", price:0.00 },
+            { symbol:"BR34P", price:0.00 },
         ],
         drip: { name:"No Drip", wallet:"" },
         drip_available: 0,
@@ -64,7 +64,8 @@ var app = new Vue({
             drip_account = $Session.get("account_list")[0];
             this.drip = drip_account;
         } catch(e) {}
-        this.prices[4].symbol = this.drip.name + " Net";
+        this.getTicker("DRIP Net", this).symbol = this.drip.name + " Net";
+        
         setInterval(function() { app.getPrices(); }, 10000);
         this.getPrices();
     },
@@ -73,34 +74,41 @@ var app = new Vue({
       getPrices() {
         for (i=0; i < this.prices.length; i++) {
             switch (this.prices[i].symbol) {
-                case "DRIP": API_Get("https://drip-scan.netlify.app/.netlify/functions/drip-price", function (data) { app.prices[0].price = data.price; }); break;
-                case "ATOM": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=ATOMBUSD", function (data) { app.prices[1].price = parseFloat(data.price); }); break;
-                case "OSMO": API_Get("https://api-osmosis.imperator.co/search/v1/pools", function (data) { app.prices[2].price = data["1"]["1"].price; }); break;
-                case "BNB":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD", function (data) { app.prices[3].price = parseFloat(data.price); }); break;
-                case "BTC":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BTCBUSD", function (data) { app.prices[5].price = parseFloat(data.price) / 1000; }); break;
-                case "BR34P":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0xa86d305A36cDB815af991834B46aD3d7FbB38523", function (data) { app.prices[6].price = parseFloat(data.price); }); break;
-                //case "Desmos":  API_Get("https://api.coingecko.com/api/v3/simple/token_price/cosmos?vs_currencies=usd&contract_addresses=ibc/EA4C0A9F72E2CEDF10D0E7A9A6A22954DB3444910DB5BE980DF59B05A46DAD1C", function (data) { app.prices[6].price = parseFloat(data["ibc/EA4C0A9F72E2CEDF10D0E7A9A6A22954DB3444910DB5BE980DF59B05A46DAD1C"].usd); }); break;
-                case "LUNA": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=LUNABUSD", function (data) { app.prices[7].price = parseFloat(data.price); }); break;
-                case "PIGS":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0x3a4c15f96b3b058ab3fb5faf1440cc19e7ae07ce", function (data) { app.prices[8].price = parseFloat(data.price); }); break;
-                case "DOGS":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0xDBdC73B95cC0D5e7E99dC95523045Fc8d075Fb9e", function (data) { app.prices[9].price = parseFloat(data.price); }); break;
+                case "DRIP": API_Get("https://drip-scan.netlify.app/.netlify/functions/drip-price", function (data) { app.getTicker("DRIP").price = data.price; }); break;
+                case "ATOM": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=ATOMBUSD", function (data) { app.getTicker("ATOM").price = parseFloat(data.price); }); break;
+                case "OSMO": API_Get("https://api-osmosis.imperator.co/search/v1/pools", function (data) { app.getTicker("OSMO").price = data["1"]["1"].price; }); break;
+                case "BNB":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD", function (data) { app.getTicker("BNB").price = parseFloat(data.price); }); break;
+                case "BTC":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BTCBUSD", function (data) { app.getTicker("BTC").price = parseFloat(data.price) / 1000; }); break;
+                case "BR34P":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0xa86d305A36cDB815af991834B46aD3d7FbB38523", function (data) { app.getTicker("BR34P").price = parseFloat(data.price); }); break;
+                //case "Desmos":  API_Get("https://api.coingecko.com/api/v3/simple/token_price/cosmos?vs_currencies=usd&contract_addresses=ibc/EA4C0A9F72E2CEDF10D0E7A9A6A22954DB3444910DB5BE980DF59B05A46DAD1C", function (data) { app.getTicker("DESMOS").price = parseFloat(data["ibc/EA4C0A9F72E2CEDF10D0E7A9A6A22954DB3444910DB5BE980DF59B05A46DAD1C"].usd); }); break;
+                case "LUNA": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=LUNABUSD", function (data) { app.getTicker("LUNA").price = parseFloat(data.price); }); break;
+                case "PIGS":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0x3a4c15f96b3b058ab3fb5faf1440cc19e7ae07ce", function (data) { app.getTicker("PIGS").price = parseFloat(data.price); }); break;
+                case "DOGS":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0xDBdC73B95cC0D5e7E99dC95523045Fc8d075Fb9e", function (data) { app.getTicker("DOGS").price = parseFloat(data.price); }); break;
                 case this.drip.name + " Net":
                     if (this.drip.wallet == "") { break; }
                     $Contract_DripFaucet.methods.claimsAvailable(this.drip.wallet).call(function(error, result) {
                         if (error) { console.log(error); return false; };
                         app.drip_available = result / 1000000000000000000;
-                        app.prices[4].price = ( (app.drip_available * 0.81) + (app.drip_balance * 0.9) ) * app.prices[0].price;
+                        app.getTicker(app.drip.name + " Net").price = ( (app.drip_available * 0.81) + (app.drip_balance * 0.9) ) * app.prices[0].price;
                     });
                     $Contract_DripToken.methods.balanceOf(this.drip.wallet).call(function(error, result) {
                         if (error) { console.log(error); return false; };
                         app.drip_balance = result / 1000000000000000000;
-                        app.prices[4].price = ( (app.drip_available * 0.81) + (app.drip_balance * 0.9) ) * app.prices[0].price;
+                        app.getTicker(app.drip.name + " Net").price = ( (app.drip_available * 0.81) + (app.drip_balance * 0.9) ) * app.prices[0].price;
                     });
                     break;
             }
         }
+      },
+      getTicker(symbol, app_ref) {
+        if (!app_ref) { app_ref = app; }
+        for (item of app_ref.prices) {
+            if (item.symbol == symbol) { return item; }
+        }
       }
+ 
     },
-    filters: {
+     filters: {
       decimal_2: function (value) {
         value = parseFloat(value).toFixed(2);
         if (value == "NaN") { value = 0; } 
