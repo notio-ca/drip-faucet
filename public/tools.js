@@ -83,7 +83,6 @@ function loadAds() {
     if ($Cookie.get("pop-ads") == "1") { return false; }
     $Cookie.set("pop-ads", "1", 2);
 
-    console.log(page);
     H = `
     <div id="pop-ads" style="position:absolute; top:0; left:0; right:0; background-color:#333333EF; color:#FFF; font-size:20px; z-index:10000;">
         <div style="padding:5% 0;">
@@ -107,6 +106,7 @@ function loadAds() {
         $("#pop-ads").fadeOut(); 
         ClickTrack("Close", "Pop-Ads");
     });
+    window.scrollTo(0, 0);
 }
 
 var _gaq = _gaq || [];
