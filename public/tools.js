@@ -100,6 +100,7 @@ function loadAds() {
     $("#but-copy-pop-ads").click(function () {
         wallet = "0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08";
         navigator.clipboard.writeText(wallet);
+        ClickTrack("Copy", "Wallet");
         alert("Thanks for your support!")
     });
     $("#but-close-pop-ads").click(function () { 
