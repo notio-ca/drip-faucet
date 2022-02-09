@@ -56,6 +56,7 @@ var app = new Vue({
             { symbol:"BNB", price:0.00 },
             { symbol:"PIGS", price:0.00 },
             { symbol:"DOGS", price:0.00 },
+            { symbol:"DOGS/BUSD", price:0.00 },
             { symbol:"BR34P", price:0.00 },
         ],
         drip: { name:"No Drip", wallet:"" },
@@ -100,6 +101,7 @@ var app = new Vue({
                 case "LUNA": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=LUNABUSD", function (data) { app.getTicker("LUNA").price = parseFloat(data.price); }); break;
                 case "PIGS":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0x3a4c15f96b3b058ab3fb5faf1440cc19e7ae07ce", function (data) { app.getTicker("PIGS").price = parseFloat(data.price); }); break;
                 case "DOGS":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0xDBdC73B95cC0D5e7E99dC95523045Fc8d075Fb9e", function (data) { app.getTicker("DOGS").price = parseFloat(data.price); }); break;
+                case "DOGS/BUSD":  API_Get("https://charters.herokuapp.com/lp/0x70f01321CB37A37D4b095bBda7E4BF46E1C9F1F9", function (data) { app.getTicker("DOGS/BUSD").price = parseFloat(data.price); }); break;
                 case this.drip.name + " Net":
                     if (this.drip.wallet == "") { break; }
                     $Contract_DripFaucet.methods.claimsAvailable(this.drip.wallet).call(function(error, result) {
