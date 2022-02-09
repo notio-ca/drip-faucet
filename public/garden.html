@@ -85,7 +85,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script><!-- PROD <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script> -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/web3js-cdn@latest/web3.min.js"></script>
-    <script src="tools.js?v=1"></script>
+    <script src="tools.js?v=2"></script>
 <script>
 $is_RedirectHTML = true;
 var $WEB3 = new Web3(new Web3.providers.HttpProvider("https://bsc-dataseed.binance.org:443"));
@@ -228,15 +228,15 @@ var app = new Vue({
         });        
         $Contract_LP.methods.getReserves().call(function(error, result) {
           if (error) { console.log(error); return false; };
-          app.drip_busd.drip_reserve = result._reserve0;
-          app.drip_busd.busd_reserve = result._reserve1;
+          app.drip_busd.drip_reserve = parseInt(result._reserve0);
+          app.drip_busd.busd_reserve = parseInt(result._reserve1);
           app.drip_busd.step_calc++;
           if (app.drip_busd.step_calc == 4) { app.calcDripBusd(); }
         });
         $Contract_LP.methods.token0().call(function(error, result) {
           if (error) { console.log(error); return false; };
           API_Get($PCS_API + result, function (data) { 
-            app.drip_busd.drip_price = data.data.price;
+            app.drip_busd.drip_price = parseFloat(data.data.price);
             app.drip_busd.step_calc++;
             if (app.drip_busd.step_calc == 4) { app.calcDripBusd(); }
           });
@@ -244,7 +244,7 @@ var app = new Vue({
         $Contract_LP.methods.token1().call(function(error, result) {
           if (error) { console.log(error); return false; };
           API_Get($PCS_API + result, function (data) { 
-            app.drip_busd.busd_price = data.data.price;
+            app.drip_busd.busd_price = parseFloat(data.data.price);
             app.drip_busd.step_calc++;
             if (app.drip_busd.step_calc == 4) { app.calcDripBusd(); }
           });

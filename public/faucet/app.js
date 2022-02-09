@@ -25,45 +25,6 @@ var $Contract_BR34PToken = new $WEB3.eth.Contract($ABI_BR34PToken, $ADR_BR34PTok
 // var $Contract_BR34P_Pancake = new $WEB3.eth.Contract($ABI_BR34P_Pancake, $ADR_BR34P_Pancake);
 
 // ----------------------------------------------------------------------------------------
-// -- TOOLS -------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------
-async function API_Get(url, callback) {
-    //try {
-        req = await fetch(url);
-        res = await req.json();
-    //} catch { callback({}); }
-
-    callback(res);
-}
-
-$Cookie = {
-    get: function (c_name) {
-        var i,x,y,ARRcookies=document.cookie.split(";");
-        for (i=0;i<ARRcookies.length;i++) {
-            x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
-            y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
-            x=x.replace(/^\s+|\s+$/g,"");
-            if (x==c_name) { return unescape(y); }
-        }
-    },
-    set: function (c_name, value, exdays)  {
-        if (!exdays) { exdays = 365; }
-        var exdate=new Date();
-        exdate.setDate(exdate.getDate() + exdays);
-        var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-        document.cookie=c_name + "=" + c_value + "; path=/";
-    },
-    delete: function (name) {  
-        FW.Cookie.Set(name, "");
-    }
-};
-
-String.prototype.replaceAll = function (search, replacement) {
-    var target = this;
-    return target.replace(new RegExp(search, 'g'), replacement);
-}
-
-// ----------------------------------------------------------------------------------------
 // -- APP ---------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------
 var app = new Vue({
@@ -92,9 +53,9 @@ var app = new Vue({
         this.appLongTick();
         
         if (document.location.hash != "") { this.account = document.location.hash.replace("#", ""); this.addAccount(); }
-        //$Contract_BR34P_Pancake.methods.getReserves().call(function(error, result) { console.log(result._reserve1 / result._reserve0); });
-
+        
         //this.ping();
+        //setTimeout(simulator, 1000);
         $("#app").show();
     },
     methods: {
@@ -323,6 +284,40 @@ var app = new Vue({
 
 });
 
+function simDripPerMinute(deposit) {
+    return (deposit * 0.01) / 24 / 60;
+}
+function simulator() {
+    var H = "";
+    deposit = app.account_list[0].deposits;
+    is_claim = false;
+    compound = 4;
+    claim = 4;
+    //console.log(simDripPerMinute(deposit));
+    cycles = 400;
+    date = new Date();
+    //console.log(date);
+    H += "<tr> <td>Date</td> <td>Drip/Day</td> <td>Sold</td> </tr>";
+    
+    //date = moment(date).add(60, 'm').toDate();
+    sold = 0;
+    for (i=0; i < cycles; i++) {
+        if (is_claim) {
+            is_claim = false;
+            addMinute = claim / simDripPerMinute(deposit);
+            sold += (addMinute * simDripPerMinute(deposit)) * 0.81;
+        } else {
+            is_claim = true;
+            addMinute = compound / simDripPerMinute(deposit);
+            deposit += (addMinute * simDripPerMinute(deposit)) * 0.95;
+        }
+        date = moment(date).add(addMinute, 'm').toDate();
+        H += "<tr> <td>" + moment(date).format('MMM D h:mm A') + "</td> <td>" + (deposit * 0.01 * app.drip_usd).toFixed(2) + "$ (" + (deposit * 0.01).toFixed(3) + ")</td> <td>" + (sold * app.drip_usd).toFixed(2) + "$ (" + sold.toFixed(3) + ")</td> </tr>";
+
+    }
+    H = "<table>" + H + "</table>";
+    $("#simulator").append(H);
+}
 
 
 // ----------------------------------------------------------------------------------------
@@ -334,15 +329,3 @@ $(".btn").mouseup(function(){
   $(this).blur();
 });
 
-// ----------------------------------------------------------------------------------------
-// -- ANALYTICS ---------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', "UA-24554015-2"]);
-_gaq.push(['_trackPageview']);
-(function () {
-  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
-function ClickTrack(inAction, inLabel) { _gaq.push(['_trackEvent', 'Click', inAction, inLabel]); };

