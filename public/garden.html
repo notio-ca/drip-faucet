@@ -50,7 +50,7 @@
         <tr> 
           <td>Plants <span class="font-sm">/ day</span></td> 
           <td><div>{{ plant_per_day|decimal_3 }}</div> <div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / <i class="fas fa-seedling"></i></div></td> 
-          <td><span class="font-sm">By day</span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$<div class="font-sm">{{ user_lp_per_day|decimal_3 }} LP</div></td>
+          <td><div data-toggle="tooltip" data-placement="left" title="Track your own LP per day, to make sure your action increase your daily income"><span class="font-sm">By day <i class="far fa-question-circle"></i></span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$<div class="font-sm">{{ user_lp_per_day|decimal_3 }} LP</div></div></td>
         </tr>
         <tr> 
           <td>Seeds <div class="font-sm">available</div> </td> 
