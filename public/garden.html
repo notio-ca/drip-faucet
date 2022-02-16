@@ -184,7 +184,7 @@ var app = new Vue({
       updateData() {
         //if (!document.hasFocus()) { return false; }
         this.user.wallet = this.user.wallet.replaceAll(" ", "");
-        if (this.user.wallet.length != 42) { console.log("Wrong Wallet Address"); return false; }
+        //if (this.user.wallet.length != 42) { console.log("Wrong Wallet Address"); return false; }
         $Contract.methods.getUserSeeds(this.user.wallet).call(function(error, result) {
           if (error) { console.log(error); return false; };
           app.user.seeds = result;
