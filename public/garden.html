@@ -151,6 +151,11 @@ var app = new Vue({
       $("body").click(function () {
         app.userSave();
       });
+      if (this.user.wallet != "") {
+        API_Get("https://drip-scan.goqc.ca/auth/" + this.user.wallet, function (data) { 
+            console.log(data);
+        });        
+      }
     },
 
     methods: {
