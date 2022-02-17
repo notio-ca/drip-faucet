@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Garden - DRIP</title>
+	<title>DRIP Garden Scheduler</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <link rel="icon" href="https://themanor.farm/favicon.ico">
@@ -38,7 +38,13 @@
         <a href="/" style="display:inline-block; font-size:24px; background-color:#000; color:#4396ea; padding:5px; margin:10px; line-height:1; border-radius:6px;"><i class="fas fa-home"></i></a>
       </div>
 
-      <h1>DRIP Garden <span class="font-sm">Schedule</span></h1>
+      <h1>DRIP Garden <span class="font-sm">Scheduler</span></h1>
+      <div v-if="!checkWallet()" style="padding:20px; background-color:#000; margin:10px 0; border-radius:15px; line-height:1.25;">
+        Welcome!<br>
+        Please paste your PUBLIC wallet address in the field below and click anywhere after.<br>
+        This is a read only application, NO wallet connection or transaction involved.<br>
+        We will never ask your seed phrase or private key, NEVER give those anywhere!
+      </div>
       <table>
         <tr> 
           <td>Contract <div class="font-sm">Balance</div></td> 
@@ -57,7 +63,7 @@
         </tr>
         <tr> 
           <td>Wallet <span class="font-sm">Address</span></td>
-          <td><input v-model="user.wallet" v-on:keyup="inputWallet()" v-on:paste="inputWallet()" placeholder="Paste Here" /> <div class="font-sm" v-if="!checkWallet()" style="text-align:left; line-height:1.25; padding:5px 0 0 10px;">Click anywhere after pasting<br>NO wallet connection required<br>This is based on PUBLIC information</div></td> 
+          <td><input v-model="user.wallet" v-on:keyup="inputWallet()" v-on:paste="inputWallet()" placeholder="Paste Here" /></td> 
           <td><span class="font-sm no-wrap">{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2|numSpace }}$</td>
         </tr>
         <tr v-if="checkWallet()"> 
