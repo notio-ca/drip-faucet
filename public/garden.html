@@ -27,9 +27,14 @@
       <div style="position:absolute; right:0; top:0;">
         <div v-if="license.paid" style="display:inline-block; font-size:14px; color:#4396ea; text-align:right; position:relative; top:5px;">
           <div><i class="fas fa-medal"></i> &nbsp;Donator</div>
-          <div v-if="license.paid_value > 0" style="font-size:10px; color:#FFF;">{{ license.paid_value }} {{ license.paid_symnbol }}</div>
+          <div v-if="license.paid_value > 0" style="font-size:10px; color:#FFF;">{{ license.paid_value }} {{ license.paid_symbol }}</div>
           <div v-else>&nbsp;</div>
         </div>
+        <!--
+        <div v-if="!license.paid" style="display:inline-block; font-size:14px; color:#4396ea; text-align:right; position:relative; top:5px;">
+          <div><i class="far fa-question-circle"></i> &nbsp;Trial</div>
+          <div style="font-size:10px; color:#FFF;">{{ license.days_left }} days left</div>
+        </div>-->
         <a href="/" style="display:inline-block; font-size:24px; background-color:#000; color:#4396ea; padding:5px; margin:10px; line-height:1; border-radius:6px;"><i class="fas fa-home"></i></a>
       </div>
 
@@ -52,41 +57,41 @@
         </tr>
         <tr> 
           <td>Wallet <span class="font-sm">Address</span></td>
-          <td><input v-model="user.wallet" v-on:keyup="userSave()" v-on:paste="userSave()" placeholder="Paste Here" /> <div class="font-sm" v-if="user.wallet == ''" style="text-align:left; line-height:1.25; padding:5px 0 0 10px;">Click anywhere after pasting<br>NO wallet connection required<br>This is based on PUBLIC information</div></td> 
+          <td><input v-model="user.wallet" v-on:keyup="inputWallet()" v-on:paste="inputWallet()" placeholder="Paste Here" /> <div class="font-sm" v-if="!checkWallet()" style="text-align:left; line-height:1.25; padding:5px 0 0 10px;">Click anywhere after pasting<br>NO wallet connection required<br>This is based on PUBLIC information</div></td> 
           <td><span class="font-sm no-wrap">{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2|numSpace }}$</td>
         </tr>
-        <tr v-if="user.wallet != ''"> 
+        <tr v-if="checkWallet()"> 
           <td>Plants <span class="font-sm">grown</span></td> 
           <td><div>{{ user.plants|numSpace }}</div></td>
           <td><div data-toggle="tooltip" data-placement="left" title="Plants ready to sow = Your available seeds / 2 592 000 seeds"><span class="font-sm">Ready <i class="far fa-question-circle"></i></span> {{ plants_ready }}</div></td>
         </tr>
-        <tr v-if="user.wallet != ''"> 
+        <tr v-if="checkWallet()"> 
           <td>Seeds <div class="font-sm">available</div> </td> 
           <td><div>{{ user.seeds|numSpace }}</div></td> 
           <td><span class="font-sm">Growing</span> <div class="font-sm no-wrap">{{ user_lp|decimal_3 }} LP</div> {{ drip_busd.price*user_lp|decimal_2 }}$</td>
         </tr>
-        <tr v-if="user.wallet != ''"> 
+        <tr v-if="checkWallet()"> 
           <td>Plants <span class="font-sm">/ day</span></td> 
           <td><div>{{ plant_per_day|decimal_3 }}</div> <div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / <i class="fas fa-seedling"></i></div></td> 
           <td><div data-toggle="tooltip" data-placement="left" title="Track your own LP per day. Make sure your actions increase your daily income"><span class="font-sm">By day <i class="far fa-question-circle"></i></span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$<div class="font-sm">{{ user_lp_per_day|decimal_3 }} LP</div></div></td>
         </tr>
-        <tr v-if="user.wallet != ''"> 
+        <tr v-if="checkWallet()"> 
           <td>Seeds <span class="font-sm">/ day</span></td> 
           <td><div>{{ seeds_per_day|numSpace }}</div> </td> 
           <td class="blank"></td>
         </tr>
-        <tr v-if="user.wallet != ''"> 
+        <tr v-if="checkWallet()"> 
           <td>Seeds <span class="font-sm">needed</span> <div class="font-sm">For next plant</div></td> 
           <td><div>{{ seeds_needed|numSpace }} <div class="font-sm">Next in {{ (seeds_needed / (seeds_per_day/24))|hourToTime }}</div></div></td> 
           <td class="blank"></td>
         </tr>
-        <tr v-if="user.wallet != ''"> 
+        <tr v-if="checkWallet()"> 
           <td>Seeds lost <div class="font-sm">If planted now</div></td> 
           <td><div>-{{ seeds_lost|numSpace }}</div></td> 
           <td class="blank"></td>
         </tr>
 
-        <tr v-if="user.wallet != ''" v-for="(nextplant, index) in plant_next_date" class="font-sm">
+        <tr v-if="checkWallet()" v-for="(nextplant, index) in plant_next_date" class="font-sm">
           <td>Next plant {{ (nextplant.plant+plants_ready) }}</td> <td><div>{{ nextplant.minutes|minToDate }}</div></td>
         </tr>
         
@@ -158,12 +163,18 @@ var app = new Vue({
       setTimeout(this.appTick, 1000);
       this.updateDripBusd();
       $("body").click(function () {
-        app.userSave();
+        app.inputWallet();
       });
       if (this.user.wallet != "") {
         API_Get("https://drip-scan.goqc.ca/auth/" + this.user.wallet, function (data) { 
+          created = new Date(0).setUTCSeconds(data.created);
+          days_since_created = moment(Date.now()).diff(moment(created), "days");
+          trial = 5;
+          data["days_left"] = trial - days_since_created
+          if (!data.auth) { 
+            //window.location.replace("donation");
+          }
           app.license = data;
-          console.log(data);
         });        
       }
     },
@@ -187,14 +198,13 @@ var app = new Vue({
         this.plant_next_date = [];
         if (this.plant_next_date.indexOf("NaN") == -1) {
           for (i = 0; i < 10; i++) {
-            this.plant_next_date.push({plant:(i+1), minutes:(plant_next_minute + 3 + (this.plant_full_minute * i))});
+            this.plant_next_date.push({plant:(i+1), minutes:(plant_next_minute + 1 + (this.plant_full_minute * i))});
           }
         }
       },
       updateData() {
         //if (!document.hasFocus()) { return false; }
-        this.user.wallet = this.user.wallet.replaceAll(" ", "");
-        if (this.user.wallet.length != 42) { console.log("Wrong Wallet Address"); return false; }
+        if (!this.checkWallet()) { return false; }
         $Contract.methods.getUserSeeds(this.user.wallet).call(function(error, result) {
           if (error) { console.log(error); return false; };
           app.user.seeds = result;
@@ -286,14 +296,24 @@ var app = new Vue({
         var val = event.target.getAttribute("data-val");
         this.execute(cmd, val);
       },
+      checkWallet() {
+        this.user.wallet = this.user.wallet.replaceAll(" ", "");
+        if (this.user.wallet.length != 42 || this.user.wallet.indexOf("0x") == -1) { return false; }
+        return true;
+      },
+      inputWallet() {
+        if (this.checkWallet()) { this.userSave(); }
+      },
       userLoad() {
         saved_data = $Cookie.get("USER-GARDEN");
         if (saved_data == undefined) { saved_data = JSON.stringify(this.user); }
         saved_data = JSON.parse(saved_data);
         this.user = saved_data;
+        if (!this.checkWallet()) { this.user.wallet = ""; }
         this.updateUI();
       },
       userSave() {
+        if (!this.checkWallet()) { this.user.wallet = ""; }
         $Cookie.set("USER-GARDEN", JSON.stringify(this.user));
         console.log("User Saved");
         this.updateUI();
