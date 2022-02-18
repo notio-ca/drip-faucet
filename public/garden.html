@@ -65,12 +65,12 @@
         <tr> 
           <td>Wallet <span class="font-sm">Address</span></td>
           <td><input v-model="user.wallet" v-on:keyup="inputWallet()" v-on:paste="inputWallet()" placeholder="Paste Here" /></td> 
-          <td><span class="font-sm no-wrap">{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2|numSpace }}$</td>
+          <td><span class="font-sm no-wrap">Balance<br>{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2|numSpace }}$</td>
         </tr>
         <tr v-if="checkWallet()"> 
           <td>Plants <span class="font-sm">grown</span></td> 
           <td><div>{{ user.plants|numSpace }}</div></td>
-          <td><div data-toggle="tooltip" data-placement="left" title="Plants ready to sow = Your available seeds / 2 592 000 seeds"><span class="font-sm">Assets <i class="far fa-question-circle"></i></span> <span class="no-wrap">{{ user.plants*rate_plant_lp*drip_busd.price|decimal_2|numSpace }}$</span></div></td>
+          <td><div data-toggle="tooltip" data-placement="left" title="IF plants were sellable, your Grown Plants * Plants (in seeds) Payout = Assets Value"><span class="font-sm">Assets <i class="far fa-question-circle"></i></span> <span class="no-wrap">{{ user.plants*rate_plant_lp*drip_busd.price|decimal_2|numSpace }}$</span></div></td>
         </tr>
         <tr v-if="checkWallet()"> 
           <td>Seeds <div class="font-sm">available</div> </td> 
