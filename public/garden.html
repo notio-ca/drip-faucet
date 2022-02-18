@@ -70,7 +70,7 @@
         <tr v-if="checkWallet()"> 
           <td>Plants <span class="font-sm">grown</span></td> 
           <td><div>{{ user.plants|numSpace }}</div></td>
-          <td><div data-toggle="tooltip" data-placement="left" title="IF plants were sellable, your Grown Plants * Plants (in seeds) Payout = Assets Value"><span class="font-sm">Assets <i class="far fa-question-circle"></i></span> <span class="no-wrap">{{ user.plants*rate_plant_lp*drip_busd.price|decimal_2|numSpace }}$</span></div></td>
+          <td><div data-toggle="tooltip" data-placement="left" title="*IF* plants were sellable, your Grown Plants * Plants (in seeds) Payout = Assets Value"><span class="font-sm">Assets <i class="far fa-question-circle"></i></span> <span class="no-wrap">{{ user.plants*rate_plant_lp*drip_busd.price|decimal_2|numSpace }}$</span></div></td>
         </tr>
         <tr v-if="checkWallet()"> 
           <td>Seeds <div class="font-sm">available</div> </td> 
