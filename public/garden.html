@@ -20,6 +20,7 @@
   .footer { text-align:center; font-size:18px; color:#AAA; padding-top:20px; overflow:hidden; }
   .footer a { color:#EEE; }
   .blue { color:#4396ea }
+  .box { padding:20px; background-color:#000; margin:10px 0; border-radius:15px; line-height:1.25; }
 </style>
 </head>
 <body>
@@ -39,7 +40,7 @@
       </div>
 
       <h1>DRIP Garden <span class="font-sm">Scheduler</span></h1>
-      <div v-if="!checkWallet()" style="padding:20px; background-color:#000; margin:10px 0; border-radius:15px; line-height:1.25;">
+      <div v-if="!checkWallet()" class="box">
         Welcome!<br>
         Please paste your PUBLIC wallet address in the field below and click anywhere after.<br>
         This is a read only application, NO wallet connection or transaction involved.<br>
@@ -69,7 +70,7 @@
         <tr v-if="checkWallet()"> 
           <td>Plants <span class="font-sm">grown</span></td> 
           <td><div>{{ user.plants|numSpace }}</div></td>
-          <td><div data-toggle="tooltip" data-placement="left" title="Plants ready to sow = Your available seeds / 2 592 000 seeds"><span class="font-sm">Ready <i class="far fa-question-circle"></i></span> {{ plants_ready }}</div></td>
+          <td><div data-toggle="tooltip" data-placement="left" title="Plants ready to sow = Your available seeds / 2 592 000 seeds"><span class="font-sm">Assets <i class="far fa-question-circle"></i></span> <span class="no-wrap">{{ user.plants*rate_plant_lp*drip_busd.price|decimal_2|numSpace }}$</span></div></td>
         </tr>
         <tr v-if="checkWallet()"> 
           <td>Seeds <div class="font-sm">available</div> </td> 
@@ -94,6 +95,11 @@
         <tr v-if="checkWallet()"> 
           <td>Seeds lost <div class="font-sm">If planted now</div></td> 
           <td><div>-{{ seeds_lost|numSpace }}</div></td> 
+          <td class="blank"></td>
+        </tr>
+        <tr v-if="checkWallet()"> 
+          <td>Plants <span class="font-sm">ready</span></td> 
+          <td><div data-toggle="tooltip" data-placement="left" title="Plants ready to sow = Your available seeds / 2 592 000 seeds">{{ plants_ready }} <i class="far fa-question-circle"></i></div> </td> 
           <td class="blank"></td>
         </tr>
 
