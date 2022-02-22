@@ -50,7 +50,7 @@
         <tr> 
           <td>Contract <div class="font-sm">Balance</div></td> 
           <td><div>{{ contract_balance|numSpace|removeDec }} LP</div></td>
-          <td><span class="font-sm">DRIP/BUSD</span><br><span class="blue font-sm">{{ drip_busd.price|decimal_9 }}$</span></td>
+          <td><span class="font-sm">DRIP/BUSD</span><br><span class="blue font-sm">{{ drip_busd.price|decimal_4 }}$</span></td>
         </tr>
         <tr> 
           <td>1 Plant <span class="font-sm">Info</span></td> 
@@ -340,7 +340,7 @@ var app = new Vue({
     filters: {
       decimal_3(value) { value = parseFloat(value).toFixed(3); if (value == "NaN") { value = 0; } return value; },
       decimal_2(value) { value = parseFloat(value).toFixed(2); if (value == "NaN") { value = 0; } return value; },
-      decimal_9(value) { value = parseFloat(value).toFixed(9); if (value == "NaN") { value = 0; } return value; },
+      decimal_4(value) { value = parseFloat(value).toFixed(4); if (value == "NaN") { value = 0; } return value; },
       removeDec(num) { return num.toString().split(".")[0]; },
       numSpace(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
