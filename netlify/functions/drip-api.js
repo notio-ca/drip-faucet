@@ -1,6 +1,6 @@
 const fetch = require('node-fetch')
 
-const API_ENDPOINT = 'http://crypto.xqub.ca/drip-api/'
+const API_ENDPOINT = 'https://charters.herokuapp.com/drip-faucet/'
 
 exports.handler = async (event, context) => {
   let res, data
