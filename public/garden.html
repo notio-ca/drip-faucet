@@ -21,21 +21,21 @@
   .footer a { color:#EEE; }
   .blue { color:#4396ea }
   .box { padding:20px; background-color:#000; margin:10px 0; border-radius:15px; line-height:1.25; }
+  .donate-badge { display:inline-block; font-size:14px; color:#4396ea; text-align:right; position:relative; top:5px; cursor:pointer; }
 </style>
 </head>
 <body>
     <div id="app">
       <div style="position:absolute; right:0; top:0;">
-        <div v-if="license.paid" style="display:inline-block; font-size:14px; color:#4396ea; text-align:right; position:relative; top:5px;">
+        <div v-if="license.paid" v-on:click="donate()" class="donate-badge">
           <div><i class="fas fa-medal"></i> &nbsp;Donator</div>
           <div v-if="license.paid_value > 0" style="font-size:10px; color:#FFF;">{{ license.paid_value }} {{ license.paid_symbol }}</div>
           <div v-else>&nbsp;</div>
         </div>
-        <!--
-        <div v-if="!license.paid" style="display:inline-block; font-size:14px; color:#4396ea; text-align:right; position:relative; top:5px;">
+        <div v-if="!license.paid" v-on:click="donate()" class="donate-badge" style="display:none;">
           <div><i class="far fa-question-circle"></i> &nbsp;Trial</div>
           <div style="font-size:10px; color:#FFF;">{{ license.days_left }} days left</div>
-        </div>-->
+        </div>
         <a href="/" style="display:inline-block; font-size:24px; background-color:#000; color:#4396ea; padding:5px; margin:10px; line-height:1; border-radius:6px;"><i class="fas fa-home"></i></a>
       </div>
 
@@ -184,7 +184,7 @@ var app = new Vue({
           trial = 5;
           data["days_left"] = trial - days_since_created
           if (!data.auth) { 
-            //window.location.replace("donation");
+            app.donate();
           }
           app.license = data;
           if (app.license.paid) { $Cookie.set("pop-ads", "1", 365); }
@@ -335,6 +335,9 @@ var app = new Vue({
       },
       toDec18(num) {
         return num / 1000000000000000000;
+      },
+      donate() {
+        window.location.replace("donation");
       }
     },
     filters: {

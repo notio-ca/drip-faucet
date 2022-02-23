@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DRIP Tools - Donation & Support</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <link rel="icon" href="https://drip.community/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700">
+    <script src="https://kit.fontawesome.com/1911deec8a.js" crossorigin="anonymous"></script>
+    <style>
+        body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; font-weight:400; padding:10px; }
+        .box { border-radius:20px; font-size:17px; margin:15px 0; background-color:#2e6fb1; padding:0 30px 13px 30px; display:block; line-height:1.25; }
+        .box-name { font-size:25px; background-color:#1a3d60; padding:10px; border-radius:0 0 10px 10px; line-height:1; text-align:center; margin-bottom:25px; }
+        .clear { float:none; clear:both; }
+        .box.dark { background-color:#2b3136; }
+        .box-name.dark { background-color:#374654; }
+        a { font-weight:700; text-decoration:none; color:#458ed7; }
+        a:hover { opacity:0.8; color:#458ed7; }
+        a.button { display:block; text-align:center; font-size:22px; font-weight:400; padding:20px 30px; border-radius:10px; background-color:#1a3d60; color:#FFF; margin:10px 0; cursor:pointer; }
+        input { background-color:#374654; border-radius:5px; width:90%; color:#FFF; text-align:left; padding:5px 10px 5px 10px; outline:none; border-style:solid; border:0; }
+        .saved, .not-verified { color:#458ed7; }
+        .but-copy { cursor: pointer; }
+        .text-cemter { text-align:center; }
+        .text-right { text-align:right; }
+        table { width:100%; }
+        td { padding:3px 10px; }
+        
+        .box-sm { background-color: #222; border-radius:10px; padding:10px; display:block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                <div class="box">
+                    <div class="box-name">Donator Access</div>
+                    <div>
+                        <p>Hi! I'm Luke Charters, I received around 20 to 50 messages a day about the Garden and DRIP in general, supporting investors like you.</p>
+                        <p>This started to be a bit time consuming and I am planing to invest in improvement of those tools to help this great commununity.</p>
+                        <p>Unfortunately, I had to decide to only give access to donator. But don't worry, you can still use it for 5 days, previous and upcoming user.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                <div class="box dark">
+                    <div class="box-name dark">How to get access</div>
+                    <div>
+                        <p>One time donation to make it better! And make happy developer!</p>
+                        <p>Transfer 5$ or more <i class="fas fa-grin" style="color:#FFF;"></i> in value of one of those token throught Binance Smart Chain to my wallet address below.</p>
+                        
+                        With :
+                        <div class="box-sm" style="width:100%; max-width:370px; margin-bottom:10px;">
+                            <table>
+                                <tr>
+                                    <td>BUSD :</td><td class="text-right">5</td>
+                                    <td></td><td></td>
+                                    <td>BNB :</td><td class="text-right">0.015</td>
+                                </tr>
+                                <tr>
+                                    <td>DRIP :</td><td class="text-right">0.05</td>
+                                    <td></td><td></td>
+                                    <td>DRIP/BUSD :</td><td class="text-right">0.15</td>
+                                </tr>
+                            </table>
+                        </div>
+                        
+                        <p>To :<br><input id="wallet" type="text" value="0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08"> &nbsp;<i class="but-copy far fa-copy"></i></p>
+                        <p class="saved" style="display:none;">Copied to clipboard, Thanks!</p>
+                        <p>Your support is much appreciated, please <i class="fab fa-telegram-plane"></i> me <a href="https://t.me/LukeCharters">@LukeCharters</a> so that I may thank you.</p>
+
+                    </div>
+                </div>           
+            </div>
+            <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                <div class="box dark">
+                    <div class="box-name dark">Verify your access</div>
+                    <div>
+                        <p>Make sure you sent it with the same wallet address you are using in the app.</p>
+                        <p>Your wallet<br><input id="user-wallet" type="text" value=""></p>
+                        <p class="not-verified" style="display:none;"><span class="box-sm">Your transfer is not received yet<br>This can took over 1 minute</span></p>
+                        <p><a id="but-check" class="button">Click here to check transfer status</a></p>
+                    </div>
+                </div>           
+            </div>
+        </div>
+
+        <div class="text-cemter p-3">
+            <img src="https://drip.community/img/dropLogo.cea61927.png" style="height:190px;">
+            <p>Based on <a href="https://drip.community/faucet?buddy=0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08" target="_blank">DRIP Network</a></p>
+        </div>
+    </div>
+    
+    
+    
+    
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="tools.js"></script>
+    <script>
+        $is_RedirectHTML = true;
+        $USER = { "wallet": "" }
+        function copyWallet() {
+            wallet = "0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08";
+            navigator.clipboard.writeText(wallet);
+            //$("#wallet").blur();
+            $(".saved").fadeIn();
+        }
+        $(document).ready(function () {
+            $(".but-copy").click(copyWallet);
+            $("#wallet").focus(copyWallet);
+            try {
+                $USER = JSON.parse($Cookie.get("USER-GARDEN"));
+                $("#user-wallet").val($USER.wallet);
+            } catch {}
+            $("#but-check").click(function () {
+                API_Get("https://drip-scan.goqc.ca/auth/" + $("#user-wallet").val(), function (data) { 
+                    console.log(data);
+                    if (data.paid) {
+                        alert("Thanks for your donation, you will be redirected back to the app.")
+                        window.location.replace("garden");
+                    } else {
+                        $(".not-verified").fadeIn();
+                        setTimeout(function () { $(".not-verified").fadeOut(); }, 5000)
+                    }
+                }); 
+            });
+        });
+
+    </script>
+    
+</body>
+</html>
+
+
