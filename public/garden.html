@@ -32,7 +32,7 @@
           <div v-if="license.paid_value > 0" style="font-size:10px; color:#FFF;">{{ license.paid_value }} {{ license.paid_symbol }}</div>
           <div v-else>&nbsp;</div>
         </div>
-        <div v-if="!license.paid" v-on:click="donate()" class="donate-badge" style="display:none;">
+        <div v-if="!license.paid" v-on:click="donate()" class="donate-badge">
           <div><i class="far fa-question-circle"></i> &nbsp;Trial</div>
           <div style="font-size:10px; color:#FFF;">{{ license.days_left }} days left</div>
         </div>
@@ -80,7 +80,7 @@
         <tr v-if="checkWallet()"> 
           <td>Plants <span class="font-sm">/ day</span></td> 
           <td><div>{{ plant_per_day|decimal_3 }}</div> <div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / <i class="fas fa-seedling"></i></div></td> 
-          <td><div data-toggle="tooltip" data-placement="left" title="Track your own LP per day. Make sure your actions increase your daily income"><span class="font-sm">By day <i class="far fa-question-circle"></i></span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$<div class="blue">{{ user_lp_per_day|decimal_3 }} LP</div></div></td>
+          <td><div data-toggle="tooltip" data-placement="left" title="Track your own LP per day to ensure your actions increase your daily income"><span class="font-sm">By day <i class="far fa-question-circle"></i></span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$<div class="blue">{{ user_lp_per_day|decimal_3 }} LP</div></div></td>
         </tr>
         <tr v-if="checkWallet()"> 
           <td>Seeds <span class="font-sm">/ day</span></td> 
@@ -183,9 +183,7 @@ var app = new Vue({
           days_since_created = moment(Date.now()).diff(moment(created), "days");
           trial = 5;
           data["days_left"] = trial - days_since_created
-          if (!data.auth) { 
-            app.donate();
-          }
+          if (!data.auth) { app.donate(); }
           app.license = data;
           if (app.license.paid) { $Cookie.set("pop-ads", "1", 365); }
         });        
