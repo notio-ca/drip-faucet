@@ -25,7 +25,7 @@
 </style>
 </head>
 <body>
-    <div id="app">
+    <div id="app" style="display:none">
       <div style="position:absolute; right:0; top:0;">
         <div v-if="license.paid" v-on:click="donate()" class="donate-badge">
           <div><i class="fas fa-medal"></i> &nbsp;Donator</div>
@@ -188,6 +188,7 @@ var app = new Vue({
           if (app.license.paid) { $Cookie.set("pop-ads", "1", 365); }
         });        
       }
+      $("#app").show();
     },
 
     methods: {
