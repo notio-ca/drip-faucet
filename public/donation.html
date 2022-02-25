@@ -14,6 +14,7 @@
         .box { border-radius:20px; font-size:17px; margin:15px 0; background-color:#2e6fb1; padding:0 30px 13px 30px; display:block; line-height:1.25; }
         .box-name { font-size:25px; background-color:#1a3d60; padding:10px; border-radius:0 0 10px 10px; line-height:1; text-align:center; margin-bottom:25px; }
         .clear { float:none; clear:both; }
+        .float { float:left; }
         .box.dark { background-color:#2b3136; }
         .box-name.dark { background-color:#374654; }
         a { font-weight:700; text-decoration:none; color:#458ed7; }
@@ -27,7 +28,7 @@
         table { width:100%; }
         td { padding:3px 10px; white-space:nowrap; }
         
-        .box-sm { background-color: #222; border-radius:10px; padding:10px; display:block; }
+        .box-sm { background-color: #222; border-radius:10px; padding:10px; display:block; margin:5px 5px 0 0; }
     </style>
 </head>
 <body>
@@ -38,8 +39,8 @@
                     <div class="box-name">Donator Access</div>
                     <div>
                         <p>Hi! I'm Luke Charters. I am receiving about 20 to 50 messages a day about the Garden and DRIP in general, supporting investors like you.</p>
-                        <p>This has become a bit time consuming, plus I am planning to invest in improving these tools to help this great community.</p>
-                        <p>Therefore, I’ve decided to only give access to donors. But don't worry! Both current and upcoming users can still use it for 5 days.</p>
+                        <p>This has become a bit time consuming, plus I am planning to invest in improving these tools to help this great community. More to come!</p>
+                        <p>Therefore, I've decided to only give access to donors. But don't worry! Both current and upcoming users can still use it for 5 days.</p>
                     </div>
                 </div>
             </div>
@@ -47,28 +48,19 @@
                 <div class="box dark">
                     <div class="box-name dark">How to get access</div>
                     <div>
-                        <p>A one time donation to improve the tools! And make the developer happy!</p>
+                        <p>A ONE TIME donation to improve the tools! And make the developer happy!</p>
                         <p>Transfer 5$ or more <i class="fas fa-grin" style="color:#FFF;"></i> in value equivalent to one of those tokens through Binance Smart Chain to my wallet address below.</p>
                         
-                        Choose from :
-                        <div class="box-sm" style="width:100%; max-width:370px; margin:3px 0 10px 0;">
-                            <table>
-                                <tr>
-                                    <td>BUSD :</td><td class="text-right">5</td>
-                                    <td></td><td></td>
-                                    <td>BNB :</td><td class="text-right">0.015</td>
-                                </tr>
-                                <tr>
-                                    <td>DRIP :</td><td class="text-right">0.055</td>
-                                    <td></td><td></td>
-                                    <td>DRIP/BUSD :</td><td class="text-right">0.2</td>
-                                </tr>
-                            </table>
-                        </div>
+                        <div>Choose from :</div>
+                        <div class="box-sm float">5 BUSD</div>
+                        <div class="box-sm float">0.015 BNB</div>
+                        <div class="box-sm float">0.055 DRIP</div>
+                        <div class="box-sm float">0.2 DRIP/BUSD</div>
+                        <div class="clear"></div>
                         
-                        <p>To :<br><input id="wallet" type="text" value="0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08"> &nbsp;<i class="but-copy far fa-copy"></i></p>
+                        <p class="mt-2">To :<br><input id="wallet" type="text" value="0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08"> &nbsp;<i class="but-copy far fa-copy"></i></p>
                         <p class="saved" style="display:none;">Copied to clipboard, Thanks!</p>
-                        <p>Your support is much appreciated, please <i class="fab fa-telegram-plane"></i> me <a href="https://t.me/LukeCharters">@LukeCharters</a> so that I may thank you.</p>
+                        <p>Your support is much appreciated!<br>If you can't afford this, <i class="fab fa-telegram-plane"></i> me <a href="https://t.me/LukeCharters">@LukeCharters</a> so I will help you out.</p>
 
                     </div>
                 </div>           
@@ -79,7 +71,7 @@
                     <div>
                         <p>Make sure you sent your donation with the same wallet address you are using in the app.</p>
                         <p>Your wallet<br><input id="user-wallet" type="text" value=""></p>
-                        <p class="not-verified" style="display:none;"><span class="box-sm">Your transfer is not received yet<br>This may take up to 15 minutes</span></p>
+                        <p class="not-verified" style="display:none;"><span class="box-sm">Your transfer is not received yet<br>This may take up to 15 minutes<br>My wallet is scanned by BSCScan.com</span></p>
                         <p><a id="but-check" class="button">Click here to check your transfer status</a></p>
                     </div>
                 </div>           

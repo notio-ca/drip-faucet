@@ -79,7 +79,7 @@ function loadAds() {
     for (slug of document.location.pathname.split("/")) {
         if (slug != "") { page = slug.replace(".html", ""); }
     }
-    if ("faucet|garden".indexOf(page) == -1) { return false; }
+    if ("faucet|".indexOf(page) == -1) { return false; }
     if ($Cookie.get("pop-ads") == "1") { return false; }
     $Cookie.set("pop-ads", "1", 2);
 
@@ -87,7 +87,7 @@ function loadAds() {
     <div id="pop-ads" style="position:absolute; top:0; left:0; right:0; background-color:#333333EF; color:#FFF; font-size:20px; z-index:10000;">
         <div style="padding:5% 0;">
             <div style="max-width:80%; margin:0 auto;">
-                <h2 style="font-size:36px; color:#1998ff; line-height:1.0;">Thanks for using my free tools!</h2>
+                <h2 style="font-size:36px; color:#1998ff; line-height:1.0;">Thanks for using my tools!</h2>
                 <p style="margin:10px 0 20px 0; line-height:1.3;">If you use them on a daily basis, please consider a small donation, it would be much appreciated and a good way to support my work! &nbsp;<i class="fas fa-grin" style="color:#FFF;"></i></p>
                 <div id="but-copy-pop-ads" style="display:block; cursor:pointer; background-color:#2271b1; color:#FFF; border-radius:10px; padding:10px 20px; overflow:hidden;line-height:1.25;">Click here copy &nbsp;<i class="far fa-copy"></i><div>0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08</div></div>
                 <p style="margin:20px 0; line-height:1.3;">Please <i class="fab fa-telegram-plane"></i> me <a href="https://t.me/LukeCharters" style="color:#1998ff; text-decoration:none;">@LukeCharters</a> so that I may thank you.</p>
