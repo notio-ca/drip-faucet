@@ -215,7 +215,7 @@ var app = new Vue({
         return num / 1000000000000000000;
       },
       donate() {
-        window.location.replace("donation");
+        window.location.replace("/donation");
       }
     },
     filters: {
