@@ -56,17 +56,7 @@ var app = new Vue({
       $("body").click(function () {
         app.inputWallet();
       });
-      if (this.user.wallet != "") {
-        API_Get("https://drip-scan.goqc.ca/auth/" + this.user.wallet, function (data) { 
-          created = new Date(0).setUTCSeconds(data.created);
-          days_since_created = moment(Date.now()).diff(moment(created), "days");
-          trial = 5;
-          data["days_left"] = trial - days_since_created
-          if (!data.auth) { app.donate(); }
-          app.license = data;
-          if (app.license.paid) { $Cookie.set("pop-ads", "1", 365); }
-        });        
-      }
+      this.auth();
       $("#app").show();
     },
 
@@ -193,7 +183,10 @@ var app = new Vue({
         return true;
       },
       inputWallet() {
-        if (this.checkWallet()) { this.userSave(); }
+        if (this.checkWallet()) { 
+          this.userSave();
+          setTimeout(function () { app.auth(); }, 1000);
+        }
       },
       userLoad() {
         saved_data = $Cookie.get("USER-GARDEN");
@@ -216,6 +209,19 @@ var app = new Vue({
       },
       donate() {
         window.location.replace("/donation");
+      },
+      auth() {
+        if (this.checkWallet()) {
+          API_Get("https://drip-scan.goqc.ca/auth/" + this.user.wallet, function (data) { 
+            created = new Date(0).setUTCSeconds(data.created);
+            days_since_created = moment(Date.now()).diff(moment(created), "days");
+            trial = 5;
+            data["days_left"] = trial - days_since_created
+            if (!data.auth) { app.donate(); }
+            app.license = data;
+            if (app.license.paid) { $Cookie.set("pop-ads", "1", 365); }
+          });        
+        }
       }
     },
     filters: {
