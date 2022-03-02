@@ -17,6 +17,15 @@ async function API_Get(url, callback) {
     callback(res);
 }
 
+async function API_GetText(url, callback) {
+    //try {
+        req = await fetch(url);
+        res = await req.text();
+    //} catch { callback({}); }
+
+    callback(res);
+}
+
 $Cookie = {
     get: function (c_name) {
         var i,x,y,ARRcookies=document.cookie.split(";");

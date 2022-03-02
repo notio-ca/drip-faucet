@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Charts</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <link rel="icon" href="https://drip.community/favicon.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <style>
+        body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; padding:10px; }
+        .clear { float:none; clear:both; }
+        input { width:100%; padding:0 10px 0 10px; border-radius:10px; outline:none; border-style:solid; border:0; }
+
+    </style>
+</head>
+<body>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script><!-- PROD <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3js-cdn@latest/web3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="tools.js"></script>
+<script>
+$is_RedirectHTML = true;
+
+const chart = LightweightCharts.createChart(document.body, {
+  width: window.innerWidth - 50,
+  height: (window.innerHeight / 2) - 50,
+  priceScale: {
+    scaleMargins: {
+      top: 0.2,
+      bottom: 0.2
+    },
+    borderVisible: false
+  },
+  layout: {
+    backgroundColor: "#131722",
+    textColor: "#d1d4dc"
+  },
+  grid: {
+    vertLines: { color: "rgba(42, 46, 57, 0)" },
+    horzLines: { color: "rgba(42, 46, 57, 0.6)" }
+  }
+});
+
+var areaSeries = chart.addAreaSeries({
+  topColor: "rgba(34,113,177, 0.56)",
+  bottomColor: "rgba(34,113,177, 0.04)",
+  lineColor: "rgb(34, 113, 177)",
+  lineWidth: 2
+}); //chart.addLineSeries();
+chart.applyOptions({ width: window.innerWidth - 50, height: (window.innerHeight / 1.5) - 50 });
+/*areaSeries.setData([
+    { time: (new Date(Date.UTC(2019, 3, 11, 0, 0, 0, 0))).getTime() / 1000, value: 80.01 },
+    { time: '2019-04-12 00:00:00', value: 80.01 },
+    { time: '2019-04-15 18:00:00', value: 85.01 },
+]);*/
+
+
+
+chart.timeScale().applyOptions({ timeVisible: true });
+// garden_contract_balance.json
+// garden_plant_seeds_lp.json
+// plant_seeds_price.json
+API_GetText("https://drip-scan.goqc.ca/data/drip_busd_lp.json", function (data) { 
+  chart_data = JSON.parse("[" + data.slice(0, -1) + "]");
+  for (idx=0; idx<chart_data.length; idx++) {
+    chart_data[idx]["time"] = parseInt(chart_data[idx]["time"]);
+    chart_data[idx]["value"] = parseFloat(chart_data[idx]["value"]);
+    //console.log(moment.unix(chart_data[idx]["time"]).format("YYYY-MM-DD HH:mm:ss") + " : " + chart_data[idx]["value"] + " " + chart_data[idx]["time"])
+  }
+  areaSeries.setData(chart_data);
+  fit = true;
+  if (fit) {
+    chart.timeScale().fitContent();
+  } else {
+    fromDate = new Date();
+    fromDate.setMonth(fromDate.getMonth() - 1);
+    chart.timeScale().setVisibleRange({
+      from: fromDate.getTime() / 1000,
+      to: (new Date()).getTime() / 1000,
+    });
+  }
+}); 
+
+</script>
+</body>
+</html>
+
