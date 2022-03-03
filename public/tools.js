@@ -119,6 +119,47 @@ function loadAds() {
     window.scrollTo(0, 0);
 }
 
+function loadMessage() {
+    msg_current = 1; // UPDATE
+    msg_idx = $Cookie.get("msg-idx");
+    if (msg_idx == undefined) { msg_idx = 0; } else { msg_idx = parseInt(msg_idx); }
+    console.log(msg_idx);
+    console.log(msg_current);
+    if (msg_idx == msg_current) { return false; }
+    msg_idx++;
+    $Cookie.set("msg-idx", msg_idx);
+    msg = `
+        <h2 style="font-size:36px; color:#1998ff; line-height:1.0;">New version coming soon!</h2>
+        <p style="margin:20px 0; line-height:1.3;">
+            Hey Gardener <i class="fas fa-grin" style="color:#FFF;"></i>
+            I am working hard and so excited to provide you with your <b>own garden player specific data analysis</b> charts on the next release. That will be a game changer!
+        </p>
+        <p style="margin:20px 0; line-height:1.3;">
+            Here is preview: <a href="/charts" style="color:#1998ff; text-decoration:none;">Click here</a>
+        </p>
+        <p style="margin:20px 0; line-height:1.3;">
+            Thanks for all your donation! I now have a debt to the community to improve this tool!
+        </p>
+    `;
+    
+    H = `
+    <div id="pop-msg" style="position:absolute; top:0; left:0; right:0 bottom:0; background-color:#333333F7; color:#FFF; font-size:20px; z-index:10000;">
+        <div style="padding:5% 0;">
+            <div style="max-width:80%; margin:0 auto;">
+                `+msg+`
+                <div style="text-align:right; margin-top:20px;"> <div id="but-close-pop-msg" style="display:inline-block; cursor:pointer; background-color:#747474; color:#FFF; border-radius:10px; padding:10px 20px; overflow:hidden;">CLOSE</div> </div>
+            </div>
+        </div>
+    </div>
+    `;
+    $("body").prepend(H);
+    $("#but-close-pop-msg").click(function () { 
+        $("#pop-msg").fadeOut(); 
+        ClickTrack("Close", "Message");
+    });
+    window.scrollTo(0, 0);
+}
+
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', "UA-24554015-2"]);
 _gaq.push(['_trackPageview']);

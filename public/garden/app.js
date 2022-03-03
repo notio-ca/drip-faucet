@@ -58,6 +58,7 @@ var app = new Vue({
       });
       this.auth();
       $("#app").show();
+      loadMessage();
     },
 
     methods: {
