@@ -60,27 +60,21 @@ var areaSeries = chart.addAreaSeries({
   lineWidth: 2,
   priceFormat: {
     type: 'price',
-    precision: 4,
-    minMove: 0.0001,
+    precision: 3,
+    minMove: 0.001,
   },
 }); //chart.addLineSeries();
 
 chart.applyOptions({ width: window.innerWidth - 50, height: (window.innerHeight / 1.5) - 50 });
 
-/*areaSeries.setData([
-    { time: (new Date(Date.UTC(2019, 3, 11, 0, 0, 0, 0))).getTime() / 1000, value: 80.01 },
-    { time: '2019-04-12 00:00:00', value: 80.01 },
-    { time: '2019-04-15 18:00:00', value: 85.01 },
-]);*/
-
-
 
 chart.timeScale().applyOptions({ timeVisible: true });
-// drip_busd_lp.json
-// garden_contract_balance.json
-// garden_plant_seeds_lp.json
-// plant_seeds_price.json
-API_GetText("https://drip-scan.goqc.ca/data/garden_plant_seeds_lp.json", function (data) { 
+// https://drip-scan.goqc.ca/data/drip_busd_lp.json
+// https://drip-scan.goqc.ca/data/garden_contract_balance.json
+// https://drip-scan.goqc.ca/data/garden_plant_seeds_lp.json
+// https://drip-scan.goqc.ca/data/plant_seeds_price.json
+// https://drip-scan.goqc.ca/data/userdata/0x287c7d1638e5771947bcdcbd8b174fac4cf37e08-lp-per-day.json
+API_GetText("https://drip-scan.goqc.ca/data/plant_seeds_price.json", function (data) { 
   chart_data = JSON.parse("[" + data.slice(0, -1) + "]");
   for (idx=0; idx<chart_data.length; idx++) {
     chart_data[idx]["time"] = parseInt(chart_data[idx]["time"]);

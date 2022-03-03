@@ -73,7 +73,7 @@
                 
                 <div class="box-info">
                     <div class="box-info-title">Deposits</div>
-                    <div class="box-info-value"><span v-if="!currency_select">{{ account.deposits|toNum2 }}</span><span v-else>{{ account.deposits|DRIPtoUSD }}</span></div>
+                    <div class="box-info-value"><span v-if="!currency_select">{{ account.deposits|toNum3 }}</span><span v-else>{{ account.deposits|DRIPtoUSD }}</span></div>
                 </div>
                 <div class="box-info">
                     <div class="box-info-title">Available</div>
@@ -81,12 +81,12 @@
                 </div>
                 <div class="box-info">
                     <div class="box-info-title">Next Hydrate</div>
-                    <div class="box-info-value"><span v-if="!currency_select">{{ ((account.claims_available * 0.95) + account.deposits)|toNum2 }}</span><span v-else>{{ ((account.claims_available * 0.95) + account.deposits)|DRIPtoUSD }}</span></div>
+                    <div class="box-info-value"><span v-if="!currency_select">{{ ((account.claims_available * 0.95) + account.deposits)|toNum3 }}</span><span v-else>{{ ((account.claims_available * 0.95) + account.deposits)|DRIPtoUSD }}</span></div>
                 </div>
     
                 <div class="box-info">
                     <div class="box-info-title">BNB</div>
-                    <div class="box-info-value"><span v-if="!currency_select">{{ account.bnb_balance|toNum2 }}</span><span v-else>{{ account.bnb_balance|BNBtoUSD }}<span class="font-sm">$</span></span></div>
+                    <div class="box-info-value"><span v-if="!currency_select">{{ account.bnb_balance|toNum3 }}</span><span v-else>{{ account.bnb_balance|BNBtoUSD }}<span class="font-sm">$</span></span></div>
                 </div>
 
                 <!-- <div class="clear"></div> -->
@@ -120,7 +120,7 @@
 
                 <div class="box-info bg-3">
                     <div class="box-info-title">Reward</div>
-                    <div class="box-info-value"><span v-if="!currency_select">{{ (account.reward_direct + account.reward_indirect)|toNum2 }}</span><span v-else>{{ (account.reward_direct + account.reward_indirect)|DRIPtoUSD }}</span></div>
+                    <div class="box-info-value"><span v-if="!currency_select">{{ (account.reward_direct + account.reward_indirect)|toNum3 }}</span><span v-else>{{ (account.reward_direct + account.reward_indirect)|DRIPtoUSD }}</span></div>
                 </div>
 
                 <div class="box-info bg-3">
