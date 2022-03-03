@@ -25,12 +25,13 @@
         <a href="/garden/" style="display:inline-block; font-size:24px; background-color:#000; color:#4396ea; padding:5px; margin:10px; line-height:1; border-radius:6px;"><i class="fas fa-home"></i></a>
     </div>
     <div id="nav-chart">
-      <a class="button" data-url="https://drip-scan.goqc.ca/data/userdata/0xba3e8d7920d35271aefafded0317089f0efe56dd-lp-per-day.json">Your LP Daily Revenue</a>
-      <a class="button" data-url="https://drip-scan.goqc.ca/data/drip_busd_lp.json">DRIP/BUSD LP</a>
-      <a class="button" data-url="https://drip-scan.goqc.ca/data/garden_contract_balance.json">Contract Balance</a>
-      <a class="button" data-url="https://drip-scan.goqc.ca/data/garden_plant_seeds_lp.json">2.592M seeds to LP</a>
-      <a class="button" data-url="https://drip-scan.goqc.ca/data/plant_seeds_price.json">2.592M seeds to $</a>
+      <a class="button" data-url="https://drip-scan.goqc.ca/data/userdata/0xba3e8d7920d35271aefafded0317089f0efe56dd-lp-per-day.json" data-note="Data from a random wallet">Your LP Daily Revenue</a>
+      <a class="button" data-url="https://drip-scan.goqc.ca/data/drip_busd_lp.json" data-note="">DRIP/BUSD LP</a>
+      <a class="button" data-url="https://drip-scan.goqc.ca/data/garden_contract_balance.json" data-note="">Contract Balance</a>
+      <a class="button" data-url="https://drip-scan.goqc.ca/data/garden_plant_seeds_lp.json" data-note="Will always go down by design">2.592M seeds to LP</a>
+      <a class="button" data-url="https://drip-scan.goqc.ca/data/plant_seeds_price.json" data-note="Will always go down by design">2.592M seeds to $</a>
     </div>
+    <div style="position:relative;"><div id="chart-note" style="position:absolute; z-index:100; top:20px; left:20px;"></div></div>
     <div id="chart"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script><!-- PROD <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script> -->
@@ -88,7 +89,11 @@ $(document).ready(function () {
   $("#nav-chart > a").click(function () {
     $("#nav-chart > a").removeClass("active");
     $(this).addClass("active");
+    title = $(this).text();
     url = $(this).data("url");
+    note = $(this).data("note");
+    if (note != "") { title += " - " + note; }
+    $("#chart-note").html(title);
     getChartData(url);
   });
   $("#nav-chart > a:first-child").click();
