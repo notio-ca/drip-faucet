@@ -127,7 +127,7 @@ function loadAds() {
 }
 
 function loadMessage() {
-    msg_current = 2; // UPDATE
+    msg_current = 3; // UPDATE
     msg_idx = $Cookie.get("msg-idx");
     if (msg_idx == undefined) { msg_idx = 0; } else { msg_idx = parseInt(msg_idx); }
     console.log(msg_idx);
