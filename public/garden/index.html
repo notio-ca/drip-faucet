@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
 <style>
-  body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; padding:10px; font-size:16px; line-height:105%; }
+  body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; padding:10px 10px 70px 10px; font-size:16px; line-height:105%; overflow-y:scroll; }
   input { background-color:#444; color:#FFF; width:90%; text-align:left; padding:5px 10px 5px 10px; outline:none; border-style:solid; border:0; }
   td { padding:10px 10px;  border-bottom:5px solid #222; }
   td { text-align:right; background-color:#282828; }
@@ -18,97 +18,171 @@
   .link { text-decoration:none; }
   .font-sm { font-size:12px; line-height:1; }
   .no-wrap { white-space:nowrap; }
+  #app-title { font-size:26px; margin:8px 0 15px 0; }
+  #app-title > span { font-size:18px; }
+  #nav { margin:7px 0; display:inline-block; }
+  #nav > a { display:inline-block; font-size:24px; cursor:pointer; background-color:#000; color:#4396ea; padding:5px; margin:0 5px 0 0; line-height:1; border-radius:6px; }
+  #nav > a.active { color:#FFF; }
   .footer { text-align:center; font-size:18px; color:#AAA; padding-top:20px; overflow:hidden; }
   .footer a { color:#EEE; }
   .blue { color:#4396ea }
   .box { padding:20px; background-color:#000; margin:10px 0; border-radius:15px; line-height:1.25; }
   .donate-badge { display:inline-block; font-size:14px; color:#4396ea; text-align:right; position:relative; top:5px; cursor:pointer; }
+  .donate-icon { display:inline-block; font-size:24px; background-color:#000; color:#4396ea; padding:5px; margin:10px 10px 10px 5px; line-height:1; border-radius:6px; }
+  .view { display:none; }
+  .view.active { display:block; }
+
+  #chart { background-color:#131722; padding:10px 0 10px 10px; border-radius:15px; margin-top:10px; }
+  #chart-note span { color:#4396ea;}
+  .button { display:inline-block; background-color:#1a3d60; color:#FFF; cursor:pointer; text-align:center; font-size:16px; font-weight:400; padding:10px 20px; border-radius:10px; margin:10px 5px 0 0; text-decoration:none; }
+  .button.active { background-color: #4396ea; }
+  .button:hover { opacity:0.8; color:#FFF; }
 </style>
 </head>
 <body>
     <div id="app">
+
+      <!-- ------------------------------>
+      <div id="app-title">DRIP Garden <span>Scheduler</span></div>
+
       <div style="position:absolute; right:0; top:0;">
-        <div v-if="license.paid" v-on:click="donate()" class="donate-badge">
-          <div><i class="fas fa-medal"></i> &nbsp;Donator</div>
-          <div v-if="license.paid_value > 0" style="font-size:10px; color:#FFF;">{{ license.paid_value|decimal_all }} {{ license.paid_symbol }}</div>
-          <div v-else>&nbsp;</div>
+        <div v-if="license.paid" v-on:click="donate()">
+          <div class="donate-badge">
+            <div>Donator</div>
+            <div v-if="license.paid_value > 0" style="font-size:10px; color:#FFF;">{{ license.paid_value|decimal_all }} {{ license.paid_symbol }}</div>
+            <div v-else>&nbsp;</div>
+          </div>
+          <a href="/" class="donate-icon"><i class="fas fa-medal"></i></a>
         </div>
-        <div v-if="!license.paid" v-on:click="donate()" class="donate-badge">
-          <div><i class="far fa-question-circle" style="color:#20c043"></i> &nbsp;Trial</div>
-          <div style="font-size:10px; color:#FFF;">{{ license.days_left }} days left</div>
+
+        <div v-if="!license.paid" v-on:click="donate()">
+          <div class="donate-badge">
+            <div>Trial</div>
+            <div style="font-size:10px; color:#FFF;">{{ license.days_left }} days left</div>
+          </div>
+          <a href="/" class="donate-icon"><i class="far fa-question-circle" style="color:#20c043"></i></a>
         </div>
-        <a href="/" style="display:inline-block; font-size:24px; background-color:#000; color:#4396ea; padding:5px; margin:10px; line-height:1; border-radius:6px;"><i class="fas fa-home"></i></a>
-      </div>
-
-      <h1>DRIP Garden <span class="font-sm">Scheduler</span></h1>
-      <div v-if="!checkWallet()" class="box">
-        Welcome!<br>
-        Please paste your PUBLIC wallet address in the field below and click anywhere after.<br>
-        This is a read only application, NO wallet connection or transaction involved.<br>
-        We will never ask your seed phrase or private key, NEVER give those anywhere!
-      </div>
-      <table>
-        <tr> 
-          <td>Contract <div class="font-sm">Balance</div></td> 
-          <td><div>{{ contract_balance|numSpace|removeDec }} LP</div></td>
-          <td><span class="font-sm">DRIP/BUSD</span><br><span class="blue font-sm">{{ drip_busd.price|decimal_4 }}$</span></td>
-        </tr>
-        <tr> 
-          <td>1 Plant <span class="font-sm">Info</span></td> 
-          <td> <div class="font-sm">{{ seeds_per_plant|numSpace }} seeds make 1 <i class="fas fa-seedling"></i></div> <div class="font-sm">1 <i class="fas fa-seedling"></i> produce 86.4k seeds / day</div> </td>
-          <td>
-            <div data-toggle="tooltip" data-placement="left" title="Selling 2 592 000 seeds (1 plant worth of seeds), as now, will give you this payout">
-              <div class="font-sm no-wrap">2.592M seeds =</div>
-              <div class="font-sm blue">{{ rate_plant_lp*drip_busd.price|decimal_2 }}$ = <span class="no-wrap">{{ rate_plant_lp|decimal_3 }} LP <i class="far fa-question-circle" style="color:#FFF;"></i></span></div> 
-            </div>
-          </td>
-        </tr>
-        <tr> 
-          <td>Wallet <span class="font-sm">Address</span></td>
-          <td><input v-model="user.wallet" v-on:keyup="inputWallet()" v-on:paste="inputWallet()" placeholder="Paste Here" /></td> 
-          <td><span class="font-sm no-wrap">Balance<br>{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2|numSpace }}$</td>
-        </tr>
-        <tr v-if="checkWallet()"> 
-          <td>Plants <span class="font-sm">grown</span></td> 
-          <td><div>{{ user.plants|numSpace }}</div></td>
-          <td><div data-toggle="tooltip" data-placement="left" title="*IF* plants were sellable, your Grown Plants * Plants (in seeds) Payout = Assets Value"><span class="font-sm">Assets <i class="far fa-question-circle"></i></span> <span class="no-wrap">{{ user.plants*rate_plant_lp*drip_busd.price|decimal_2|numSpace }}$</span></div></td>
-        </tr>
-        <tr v-if="checkWallet()"> 
-          <td>Seeds <div class="font-sm">available</div> </td> 
-          <td><div>{{ user.seeds|numSpace }}</div></td> 
-          <td><span class="font-sm">Growing</span> <div class="font-sm no-wrap">{{ user_lp|decimal_3 }} LP</div> {{ drip_busd.price*user_lp|decimal_2 }}$</td>
-        </tr>
-        <tr v-if="checkWallet()"> 
-          <td>Plants <span class="font-sm">/ day</span> <div class="font-sm">Your production</div></td> 
-          <td><div>{{ plant_per_day|decimal_3 }}</div> <div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / <i class="fas fa-seedling"></i></div></td> 
-          <td><div data-toggle="tooltip" data-placement="left" title="Track your own LP per day to ensure your actions increase your daily income"><span class="font-sm">By day <i class="far fa-question-circle"></i></span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$<div class="blue">{{ user_lp_per_day|decimal_3 }} LP</div></div></td>
-        </tr>
-        <tr v-if="checkWallet()"> 
-          <td>Seeds <span class="font-sm">/ day</span></td> 
-          <td><div>{{ seeds_per_day|numSpace }}</div> </td> 
-          <td class="blank"></td>
-        </tr>
-        <tr v-if="checkWallet()"> 
-          <td>Seeds <span class="font-sm">needed</span> <div class="font-sm">For next plant</div></td> 
-          <td><div>{{ seeds_needed|numSpace }} <div class="font-sm">Next in {{ (seeds_needed / (seeds_per_day/24))|hourToTime }}</div></div></td> 
-          <td class="blank"></td>
-        </tr>
-        <tr v-if="checkWallet()"> 
-          <td>Seeds lost <div class="font-sm">If planted now</div></td> 
-          <td><div>-{{ seeds_lost|numSpace }}</div></td> 
-          <td class="blank"></td>
-        </tr>
-        <tr v-if="checkWallet()"> 
-          <td>Plants <span class="font-sm">ready</span></td> 
-          <td><div data-toggle="tooltip" data-placement="left" title="Plants ready to sow = Your available seeds / 2 592 000 seeds">{{ plants_ready }} <i class="far fa-question-circle"></i></div> </td> 
-          <td class="blank"></td>
-        </tr>
-
-        <tr v-if="checkWallet()" v-for="(nextplant, index) in plant_next_date" class="font-sm">
-          <td>Next plant {{ (nextplant.plant+plants_ready) }}</td> <td><div>{{ nextplant.minutes|minToDate }}</div></td>
-        </tr>
         
-      </table>
+
+      </div>
+      <!-- ------------------------------>
+
+      <!-- ------------------------------>
+      <div style="text-align:center; position:fixed; bottom:0; width:100%; background-color:#1e4367d4;">
+        <div id="nav">
+          <a data-view-id="1" class="active"><i class="fas fa-seedling"></i></a>
+          <a data-view-id="2"><i class="fas fa-clock"></i></a>
+          <a data-view-id="3"><i class="fas fa-chart-area"></i></a>
+          <a href="/"><i class="fas fa-home"></i></a>
+        </div>
+      </div>
+
+
+      <!-- ------------------------------>
+
+
+      <!-- ------------------------------>
+      <div id="view-1" class="view active">
+        <div v-if="!checkWallet()" class="box">
+          Welcome!<br>
+          Please paste your PUBLIC wallet address in the field below and click anywhere after.<br>
+          This is a read only application, NO wallet connection or transaction involved.<br>
+          We will never ask your seed phrase or private key, NEVER give those anywhere!
+        </div>
+        <table>
+          <tr> 
+            <td>Contract <div class="font-sm">Balance</div></td> 
+            <td><div>{{ contract_balance|numSpace|removeDec }} LP</div></td>
+            <td><span class="font-sm">DRIP/BUSD</span><br><span class="blue font-sm">{{ drip_busd.price|decimal_4 }}$</span></td>
+          </tr>
+          <tr> 
+            <td>1 Plant <span class="font-sm">Info</span></td> 
+            <td> <div class="font-sm">{{ seeds_per_plant|numSpace }} seeds make 1 <i class="fas fa-seedling"></i></div> <div class="font-sm">1 <i class="fas fa-seedling"></i> produce 86.4k seeds / day</div> </td>
+            <td>
+              <div data-toggle="tooltip" data-placement="left" title="Selling 2 592 000 seeds (1 plant worth of seeds), as now, will give you this payout">
+                <div class="font-sm no-wrap">2.592M seeds =</div>
+                <div class="font-sm blue">{{ rate_plant_lp*drip_busd.price|decimal_2 }}$ = <span class="no-wrap">{{ rate_plant_lp|decimal_3 }} LP <i class="far fa-question-circle" style="color:#FFF;"></i></span></div> 
+              </div>
+            </td>
+          </tr>
+          <tr> 
+            <td>Wallet <span class="font-sm">Address</span></td>
+            <td><input v-model="user.wallet" v-on:keyup="inputWallet()" v-on:paste="inputWallet()" placeholder="Paste Here" /></td> 
+            <td><span class="font-sm no-wrap">Balance<br>{{ user_balance|decimal_3 }} LP</span> {{ drip_busd.price*user_balance|decimal_2|numSpace }}$</td>
+          </tr>
+          <tr v-if="checkWallet()"> 
+            <td>Plants <span class="font-sm">grown</span></td> 
+            <td><div>{{ user.plants|numSpace }}</div></td>
+            <td><div data-toggle="tooltip" data-placement="left" title="*IF* plants were sellable, your Grown Plants * Plants (in seeds) Payout = Assets Value"><span class="font-sm">Assets <i class="far fa-question-circle"></i></span> <span class="no-wrap">{{ user.plants*rate_plant_lp*drip_busd.price|decimal_2|numSpace }}$</span></div></td>
+          </tr>
+          <tr v-if="checkWallet()"> 
+            <td>Seeds <div class="font-sm">available</div> </td> 
+            <td><div>{{ user.seeds|numSpace }}</div></td> 
+            <td><span class="font-sm">Growing</span> <div class="font-sm no-wrap">{{ user_lp|decimal_3 }} LP</div> {{ drip_busd.price*user_lp|decimal_2 }}$</td>
+          </tr>
+          <tr v-if="checkWallet()"> 
+            <td>Plants <span class="font-sm">/ day</span> <div class="font-sm">Your production</div></td> 
+            <td><div>{{ plant_per_day|decimal_3 }}</div> <div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / <i class="fas fa-seedling"></i></div></td> 
+            <td><div data-toggle="tooltip" data-placement="left" title="Track your own LP per day to ensure your actions increase your daily income"><span class="font-sm">By day <i class="far fa-question-circle"></i></span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$<div class="blue">{{ user_lp_per_day|decimal_3 }} LP</div></div></td>
+          </tr>
+          <tr v-if="checkWallet()"> 
+            <td>Seeds <span class="font-sm">/ day</span></td> 
+            <td><div>{{ seeds_per_day|numSpace }}</div> </td> 
+            <td class="blank"></td>
+          </tr>
+          <tr v-if="checkWallet()"> 
+            <td>Seeds <span class="font-sm">needed</span> <div class="font-sm">For next plant</div></td> 
+            <td><div>{{ seeds_needed|numSpace }} <div class="font-sm">Next in {{ (seeds_needed / (seeds_per_day/24))|hourToTime }}</div></div></td> 
+            <td class="blank"></td>
+          </tr>
+          <tr v-if="checkWallet()"> 
+            <td>Seeds lost <div class="font-sm">If planted now</div></td> 
+            <td><div>-{{ seeds_lost|numSpace }}</div></td> 
+            <td class="blank"></td>
+          </tr>
+          <tr v-if="checkWallet()"> 
+            <td>Plants <span class="font-sm">ready</span></td> 
+            <td><div data-toggle="tooltip" data-placement="left" title="Plants ready to sow = Your available seeds / 2 592 000 seeds">{{ plants_ready }} <i class="far fa-question-circle"></i></div> </td> 
+            <td class="blank"></td>
+          </tr>
+          
+        </table>
+
+      </div>
+      <!-- ------------------------------>
+
+      <!-- ------------------------------>
+      <div id="view-2" class="view">
+        <div v-if="!checkWallet()" class="box">Please paste your wallet on the first screen<br><br>Here you will see your plants schedule.</div>
+        <table>
+          <tr v-if="checkWallet()"> 
+            <td>Plants <span class="font-sm">ready</span></td> 
+            <td><div data-toggle="tooltip" data-placement="left" title="Plants ready to sow = Your available seeds / 2 592 000 seeds">{{ plants_ready }} <i class="far fa-question-circle"></i></div> </td> 
+            <td class="blank"></td>
+          </tr>
+
+          <tr v-if="checkWallet()" v-for="(nextplant, index) in plant_next_date" class="font-sm">
+            <td>Next plant {{ (nextplant.plant+plants_ready) }}</td> <td><div>{{ nextplant.minutes|minToDate }}</div></td>
+          </tr>
+          
+        </table>
+
+      </div>
+      <!-- ------------------------------>
+
+      <!-- ------------------------------>
+      <div id="view-3" class="view">
+        <div id="nav-chart">
+          <a id="but-chart-user-data" class="button" data-url="" data-note="Data from your wallet">Your LP Daily Revenue</a>
+          <a class="button" data-url="https://drip-scan.goqc.ca/data/drip_busd_lp.json" data-note="">DRIP/BUSD LP</a>
+          <a class="button" data-url="https://drip-scan.goqc.ca/data/garden_contract_balance.json" data-note="">Contract Balance</a>
+          <a class="button" data-url="https://drip-scan.goqc.ca/data/garden_plant_seeds_lp.json" data-note="Will always go down by design">2.592M seeds to LP</a>
+          <a class="button" data-url="https://drip-scan.goqc.ca/data/plant_seeds_price.json" data-note="Will always go down by design">2.592M seeds to $</a>
+        </div>
+        <div style="position:relative;"><div id="chart-note" style="position:absolute; z-index:100; top:20px; left:20px;"></div></div>
+        <div id="chart"></div>
+      </div>
+
     </div><!-- APP -->
     <div id="log"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -117,8 +191,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/web3js-cdn@latest/web3.min.js"></script>
-    <script src="../tools.js?v=4"></script>
-    <script src="app.js?v=4"></script>
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+    <script src="../tools.js?v=5"></script>
+    <script src="app.js?v=5"></script>
 <script>
 $is_RedirectHTML = true;
 </script>

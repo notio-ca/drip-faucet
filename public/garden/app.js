@@ -53,9 +53,9 @@ var app = new Vue({
       setInterval(this.appTick, 1 * 60 * 1000);
       setTimeout(this.appTick, 1000);
       this.updateDripBusd();
-      $("body").click(function () {
-        app.inputWallet();
-      });
+      // $("body").click(function () {
+      //   app.inputWallet();
+      // });
       this.auth();
       $("#app").show();
       loadMessage();
@@ -79,7 +79,7 @@ var app = new Vue({
         multi = 1;
         this.plant_next_date = [];
         if (this.plant_next_date.indexOf("NaN") == -1) {
-          for (i = 0; i < 10; i++) {
+          for (i = 0; i < 20; i++) {
             this.plant_next_date.push({plant:(i+1), minutes:(plant_next_minute + 1 + (this.plant_full_minute * i))});
           }
         }
@@ -199,6 +199,7 @@ var app = new Vue({
       },
       userSave() {
         if (!this.checkWallet()) { this.user.wallet = ""; }
+        this.user.wallet = this.user.wallet.toLowerCase();
         $Cookie.set("USER-GARDEN", JSON.stringify(this.user));
         console.log("User Saved");
         this.updateUI();
@@ -275,4 +276,101 @@ setInterval(function () { if (new Date().getHours() != $lastHour) { $lastHour = 
 
 $(function () {
   $('[data-toggle="tooltip"]').tooltip();
-})
+  
+  $("#nav > a").click(function () {
+    $("#nav > a").removeClass("active");
+    $(this).addClass("active");
+    $(".view").removeClass("active");
+    $("#view-" + $(this).data("view-id")).addClass("active");
+  });
+
+});
+
+
+// CHARTS ------------------------------------------------------------------------------------------
+var chart = null;
+$(document).ready(function () {
+  $(window).resize(function () {
+    try { 
+      chart.applyOptions({ width: window.innerWidth - 50, height: (window.innerHeight / 1.5) - 50 }); 
+      chart.timeScale().fitContent();
+    } catch {}
+  });
+  $("#nav-chart > a").click(function () {
+    $("#but-chart-user-data").data("url", "https://drip-scan.goqc.ca/data/userdata/" + app.user.wallet.toLowerCase() + "-lp-per-day.json");
+    $("#nav-chart > a").removeClass("active");
+    $(this).addClass("active");
+    title = $(this).text();
+    url = $(this).data("url");
+    note = $(this).data("note");
+    if (note != "") { title += "<br><span>" + note + "</span>"; }
+    $("#chart-note").html(title);
+    getChartData(url);
+  });
+  $("#nav-chart > a:first-child").click();
+});
+
+
+function getChartData(url) {
+  $("#chart").html("");
+  chart = LightweightCharts.createChart(document.getElementById("chart"), {
+    width: window.innerWidth - 50,
+    height: (window.innerHeight / 2) - 50,
+    priceScale: {
+      scaleMargins: {
+        top: 0.2,
+        bottom: 0.2
+      },
+      borderVisible: false
+    },
+    priceFormat: {
+        type: 'price',
+        precision: 5,
+        minMove: 0.001,
+    },
+    layout: {
+      backgroundColor: "#131722",
+      textColor: "#d1d4dc"
+    },
+    grid: {
+      vertLines: { color: "rgba(42, 46, 57, 0)" },
+      horzLines: { color: "rgba(42, 46, 57, 0.6)" }
+    }
+  });
+
+  var areaSeries = chart.addAreaSeries({
+    topColor: "rgba(34,113,177, 0.56)",
+    bottomColor: "rgba(34,113,177, 0.04)",
+    lineColor: "rgb(34, 113, 177)",
+    lineWidth: 2,
+    priceFormat: {
+      type: 'price',
+      precision: 3,
+      minMove: 0.001,
+    },
+  }); //chart.addLineSeries();
+  chart.timeScale().applyOptions({ timeVisible: true });
+  $(window).resize();
+
+  API_GetText(url, function (data) { 
+    if (data == "") { $("#chart-note").html("Sorry, no data yet<br>Please come back in 1 hour"); return false; }
+    chart_data = JSON.parse("[" + data.slice(0, -1) + "]");
+    for (idx=0; idx<chart_data.length; idx++) {
+      chart_data[idx]["time"] = parseInt(chart_data[idx]["time"]);
+      chart_data[idx]["value"] = parseFloat(chart_data[idx]["value"]);
+      //console.log(moment.unix(chart_data[idx]["time"]).format("YYYY-MM-DD HH:mm:ss") + " : " + chart_data[idx]["value"] + " " + chart_data[idx]["time"])
+    }
+    areaSeries.setData(chart_data);
+    fit = true;
+    if (fit) {
+      chart.timeScale().fitContent();
+    } else {
+      fromDate = new Date();
+      fromDate.setMonth(fromDate.getMonth() - 1);
+      chart.timeScale().setVisibleRange({
+        from: fromDate.getTime() / 1000,
+        to: (new Date()).getTime() / 1000,
+      });
+    }
+  });
+}

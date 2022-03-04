@@ -18,12 +18,19 @@ async function API_Get(url, callback) {
 }
 
 async function API_GetText(url, callback) {
-    //try {
-        req = await fetch(url);
-        res = await req.text();
-    //} catch { callback({}); }
-
-    callback(res);
+    var request = $.ajax({
+        url: url,
+        method: "GET",
+        dataType: "html"
+    });
+    
+    request.done(function( data ) {
+        callback(data);
+    });
+   
+    request.fail(function( jqXHR, textStatus ) {
+        callback("");
+    });
 }
 
 $Cookie = {

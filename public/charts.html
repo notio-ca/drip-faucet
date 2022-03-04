@@ -18,6 +18,7 @@
         .button { display:inline-block; background-color:#1a3d60; color:#FFF; cursor:pointer; text-align:center; font-size:16px; font-weight:400; padding:10px 20px; border-radius:10px; margin:10px 5px 0 0; text-decoration:none; }
         .button.active { background-color: #4396ea; }
         .button:hover { opacity:0.8; color:#FFF; }
+        .tv-lightweight-charts { margin:0 !important; }
     </style>
 </head>
 <body>
@@ -26,7 +27,7 @@
         <a href="/garden/" style="display:inline-block; font-size:24px; background-color:#000; color:#4396ea; padding:5px; margin:10px; line-height:1; border-radius:6px;"><i class="fas fa-seedling"></i></a>
     </div>
     <div id="nav-chart">
-      <a class="button" data-url="https://drip-scan.goqc.ca/data/userdata/0xba3e8d7920d35271aefafded0317089f0efe56dd-lp-per-day.json" data-note="Data from a random wallet">Your LP Daily Revenue</a>
+      <a id="but-chart-user-data" class="button" data-url="" data-note="Data from a random wallet">Your LP Daily Revenue</a>
       <a class="button" data-url="https://drip-scan.goqc.ca/data/drip_busd_lp.json" data-note="">DRIP/BUSD LP</a>
       <a class="button" data-url="https://drip-scan.goqc.ca/data/garden_contract_balance.json" data-note="">Contract Balance</a>
       <a class="button" data-url="https://drip-scan.goqc.ca/data/garden_plant_seeds_lp.json" data-note="Will always go down by design">2.592M seeds to LP</a>
@@ -44,64 +45,70 @@
 <script>
 $is_RedirectHTML = true;
 
-const chart = LightweightCharts.createChart(document.getElementById("chart"), {
-  width: window.innerWidth - 50,
-  height: (window.innerHeight / 2) - 50,
-  priceScale: {
-    scaleMargins: {
-      top: 0.2,
-      bottom: 0.2
-    },
-    borderVisible: false
-  },
-  priceFormat: {
-      type: 'price',
-      precision: 5,
-      minMove: 0.001,
-  },
-  layout: {
-    backgroundColor: "#131722",
-    textColor: "#d1d4dc"
-  },
-  grid: {
-    vertLines: { color: "rgba(42, 46, 57, 0)" },
-    horzLines: { color: "rgba(42, 46, 57, 0.6)" }
-  }
-});
-
-var areaSeries = chart.addAreaSeries({
-  topColor: "rgba(34,113,177, 0.56)",
-  bottomColor: "rgba(34,113,177, 0.04)",
-  lineColor: "rgb(34, 113, 177)",
-  lineWidth: 2,
-  priceFormat: {
-    type: 'price',
-    precision: 3,
-    minMove: 0.001,
-  },
-}); //chart.addLineSeries();
-
+var chart = null;
 $(document).ready(function () {
   $(window).resize(function () {
-    chart.applyOptions({ width: window.innerWidth - 50, height: (window.innerHeight / 1.5) - 50 });
-    //chart.timeScale().fitContent();
+    try { 
+      chart.applyOptions({ width: window.innerWidth - 50, height: (window.innerHeight / 1.5) - 50 }); 
+      chart.timeScale().fitContent();
+    } catch {}
   });
-  $(window).resize();
+  $("#but-chart-user-data").data("url", "https://drip-scan.goqc.ca/data/userdata/" + "0xba3e8d7920d35271aefafded0317089f0efe56dd" + "-lp-per-day.json");
   $("#nav-chart > a").click(function () {
     $("#nav-chart > a").removeClass("active");
     $(this).addClass("active");
     title = $(this).text();
     url = $(this).data("url");
     note = $(this).data("note");
-    if (note != "") { title += " <span>- " + note + "</span>"; }
+    if (note != "") { title += "<br><span>" + note + "</span>"; }
     $("#chart-note").html(title);
     getChartData(url);
   });
   $("#nav-chart > a:first-child").click();
 });
-chart.timeScale().applyOptions({ timeVisible: true });
+
 
 function getChartData(url) {
+  $("#chart").html("");
+  chart = LightweightCharts.createChart(document.getElementById("chart"), {
+    width: window.innerWidth - 50,
+    height: (window.innerHeight / 2) - 50,
+    priceScale: {
+      scaleMargins: {
+        top: 0.2,
+        bottom: 0.2
+      },
+      borderVisible: false
+    },
+    priceFormat: {
+        type: 'price',
+        precision: 5,
+        minMove: 0.001,
+    },
+    layout: {
+      backgroundColor: "#131722",
+      textColor: "#d1d4dc"
+    },
+    grid: {
+      vertLines: { color: "rgba(42, 46, 57, 0)" },
+      horzLines: { color: "rgba(42, 46, 57, 0.6)" }
+    }
+  });
+
+  var areaSeries = chart.addAreaSeries({
+    topColor: "rgba(34,113,177, 0.56)",
+    bottomColor: "rgba(34,113,177, 0.04)",
+    lineColor: "rgb(34, 113, 177)",
+    lineWidth: 2,
+    priceFormat: {
+      type: 'price',
+      precision: 3,
+      minMove: 0.001,
+    },
+  }); //chart.addLineSeries();
+  chart.timeScale().applyOptions({ timeVisible: true });
+  $(window).resize();
+
   API_GetText(url, function (data) { 
     chart_data = JSON.parse("[" + data.slice(0, -1) + "]");
     for (idx=0; idx<chart_data.length; idx++) {
