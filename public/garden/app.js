@@ -249,7 +249,7 @@ var app = new Vue({
       },
       minToDate(minutes) {
         //return minutes / 60;
-        return moment().add(minutes, 'minutes').format('MMM D h:mm A');
+        return moment().add(minutes, 'minutes').format('dddd - MMMM D - h:mm A');
       },
       hourToTime(hour) {
         days = moment.duration(hour, 'hours').days() + "d ";
