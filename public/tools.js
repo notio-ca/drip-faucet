@@ -127,22 +127,18 @@ function loadAds() {
 }
 
 function loadMessage() {
-    msg_current = 1; // UPDATE
+    msg_current = 2; // UPDATE
     msg_idx = $Cookie.get("msg-idx");
     if (msg_idx == undefined) { msg_idx = 0; } else { msg_idx = parseInt(msg_idx); }
     console.log(msg_idx);
     console.log(msg_current);
     if (msg_idx == msg_current) { return false; }
-    msg_idx++;
+    msg_idx = msg_current;
     $Cookie.set("msg-idx", msg_idx);
     msg = `
-        <h2 style="font-size:36px; color:#1998ff; line-height:1.0;">New version coming soon!</h2>
+        <h2 style="font-size:36px; color:#1998ff; line-height:1.0;">New version!</h2>
         <p style="margin:20px 0; line-height:1.3;">
-            Hey Gardener <i class="fas fa-grin" style="color:#FFF;"></i>
-            I am working hard and so excited to provide you with your <b>own garden player specific data analysis</b> charts on the next release. That will be a game changer!
-        </p>
-        <p style="margin:20px 0; line-height:1.3;">
-            Here is preview: <a href="/charts" style="color:#1998ff; text-decoration:none;">Click here</a>
+            Now with your own garden player specific data analysis charts on this release. That will be a game changer to follow your performance!
         </p>
         <p style="margin:20px 0; line-height:1.3;">
             Thanks for all your donation! I now have a debt to the community to improve this tool!
