@@ -263,13 +263,13 @@ var app = new Vue({
 
 
 function hourChanged() {
-  $Contract.methods.calculateSeedSell(2592000).call(function(error, result) {
-    if (error) { console.log(error); return false; };
-    app.rate_plant_lp = app.toDec18(result * 0.95);
-    if (document.location.host.indexOf("localhost") != -1) {
-      $("#log").append(new Date().getHours() + ":00 LP / Day: " + (app.rate_plant_lp * app.plant_per_day).toFixed(3) + " - " + (app.rate_plant_lp * app.plant_per_day * app.drip_busd.price).toFixed(2) + "$<br>");
-    }
-  });
+  // $Contract.methods.calculateSeedSell(2592000).call(function(error, result) {
+  //   if (error) { console.log(error); return false; };
+  //   app.rate_plant_lp = app.toDec18(result * 0.95);
+  //   if (document.location.host.indexOf("localhost") != -1) {
+  //     $("#log").append(new Date().getHours() + ":00 LP / Day: " + (app.rate_plant_lp * app.plant_per_day).toFixed(3) + " - " + (app.rate_plant_lp * app.plant_per_day * app.drip_busd.price).toFixed(2) + "$<br>");
+  //   }
+  // });
 }
 var $lastHour = new Date().getHours();
 setInterval(function () { if (new Date().getHours() != $lastHour) { $lastHour = new Date().getHours(); hourChanged(); } }, 1000);
