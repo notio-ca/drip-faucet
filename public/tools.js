@@ -90,6 +90,11 @@ $Session = {
 
 }
 
+function IS_DEV() {
+    if (document.location.host.indexOf("localhost") != -1) { return true; }
+    return false;
+}
+
 function loadAds() {
     page = "";
     for (slug of document.location.pathname.split("/")) {
@@ -127,22 +132,24 @@ function loadAds() {
 }
 
 function loadMessage() {
-    msg_current = 3; // UPDATE
+    msg_current = 4; // UPDATE
     msg_idx = $Cookie.get("msg-idx");
     if (msg_idx == undefined) { msg_idx = 0; } else { msg_idx = parseInt(msg_idx); }
     console.log(msg_idx);
     console.log(msg_current);
     if (msg_idx == msg_current) { return false; }
     msg_idx = msg_current;
+    //if (!IS_DEV()) { $Cookie.set("msg-idx", msg_idx); }
     $Cookie.set("msg-idx", msg_idx);
     msg = `
-        <h2 style="font-size:36px; color:#1998ff; line-height:1.0;">New version!</h2>
+        <h2 style="font-size:36px; color:#1998ff; line-height:1.0;">What's new?</h2>
         <p style="margin:20px 0; line-height:1.3;">
-            Now with your own garden player specific data analysis charts on this release. That will be a game changer to follow your performance!
+            Now with your own garden player specific data analysis charts. A game changer to follow your performance!
         </p>
-        <p style="margin:20px 0; line-height:1.3;">
-            Thanks for all your donation! I now have a debt to the community to improve this tool!
+        <p style="margin:20px 0; line-height:1.3; text-align:center;">
+            <img src="img/garden-ui.jpg">
         </p>
+
     `;
     
     H = `
