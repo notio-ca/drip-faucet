@@ -145,7 +145,11 @@
             <td><div data-toggle="tooltip" data-placement="left" title="Plants ready to sow = Your available seeds / 2 592 000 seeds">{{ plants_ready }} <i class="far fa-question-circle"></i></div> </td> 
             <td class="blank"></td>
           </tr>
-          
+          <tr v-if="checkWallet()">
+            <td>Plant Schedule</td>
+            <td>Click <i class="fas fa-clock"></i> below</td>
+            <td class="blank"></td>
+          </tr>
         </table>
 
       </div>
