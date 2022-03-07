@@ -55,7 +55,7 @@
           <a href="/" class="donate-icon"><i class="fas fa-medal"></i></a>
         </div>
 
-        <div v-if="!license.paid" v-on:click="donate()">
+        <div v-if="!license.paid && checkWallet()" v-on:click="donate()">
           <div class="donate-badge">
             <div>Trial</div>
             <div style="font-size:10px; color:#FFF;">{{ license.days_left }} days left</div>
