@@ -209,8 +209,10 @@ var app = new Vue({
       toDec18(num) {
         return num / 1000000000000000000;
       },
-      donate() {
-        window.location.replace("/donation");
+      donate(is_trial_end) {
+        hash = "";
+        if (is_trial_end) { hash = "#trial"; }
+        window.location.replace("/donation" + hash);
       },
       auth() {
         if (this.checkWallet()) {
@@ -220,7 +222,7 @@ var app = new Vue({
             days_since_created = moment(Date.now()).diff(moment(created), "days");
             trial = 5;
             data["days_left"] = trial - days_since_created
-            if (!data.auth) { app.donate(); }
+            if (!data.auth) { app.donate(true); }
             app.license = data;
             if (app.license.paid) { $Cookie.set("pop-ads", "1", 365); }
           });
