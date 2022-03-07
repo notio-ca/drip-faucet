@@ -135,8 +135,6 @@ function loadMessage() {
     msg_current = 4; // UPDATE
     msg_idx = $Cookie.get("msg-idx");
     if (msg_idx == undefined) { msg_idx = 0; } else { msg_idx = parseInt(msg_idx); }
-    console.log(msg_idx);
-    console.log(msg_current);
     if (msg_idx == msg_current) { return false; }
     msg_idx = msg_current;
     //if (!IS_DEV()) { $Cookie.set("msg-idx", msg_idx); }
