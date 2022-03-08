@@ -184,6 +184,9 @@ var app = new Vue({
         return true;
       },
       inputWallet() {
+        setTimeout(function () { app.inputWalletDelayed(); }, 1000);
+      },
+      inputWalletDelayed() {
         if (this.checkWallet()) { 
           this.userSave();
           setTimeout(function () { app.auth(); }, 1000);
@@ -216,7 +219,6 @@ var app = new Vue({
       },
       auth() {
         if (this.checkWallet()) {
-          //if (this.user.wallet == "0xba3e8d7920d35271aefafded0317089f0efe56dd") { alert("Hi! Why do you refresh so many time?\n\nDM me on Telegram please: @LukeCharters"); }
           API_Get("https://drip-scan.goqc.ca/auth/" + this.user.wallet + "?cache=" + (new Date).getTime(), function (data) { 
             created = new Date(0).setUTCSeconds(data.created);
             days_since_created = moment(Date.now()).diff(moment(created), "days");
