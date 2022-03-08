@@ -115,7 +115,7 @@
                 API_Get("https://drip-scan.goqc.ca/auth/" + $("#user-wallet").val(), function (data) { 
                     if (data.paid) {
                         alert("Thanks for your donation, you will be redirected back to the app.")
-                        $Cookie.set("USER-GARDEN", undefined);
+                        $Cookie.delete("USER-GARDEN");
                         window.location.replace("/garden/");
                     } else {
                         $(".not-verified").fadeIn();

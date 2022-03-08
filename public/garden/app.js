@@ -194,7 +194,7 @@ var app = new Vue({
       },
       userLoad() {
         saved_data = $Cookie.get("USER-GARDEN");
-        if (saved_data == undefined) { saved_data = JSON.stringify(this.user); }
+        if (saved_data == undefined || saved_data == "undefined" || saved_data == "") { saved_data = JSON.stringify(this.user); }
         saved_data = JSON.parse(saved_data);
         this.user = saved_data;
         if (!this.checkWallet()) { this.user.wallet = ""; }
@@ -316,6 +316,7 @@ $(document).ready(function () {
 
 
 function getChartData(url) {
+  if (url.indexOf("/-lp-per-day.json") != -1) { $("#nav-chart > a:nth-child(2)").click(); return false; }
   $("#chart").html("");
   chart = LightweightCharts.createChart(document.getElementById("chart"), {
     width: window.innerWidth - 50,
