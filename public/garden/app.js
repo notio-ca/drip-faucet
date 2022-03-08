@@ -360,11 +360,20 @@ function getChartData(url) {
   API_GetText(url, function (data) { 
     if (data == "") { $("#chart-note").html("Sorry, no data yet<br>Please come back in 1 hour"); return false; }
     chart_data = JSON.parse("[" + data.slice(0, -1) + "]");
+    lastTime = 0
     for (idx=0; idx<chart_data.length; idx++) {
       chart_data[idx]["time"] = parseInt(chart_data[idx]["time"]);
       chart_data[idx]["value"] = parseFloat(chart_data[idx]["value"]);
+
+      time_diff = (chart_data[idx]["time"] - lastTime);
+      if (time_diff <= 0) { 
+        chart_data.splice(idx-1, 1); 
+        chart_data[idx]["time"] = parseInt(chart_data[idx]["time"]); 
+      }
+      lastTime = chart_data[idx]["time"];
       //console.log(moment.unix(chart_data[idx]["time"]).format("YYYY-MM-DD HH:mm:ss") + " : " + chart_data[idx]["value"] + " " + chart_data[idx]["time"])
     }
+
     areaSeries.setData(chart_data);
     fit = true;
     if (fit) {
