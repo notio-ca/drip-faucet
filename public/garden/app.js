@@ -306,6 +306,7 @@ $(document).ready(function () {
     $(this).addClass("active");
     title = $(this).text();
     url = $(this).data("url");
+    url += "?cache=" + (new Date).getTime()
     note = $(this).data("note");
     if (note != "") { title += "<br><span>" + note + "</span>"; }
     $("#chart-note").html(title);
