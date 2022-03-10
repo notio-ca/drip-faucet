@@ -112,7 +112,7 @@
                 $("#user-wallet").val($USER.wallet);
             } catch {}
             $("#but-check").click(function () {
-                API_Get("https://drip-scan.goqc.ca/auth/" + $("#user-wallet").val(), function (data) { 
+                API_Get("https://drip-scan.goqc.ca/auth/" + $("#user-wallet").val() + "?cache=" + (new Date).getTime(), function (data) { 
                     if (data.paid) {
                         alert("Thanks for your donation, you will be redirected back to the app.");
                         //$Cookie.set("USER-GARDEN", "");
