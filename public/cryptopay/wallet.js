@@ -84,6 +84,7 @@ async function fetchAccountData() {
   const chainId = await web3.eth.getChainId();
   // Load chain information over an HTTP API
   const chainData = evmChains.getChain(chainId);
+  console.log(chainData);
   document.querySelector("#network-name").textContent = chainData.name;
 
   // Get list of accounts of the connected wallet
