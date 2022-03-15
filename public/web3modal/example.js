@@ -50,7 +50,15 @@ function init() {
       options: {
         infuraId: "ae4d51bb067740c09a7ab0e021ea446d",
         rpc: {
+          1: "https://mainnet.infura.io/v3/",
+          25: "https://evm.cronos.org",
           56: "https://bsc-dataseed.binance.org:443",
+          137: "https://polygon-rpc.com/",
+          250: "https://rpc.ftm.tools",
+          1088: "https://andromeda.metis.io/?owner=1088",
+          43114: "https://api.avax.network/ext/bc/C/rpc",
+          1313161554: "https://mainnet.aurora.dev",
+          1666600000: "https://api.harmony.one",
         },
       }
     }
