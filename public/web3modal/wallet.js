@@ -7,6 +7,7 @@
  // Unpkg imports
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
+const evmChains = window.evmChains;
 
 // Web3modal instance
 let web3Modal
