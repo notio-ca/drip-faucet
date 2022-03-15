@@ -115,7 +115,7 @@
                 API_Get("https://drip-scan.goqc.ca/auth/" + $("#user-wallet").val() + "?cache=" + (new Date).getTime(), function (data) { 
                     if (data.paid) {
                         alert("Thanks for your donation, you will be redirected back to the app.");
-                        //$Cookie.set("USER-GARDEN", "");
+                        $Cookie.set("USER-GARDEN", "");
                         window.location.replace("/garden/");
                     } else {
                         $(".not-verified").fadeIn();
@@ -124,7 +124,7 @@
                 }); 
             });
             if (document.location.hash == "#trial") {
-                alert("Sorry, your trial just ended.\n*** Please read the following page explanation for instruction.")
+                alert("Sorry, your trial just ended.\nPlease read the following page explanation and instruction.")
             }
         });
 
