@@ -7,8 +7,6 @@
  // Unpkg imports
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
-const Fortmatic = window.Fortmatic;
-const evmChains = window.evmChains;
 
 // Web3modal instance
 let web3Modal
@@ -28,7 +26,6 @@ function init() {
 
   console.log("Initializing example");
   console.log("WalletConnectProvider is", WalletConnectProvider);
-  console.log("Fortmatic is", Fortmatic);
   console.log("window.web3 is", window.web3, "window.ethereum is", window.ethereum);
 
   // Check that the web page is run in a secure context,
@@ -51,25 +48,25 @@ function init() {
         infuraId: "ae4d51bb067740c09a7ab0e021ea446d",
         rpc: {
           1: "https://mainnet.infura.io/v3/",
+          10: "https://mainnet.optimism.io/",
           25: "https://evm.cronos.org",
           56: "https://bsc-dataseed.binance.org:443",
+          60: "https://rpc.gochain.io",
+          100: "https://rpc.gnosischain.com",
+          128: "https://http-mainnet.hecochain.com",
           137: "https://polygon-rpc.com/",
           250: "https://rpc.ftm.tools",
+          820: "https://clo-geth.0xinfra.com",
           1088: "https://andromeda.metis.io/?owner=1088",
+          42161: "https://arb1.arbitrum.io/rpc",
+          42220: "https://forno.celo.org",
           43114: "https://api.avax.network/ext/bc/C/rpc",
           1313161554: "https://mainnet.aurora.dev",
           1666600000: "https://api.harmony.one",
         },
       }
     }
-    
-    /*,
-    fortmatic: {
-      package: Fortmatic,
-      options: {
-        key: "pk_test_391E26A3B43A3350"
-      }
-    }*/
+
   };
 
   web3Modal = new Web3Modal({
