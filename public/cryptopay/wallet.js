@@ -10,7 +10,7 @@ const WalletConnectProvider = window.WalletConnectProvider.default;
 const evmChains = window.evmChains;
 
 // Web3modal instance
-let web3Modal
+let web3Modal;
 
 // Chosen wallet provider given by the dialog window
 let provider;
@@ -19,42 +19,33 @@ let provider;
 // Address of the selected account
 let selectedAccount;
 
+let web3;
 
 /**
  * Setup the orchestra
  */
 function init() {
-
-  console.log("Initializing example");
-  console.log("WalletConnectProvider is", WalletConnectProvider);
-  console.log("window.web3 is", window.web3, "window.ethereum is", window.ethereum);
+  var rpc_list = {};
+  for (const item of evmChains.chains) {
+    if (item.rpc[0] != undefined) { 
+      if (item.chainId == 1) { continue; }
+      rpc_list[item.chainId] = item.rpc[0];
+    }
+  }
+  //console.log("WalletConnectProvider is", WalletConnectProvider);
+  //console.log("window.web3 is", window.web3, "window.ethereum is", window.ethereum);
 
   // Tell Web3modal what providers we have available.
   // Built-in web browser provider (only one can exist as a time)
   // like MetaMask, Brave or Opera is added automatically by Web3modal
+
+
   const providerOptions = {
     walletconnect: {
       package: WalletConnectProvider,
       options: {
         infuraId: "ae4d51bb067740c09a7ab0e021ea446d",
-        rpc: {
-          1: "https://mainnet.infura.io/v3/",
-          10: "https://mainnet.optimism.io/",
-          25: "https://evm.cronos.org",
-          56: "https://bsc-dataseed.binance.org:443",
-          60: "https://rpc.gochain.io",
-          100: "https://rpc.gnosischain.com",
-          128: "https://http-mainnet.hecochain.com",
-          137: "https://polygon-rpc.com/",
-          250: "https://rpc.ftm.tools",
-          820: "https://clo-geth.0xinfra.com",
-          1088: "https://andromeda.metis.io/?owner=1088",
-          42161: "https://arb1.arbitrum.io/rpc",
-          42220: "https://forno.celo.org",
-          43114: "https://api.avax.network/ext/bc/C/rpc",
-          1313161554: "https://mainnet.aurora.dev",
-          1666600000: "https://api.harmony.one",
-        },
+        rpc: rpc_list,
       }
     }
 
@@ -64,9 +55,14 @@ function init() {
     cacheProvider: false, // optional
     providerOptions, // required
     disableInjectedProvider: false, // optional. For MetaMask / Brave / Opera.
+    updateTheme:"black",
   });
 
-  console.log("Web3Modal instance is", web3Modal);
+
+  if (localStorage.getItem("WEB3_CONNECT_CACHED_PROVIDER") != null) {
+    onConnect();
+  }
+  //console.log("Web3Modal instance is", web3Modal);
 }
 
 
@@ -76,9 +72,9 @@ function init() {
 async function fetchAccountData() {
 
   // Get a Web3 instance for the wallet
-  const web3 = new Web3(provider);
+  web3 = new Web3(provider);
 
-  console.log("Web3 instance is", web3);
+  //console.log("Web3 instance is", web3);
 
   // Get connected chain id from Ethereum node
   const chainId = await web3.eth.getChainId();
@@ -91,7 +87,7 @@ async function fetchAccountData() {
   const accounts = await web3.eth.getAccounts();
 
   // MetaMask does not give you all accounts, only the selected account
-  console.log("Got accounts", accounts);
+  //console.log("Got accounts", accounts);
   selectedAccount = accounts[0];
 
   document.querySelector("#selected-account").textContent = selectedAccount;
@@ -101,7 +97,7 @@ async function fetchAccountData() {
   const accountContainer = document.querySelector("#accounts");
 
   // Purge UI elements any previously loaded accounts
-  accountContainer.innerHTML = '';
+  accountContainer.innerHTML = "";
 
   // Go through all accounts and get their ETH balance
   const rowResolvers = accounts.map(async (address) => {
@@ -152,13 +148,113 @@ async function refreshAccountData() {
   document.querySelector("#btn-connect").removeAttribute("disabled")
 }
 
+async function butSendToken() {
+  await sendToken("0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56", "0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08");
+}
+
+async function sendToken(token_address, send_to_address) {
+  //var $WEB3 = new Web3(new Web3.providers.HttpProvider("https://bsc-dataseed.binance.org:443"));
+  var ERC20_ABI = [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "recipient",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "transfer",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+
+  ];
+  var contract = new web3.eth.Contract(ERC20_ABI, token_address);
+  contract.methods.balanceOf(selectedAccount).call(function(error, result) {
+    if (error) { console.log(error); return false; };
+    console.log(result / 1000000000000000000);
+  });
+  contract.methods.transfer(send_to_address, web3.utils.toBN(250000000000000000)).send({from: selectedAccount, gas: web3.utils.numberToHex(50000)})
+          .on('transactionHash', function(hash){
+            console.log(hash);
+  });
+  var tx = {
+    to: web3.utils.toChecksumAddress(send_to_address.toLowerCase()),
+    value: web3.utils.numberToHex(0.015 * 1000000000000000000),
+    gas: web3.utils.numberToHex(50000),
+
+
+    /*gasPrice: Web3.utils.numberToHex(10000000000000),
+    gasLimit: Web3.utils.numberToHex(10000000000000),
+    gas: Web3.utils.numberToHex(50000),*/
+  };
+
+  // if (provider.isWalletConnect) { 
+  //   tx["from"] = provider.accounts[0];
+  //   await provider.wc.sendTransaction(tx)
+  //   .then((txHash) => {
+  //     console.log(txHash);
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
+
+  // } else {
+  //   tx["from"] = provider.selectedAddress;
+  //   await provider.request({
+  //     method: 'eth_sendTransaction',
+  //     params: [tx],
+  //   })
+  //   .then((txHash) => {
+  //     console.log(txHash);
+  //   })
+  //   .catch((error) => {
+  //     console.log(error);
+  //   });
+  // }
+}
 
 /**
  * Connect wallet button pressed.
  */
 async function onConnect() {
 
-  console.log("Opening a dialog", web3Modal);
+  //console.log("Opening a dialog", web3Modal);
   try {
     provider = await web3Modal.connect();
   } catch(e) {
@@ -189,7 +285,7 @@ async function onConnect() {
  */
 async function onDisconnect() {
 
-  console.log("Killing the wallet connection", provider);
+  //console.log("Killing the wallet connection", provider);
 
   // TODO: Which providers have close method?
   if (provider.close) {
