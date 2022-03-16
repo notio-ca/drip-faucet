@@ -154,56 +154,7 @@ async function butSendToken() {
 
 async function sendToken(token_address, send_to_address) {
   //var $WEB3 = new Web3(new Web3.providers.HttpProvider("https://bsc-dataseed.binance.org:443"));
-  var ERC20_ABI = [
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
-      "name": "balanceOf",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "recipient",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "transfer",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-
-  ];
+  var ERC20_ABI = [{"constant":true,"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"internalType":"address","name":"recipient","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}];
   var contract = new web3.eth.Contract(ERC20_ABI, token_address);
   contract.methods.balanceOf(selectedAccount).call(function(error, result) {
     if (error) { console.log(error); return false; };
@@ -309,4 +260,5 @@ window.addEventListener('load', async () => {
   init();
   document.querySelector("#btn-connect").addEventListener("click", onConnect);
   document.querySelector("#btn-disconnect").addEventListener("click", onDisconnect);
+  document.querySelector("#btn-pay").addEventListener("click", butSendToken);
 });
