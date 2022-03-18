@@ -74,7 +74,10 @@
                     <div>
                         <p>Make sure you sent your donation with the same wallet address you are using in the app.</p>
                         <p>Your wallet<br><input id="user-wallet" type="text" value=""></p>
-                        <p class="not-verified" style="display:none;"><span class="box-sm">Your transfer is not received yet<br>This may take up to 15 minutes<br>My wallet is scanned by BSCScan.com</span></p>
+                        <p class="not-verified" style="display:none;"><span class="box-sm">
+                            <span style="color:#F00">BSCScan.com currently have issue, we are unable to check your transaction, sorry for the delay</span>
+                            <!--Your transfer is not received yet<br>This may take up to 15 minutes<br>My wallet is scanned by BSCScan.com-->
+                        </span></p>
                         <p><a id="but-check" class="button">Click here to check your transfer status</a></p>
                     </div>
                 </div>           
@@ -119,7 +122,7 @@
                         window.location.replace("/garden/");
                     } else {
                         $(".not-verified").fadeIn();
-                        setTimeout(function () { $(".not-verified").fadeOut(); }, 5000);
+                        setTimeout(function () { $(".not-verified").fadeOut(); }, 10000);
                     }
                 }); 
             });
