@@ -64,7 +64,7 @@
                         <p class="mt-2">To :<br><input id="wallet" type="text" value="0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08"> &nbsp;<i class="but-copy far fa-copy"></i></p>
                         <p class="saved" style="display:none;">Copied to clipboard, Thanks!</p>
                         <p>Your support is much appreciated!<br>If you can't afford this, <i class="fab fa-telegram-plane"></i> me <a href="https://t.me/LukeCharters">@LukeCharters</a> so I will help you out.</p>
-
+                        <a id="but-how-to" href="#how-to" class="button"><i class="far fa-question-circle" class="mr-2"></i> How to transfer</a></p>
                     </div>
                 </div>           
             </div>
@@ -90,7 +90,12 @@
         </div>
     </div>
     
-    
+    <div id="container-how-to" class="my-5" style="text-align:center; height:700px; display:none;">
+        <a name="how-to"></a>
+        <h2>How to transfer</h2>
+        
+        <img id="img-how-to" src="" style="width:100%; max-width:566px;">
+    </div>
     
     
 
@@ -125,6 +130,10 @@
                         setTimeout(function () { $(".not-verified").fadeOut(); }, 10000);
                     }
                 }); 
+            });
+            $("#but-how-to").click(function () {
+                $("#container-how-to").show();
+                $("#img-how-to").attr("src", "/img/wallet-transfer.gif");
             });
             if (document.location.hash == "#trial") {
                 alert("Sorry, your trial just ended.\nPlease read the following page explanation and instruction.")
