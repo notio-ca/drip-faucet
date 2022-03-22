@@ -48,15 +48,17 @@ var app = new Vue({
         prices: [
             { symbol:"DRIP", price:0.00 },
             { symbol:"DRIP Net", price:0.00 },
-            { symbol:"DRIP LP", price:0.00 },
+            
             { symbol:"OSMO", price:0.00 },
             { symbol:"ATOM", price:0.00 },
             { symbol:"LUNA", price:0.00 },
+            { symbol:"JUNO", price:0.00 },
             { symbol:"BTC", price:0.00 },
             { symbol:"BNB", price:0.00 },
-            { symbol:"PIGS", price:0.00 },
+            /*{ symbol:"PIGS", price:0.00 },
             { symbol:"DOGS", price:0.00 },
-            { symbol:"DOGS/BUSD", price:0.00 },
+            { symbol:"DOGS/BUSD", price:0.00 },*/
+            { symbol:"DRIP LP", price:0.00 },
             { symbol:"BR34P", price:0.00 },
         ],
         drip: { name:"No Drip", wallet:"" },
@@ -97,7 +99,7 @@ var app = new Vue({
                 case "BNB":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD", function (data) { app.getTicker("BNB").price = parseFloat(data.price); }); break;
                 case "BTC":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BTCBUSD", function (data) { app.getTicker("BTC").price = parseFloat(data.price) / 1000; }); break;
                 case "BR34P":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0xa86d305A36cDB815af991834B46aD3d7FbB38523", function (data) { app.getTicker("BR34P").price = parseFloat(data.price); }); break;
-                //case "Desmos":  API_Get("https://api.coingecko.com/api/v3/simple/token_price/cosmos?vs_currencies=usd&contract_addresses=ibc/EA4C0A9F72E2CEDF10D0E7A9A6A22954DB3444910DB5BE980DF59B05A46DAD1C", function (data) { app.getTicker("DESMOS").price = parseFloat(data["ibc/EA4C0A9F72E2CEDF10D0E7A9A6A22954DB3444910DB5BE980DF59B05A46DAD1C"].usd); }); break;
+                case "JUNO":  API_Get("https://api.coingecko.com/api/v3/simple/token_price/cosmos?vs_currencies=usd&contract_addresses=ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED", function (data) { app.getTicker("JUNO").price = parseFloat(data["ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED"].usd); }); break;
                 case "LUNA": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=LUNABUSD", function (data) { app.getTicker("LUNA").price = parseFloat(data.price); }); break;
                 case "PIGS":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0x3a4c15f96b3b058ab3fb5faf1440cc19e7ae07ce", function (data) { app.getTicker("PIGS").price = parseFloat(data.price); }); break;
                 case "DOGS":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0xDBdC73B95cC0D5e7E99dC95523045Fc8d075Fb9e", function (data) { app.getTicker("DOGS").price = parseFloat(data.price); }); break;
