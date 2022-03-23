@@ -61,6 +61,7 @@ var app = new Vue({
             { symbol:"DOGS/BUSD", price:0.00 },*/
             { symbol:"DRIP LP", price:0.00 },
             { symbol:"BR34P", price:0.00 },
+            { symbol:"HNT", price:0.00 },
         ],
         drip: { name:"No Drip", wallet:"" },
         drip_available: 0,
@@ -99,6 +100,7 @@ var app = new Vue({
                 case "OSMO": API_Get("https://api-osmosis.imperator.co/search/v1/pools", function (data) { app.getTicker("OSMO").price = data["1"]["1"].price; }); break;
                 case "BNB":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BNBBUSD", function (data) { app.getTicker("BNB").price = parseFloat(data.price); }); break;
                 case "SCRT": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=SCRTBUSD", function (data) { app.getTicker("SCRT").price = parseFloat(data.price); }); break;
+                case "HNT": API_Get("https://api.binance.com/api/v3/ticker/price?symbol=HNTBUSD", function (data) { app.getTicker("HNT").price = parseFloat(data.price); }); break;
                 case "BTC":  API_Get("https://api.binance.com/api/v3/ticker/price?symbol=BTCBUSD", function (data) { app.getTicker("BTC").price = parseFloat(data.price) / 1000; }); break;
                 case "BR34P":  API_Get("https://openapi.debank.com/v1/token?chain_id=bsc&id=0xa86d305A36cDB815af991834B46aD3d7FbB38523", function (data) { app.getTicker("BR34P").price = parseFloat(data.price); }); break;
                 case "JUNO":  API_Get("https://api.coingecko.com/api/v3/simple/token_price/cosmos?vs_currencies=usd&contract_addresses=ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED", function (data) { app.getTicker("JUNO").price = parseFloat(data["ibc/46B44899322F3CD854D2D46DEEF881958467CDD4B3B10086DA49296BBED94BED"].usd); }); break;
