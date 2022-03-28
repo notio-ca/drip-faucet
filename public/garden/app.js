@@ -228,11 +228,12 @@ var app = new Vue({
             app.license = data;
             if (app.license.paid) { $Cookie.set("pop-ads", "1", 365); }
           });
+          /*
           $Contract.methods.hatcheryPlants(this.user.wallet).call(function(error, result) {
             if (result > 0) {
               API_Get("https://drip-scan.goqc.ca/is-garden/" + app.user.wallet, function (data) {});
             }
-          });    
+          });*/
         }
       }
     },
