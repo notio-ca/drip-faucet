@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
 <style>
+  [v-cloak] { display:none; }
   body { background-color:#222; color:#FFF; font-family:'Ubuntu', sans-serif; padding:10px 10px 70px 10px; font-size:16px; line-height:105%; overflow-y:scroll; }
   input { background-color:#444; color:#FFF; width:90%; text-align:left; padding:5px 10px 5px 10px; outline:none; border-style:solid; border:0; }
   td { padding:10px 10px;  border-bottom:5px solid #222; }
@@ -41,7 +42,7 @@
 </style>
 </head>
 <body>
-    <div id="app">
+    <div id="app" v-cloak>
 
       <!-- ------------------------------>
       <div id="app-title">DRIP Garden <span>Scheduler</span></div>
@@ -196,8 +197,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/web3js-cdn@latest/web3.min.js"></script>
     <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
-    <script src="../tools.js?v=17"></script>
-    <script src="app.js?v=17"></script>
+    <script src="../tools.js?v=18"></script>
+    <script src="app.js?v=18"></script>
 <script>
 $is_RedirectHTML = true;
 </script>

@@ -95,6 +95,19 @@ function IS_DEV() {
     return false;
 }
 
+$WALLET_DONATE = "0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08";
+function donateClipboard() {
+    navigator.permissions.query({name: "clipboard-write"}).then(result => {
+        if (result.state == "granted" || result.state == "prompt") {
+            navigator.clipboard.writeText($WALLET_DONATE).then(function() {
+                alert("Copied to clipboard!\nThanks for your support!")
+            }, function() {
+                alert("Sorry cannot copy to your clipboard :(\nPlease select the address instead.")
+            });
+        }
+    });
+}
+
 function loadAds() {
     page = "";
     for (slug of document.location.pathname.split("/")) {
@@ -118,15 +131,9 @@ function loadAds() {
     </div>
     `;
     $("body").prepend(H);
-    $("#but-copy-pop-ads").click(function () {
-        wallet = "0x287C7d1638E5771947BcdCBd8b174fAc4cF37E08";
-        navigator.clipboard.writeText(wallet);
-        ClickTrack("Copy", "Wallet");
-        alert("Thanks for your support!")
-    });
+    $("#but-copy-pop-ads").click(donateClipboard);
     $("#but-close-pop-ads").click(function () { 
         $("#pop-ads").fadeOut(); 
-        ClickTrack("Close", "Pop-Ads");
     });
     window.scrollTo(0, 0);
 }
@@ -171,6 +178,8 @@ function loadMessage() {
 $cookieMigratedCopy = null;
 function migrateCookieSource() {
     $cookieMigratedCopy = document.cookie + "";
+    console.log("SOURCE");
+    console.log($cookieMigratedCopy);
     var tag = document.createElement('script');
     tag.onload = function () { 
         migrateCookieTarget();
