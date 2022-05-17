@@ -102,7 +102,7 @@
             <td>
               <div data-toggle="tooltip" data-placement="left" title="Selling 2 592 000 seeds (1 plant worth of seeds), as now, will give you this payout">
                 <div class="font-sm no-wrap">2.592M seeds =</div>
-                <div class="font-sm blue">{{ rate_plant_lp*drip_busd.price|decimal_2 }}$ = <span class="no-wrap">{{ rate_plant_lp|decimal_3 }} LP <i class="far fa-question-circle" style="color:#FFF;"></i></span></div> 
+                <div class="font-sm blue">{{ rate_plant_lp*drip_busd.price|decimal_2 }}$ = <span class="no-wrap">{{ rate_plant_lp|decimal_4 }} LP <i class="far fa-question-circle" style="color:#FFF;"></i></span></div> 
               </div>
             </td>
           </tr>
@@ -119,12 +119,12 @@
           <tr v-if="checkWallet()"> 
             <td>Seeds <div class="font-sm">available</div> </td> 
             <td><div>{{ user.seeds|numSpace }}</div></td> 
-            <td><span class="font-sm">Growing</span> <div class="font-sm no-wrap">{{ user_lp|decimal_3 }} LP</div> {{ drip_busd.price*user_lp|decimal_2 }}$</td>
+            <td><span class="font-sm">Growing</span> <div class="font-sm no-wrap">{{ user_lp|decimal_4 }} LP</div> {{ drip_busd.price*user_lp|decimal_2 }}$</td>
           </tr>
           <tr v-if="checkWallet()"> 
             <td>Plants <span class="font-sm">/ day</span> <div class="font-sm">Your production</div></td> 
             <td><div>{{ plant_per_day|decimal_3 }}</div> <div class="font-sm">{{ (plant_full_minute/60)|hourToTime }} / <i class="fas fa-seedling"></i></div></td> 
-            <td><div data-toggle="tooltip" data-placement="left" title="Track your own LP per day to ensure your actions increase your daily income"><span class="font-sm">By day <i class="far fa-question-circle"></i></span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$<div class="blue">{{ user_lp_per_day|decimal_3 }} LP</div></div></td>
+            <td><div data-toggle="tooltip" data-placement="left" title="Track your own LP per day to ensure your actions increase your daily income"><span class="font-sm">By day <i class="far fa-question-circle"></i></span> {{ drip_busd.price*user_lp_per_day|decimal_2 }}$<div class="blue">{{ user_lp_per_day|decimal_4 }} LP</div></div></td>
           </tr>
           <tr v-if="checkWallet()"> 
             <td>Seeds <span class="font-sm">/ day</span></td> 

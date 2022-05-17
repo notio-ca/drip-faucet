@@ -79,7 +79,7 @@ var app = new Vue({
         multi = 1;
         this.plant_next_date = [];
         if (this.plant_next_date.indexOf("NaN") == -1) {
-          for (i = 0; i < 50; i++) {
+          for (i = 0; i < 100; i++) {
             this.plant_next_date.push({plant:(i+1), minutes:(plant_next_minute + (this.plant_full_minute * i))});
           }
         }
