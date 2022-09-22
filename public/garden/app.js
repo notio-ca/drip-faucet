@@ -352,8 +352,8 @@ function getChartData(url) {
     lineWidth: 2,
     priceFormat: {
       type: 'price',
-      precision: 3,
-      minMove: 0.001,
+      precision: 6,
+      minMove: 0.000001,
     },
   }); //chart.addLineSeries();
   chart.timeScale().applyOptions({ timeVisible: true });
