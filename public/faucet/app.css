@@ -43,7 +43,9 @@ span.decimal { font-size:13px; }
 .footer { text-align:center; font-size:18px; color:#AAA; padding-top:20px; overflow:hidden; }
 .footer a { color:#EEE; }
 
+#but-home { top:0; left:-62px; }
 @media all and (max-width: 650px) { 
     .box-info { width:45%; }
+    #but-home { top:39px; left:115px; }
 }
 
