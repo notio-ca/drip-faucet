@@ -319,7 +319,55 @@ function simulator() {
     $("#simulator").append(H);
 }
 
+function sf_simulator() {
+    var H = "";
+    deposit = 2291;
+    claim = 0;
+    available = 0;
+    cycles = 400;
+    compound = false;
+    date = new Date(2022, 10-1, 4, 0, 0, 0);
 
+    H += "<tr> <td>Date</td> <td>Deposit</td> <td>Available</td> <td>Per Day</td> <td>Compound</td>  <td>Claim</td> </tr>";
+
+    for (i=0; i < cycles; i++) {
+        per_day = deposit * 0.015;
+        available += per_day;
+        if ((i % 2) == 1) { compound = true; }
+
+        date = moment(date).add(1, 'd').toDate();
+        H += `<tr> 
+            <td>(` + i + ") " + moment(date).format('MMM D') + `</td>
+            <td>` + deposit.toFixed(2) + `</td>
+            <td>` + available.toFixed(2) + `</td>
+            <td>` + per_day.toFixed(2) + `</td>
+            <td>` + compound + `</td>
+            <td id='`+Math.round+`'>` + claim.toFixed(2) + `</td>
+            </tr>`;
+        
+        if (compound) {
+            claim_pc = 0;
+            if (i >= 40 && i <= 74) { claim_pc = 1; }
+            compound = false;
+            claim_amount = available * claim_pc;
+            compound_amount = (available - claim_amount) * 0.97;
+            deposit += compound_amount;
+            claim += claim_amount;
+            available = 0;
+        }
+        //if (i == 13) { deposit += 500*0.97 }
+        // if (i == 40) { deposit -= (2000*0.97); }
+        // if (i == 14) { deposit -= 242.5; }
+        // if (i == 14) { deposit -= 242.5; }
+        // if (i == 15) { deposit -= 485; }
+        // if (i == 18) { deposit -= 485; }
+        //if (i == 20) { deposit -= 485; }
+
+    }
+    H = "<table>" + H + "</table>";
+    $("#simulator").append(H);
+}
+//sf_simulator();
 // ----------------------------------------------------------------------------------------
 // -- BOOTSTRAP ---------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------
