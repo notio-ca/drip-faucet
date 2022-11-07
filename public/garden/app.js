@@ -151,8 +151,8 @@ var app = new Vue({
         });
         $Contract_LP.methods.token0().call(function(error, result) {
           if (error) { console.log(error); return false; };
-          API_Get($PRICE_API + result, function (data) { 
-            app.drip_busd.drip_price = parseFloat(data.data.price);
+          API_Get("https://api.dexscreener.com/latest/dex/tokens/" + result, function (data) { 
+            app.drip_busd.drip_price = parseFloat(data["pairs"][0]["priceUsd"]);
             app.drip_busd.step_calc++;
             if (app.drip_busd.step_calc == 4) { app.calcDripBusd(); }
           });
