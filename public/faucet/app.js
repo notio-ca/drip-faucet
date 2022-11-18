@@ -153,7 +153,7 @@ var app = new Vue({
         },
         getDripPrice() {
             API_Get("https://api.drip.community/prices/", function (data) {
-                app.drip_usd = data[data.length-1].value;
+                app.drip_usd = data[data.length-1][1];
                 document.title = app.drip_usd.toFixed(2) + " $ DRIP";
             });
         },
