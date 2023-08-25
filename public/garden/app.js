@@ -96,11 +96,7 @@ var app = new Vue({
           if (error) { console.log(error); return false; };
           app.user.plants = result;
           app.updateUI();
-<<<<<<< HEAD
-          $Contract.methods.calculateSeedSell(parseInt((app.user.plants * 86400)/1000000).call(function(error, result) {
-=======
           $Contract.methods.calculateSeedSell(parseInt((app.user.plants * 86400)/1000000)).call(function(error, result) {
->>>>>>> 01e0a0b5c82b078a8504dcb4734281aa107decc4
             if (error) { console.log(error); return false; };
             app.user_lp_per_day = app.toDec18(result * 1000000 * 0.95);
             app.updateUI();
