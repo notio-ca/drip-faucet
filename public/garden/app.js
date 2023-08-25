@@ -222,15 +222,15 @@ var app = new Vue({
       },
       auth() {
         if (this.checkWallet()) {
-          API_Get("https://drip-scan.goqc.ca/auth/" + this.user.wallet + "?cache=" + (new Date).getTime(), function (data) { 
-            created = new Date(0).setUTCSeconds(data.created);
-            days_since_created = moment(Date.now()).diff(moment(created), "days");
-            trial = 5;
-            data["days_left"] = trial - days_since_created
-            if (!data.auth) { app.donate(true); }
-            app.license = data;
-            if (app.license.paid) { $Cookie.set("pop-ads", "1", 365); }
-          });
+          // API_Get("https://drip-scan.goqc.ca/auth/" + this.user.wallet + "?cache=" + (new Date).getTime(), function (data) { 
+          //   created = new Date(0).setUTCSeconds(data.created);
+          //   days_since_created = moment(Date.now()).diff(moment(created), "days");
+          //   trial = 5;
+          //   data["days_left"] = trial - days_since_created
+          //   if (!data.auth) { app.donate(true); }
+          //   app.license = data;
+          //   if (app.license.paid) { $Cookie.set("pop-ads", "1", 365); }
+          // });
           /*
           $Contract.methods.hatcheryPlants(this.user.wallet).call(function(error, result) {
             if (result > 0) {
