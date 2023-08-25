@@ -1,7 +1,7 @@
 jsondb = {
     api_url: "https://defidata.link/api/",
-    get_url: "https://defidata.link/api/get/",
-    /*get_url: "https://json.defidata.link/",*/
+    //get_url: "https://defidata.link/api/get/",
+    get_url: "http://json.defidata.link.s3-website-us-east-1.amazonaws.com/",
     load: async (filepath) => {
         return await jsondb.api.get(jsondb.get_url + filepath.toLowerCase());
     },
