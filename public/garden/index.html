@@ -47,13 +47,13 @@
       <!-- ------------------------------>
       <div id="app-title">DRIP Garden <span>Scheduler</span></div>
 
-      <div style="position:absolute; right:0; top:0;">
+      <!-- <div style="position:absolute; right:0; top:0;">
         <div v-if="license.paid" v-on:click="donate()">
-          <!-- <div class="donate-badge">
+          <div class="donate-badge">
             <div>Donator</div>
             <div v-if="license.paid_value > 0" style="font-size:10px; color:#FFF;">{{ license.paid_value|decimal_all }} {{ license.paid_symbol }}</div>
             <div v-else>&nbsp;</div>
-          </div> -->
+          </div>
           <a href="/" class="donate-icon"><i class="fas fa-medal"></i></a>
         </div>
 
@@ -63,8 +63,11 @@
             <div style="font-size:10px; color:#FFF;">{{ license.days_left }} days left</div>
           </div>
           <a href="/" class="donate-icon"><i class="far fa-question-circle" style="color:#20c043"></i></a>
+        </div> -->
+ 
+        <div v-on:click="donate()">
+          <a href="/" class="donate-icon"><i class="far fa-question-circle" style="color:#20c043"></i></a>
         </div>
-        
 
       </div>
       <!-- ------------------------------>
