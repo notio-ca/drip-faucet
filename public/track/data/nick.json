@@ -1,0 +1,35 @@
+[
+    {
+      "name": "StableFund",
+      "address": "0xcaeaf40058d0f8b76d31de48a7cfc881de408f7f",
+      "chains": [
+        {
+          "chainId": 56,
+          "assets": [
+            { 
+              "address": "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56", "label":"", "symbol":"", "output":-1, "calc":"",
+              "func": "balanceOf", "params": ["_WALLET_ADDRESS_"]
+            },
+            { 
+              "address": "0xfbbc24ca5518898fae0d8455cb265faaa66157c9", "label":"Rewards", "symbol":"", "output":-1, "calc":"",
+              "func": "getAllClaimableReward", "params": ["_WALLET_ADDRESS_"] 
+            },
+            { 
+              "address": "0xfbbc24ca5518898fae0d8455cb265faaa66157c9", "label":"Claimable", "symbol":"", "output":4, "calc":"", 
+              "func": "investors", "params": ["_WALLET_ADDRESS_"] 
+            },
+            { 
+              "address": "0xfbbc24ca5518898fae0d8455cb265faaa66157c9", "label":"Locked", "symbol":"", "output":1, "calc":"",
+              "func": "investors", "params": ["_WALLET_ADDRESS_"] 
+            },
+            { 
+              "address": "0xfbbc24ca5518898fae0d8455cb265faaa66157c9", "label":"Per Day", "symbol":"", "output":1, "calc":"* 0.015", 
+              "func": "investors", "params": ["_WALLET_ADDRESS_"] 
+            }
+          ]
+        }
+      ]
+    }
+
+    
+  ]

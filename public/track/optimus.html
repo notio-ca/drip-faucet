@@ -1,0 +1,74 @@
+<html>
+<body>
+<style>
+    * { font-family: Arial, Helvetica, sans-serif; font-size:16px; color:#FFF; background-color:#333; }
+    body { padding:15px; }
+    td { padding:3px 10px; }
+</style>
+<div><input id="wallet" type="text" placeholder="Wallet Public Address" style="width:330px;"></div>
+<div><input id="token" type="text" placeholder="Token Address" style="width:330px;" value="0xCf630283E8Ff2e30C29093bC8aa58CADD8613039"></div>
+<div></div><button id="but-go">GO</button></div>
+<br><br>
+<div id="output"></div>
+<script>
+async function getScan() {
+    //wallet = "0x287c7d1638e5771947bcdcbd8b174fac4cf37e08";
+    wallet = document.querySelector("#wallet").value;
+    if (wallet == "") { document.querySelector("#output").innerHTML = "No wallet"; return false; }
+    token = document.querySelector("#token").value;
+    if (token == "") { document.querySelector("#output").innerHTML = "No token"; return false; }
+    url = "https://api.polygonscan.com/api?module=account&action=tokentx&address="+wallet+"&page=1&offset=1000&startblock=0&endblock=999999999&sort=desc&apikey=KWEA7BPB387TEDEJDBCMIWQWH83BDNPQQG";
+    req = await fetch(url);
+    H = "<tr> <td>Date</td> <td>Action</td> <td>Amount</td> <td>Gas</td> <td>Profit</td> <td>P %</td> </tr>";
+    if (req.status == 200) {
+        res = await req.json();
+        balance = 0;
+        amount_last = 0;
+        action_last = "";
+        profit_total = 0;
+        for (item of res["result"]) {
+            action = "NONE";
+            check = item["contractAddress"].toLowerCase() + "|from:" + item["from"].toLowerCase() + "|to:" + item["to"].toLowerCase();
+            if (check.indexOf(token.toLowerCase()) == -1) { continue; }
+            amount = item["value"] / 1e18;
+            if (check.indexOf("to:"+ wallet.toLowerCase()) != -1) {
+                action = "BUY";
+                balance += amount;
+            } else {
+                action = "SELL";
+                balance -= amount;
+            }
+            profit = "";
+            profit_pc = "";
+            if (action == "BUY" && action_last == "SELL") {
+                profit = (amount - amount_last);
+                profit_pc = profit / amount;
+                // console.log(profit_pc);
+                if (profit_pc < 0.2 && profit_pc > -0.2 && profit_pc != 0) {
+                    profit_pc = ((profit / amount_last) * 100).toFixed(2);
+                    profit = profit.toFixed(3);
+                } else {
+                    profit = "";
+                    profit_pc = "";
+                }
+                if (profit != "") { profit_total += parseFloat(profit); }
+            }
+            action_last = action;
+            amount_last = amount;
+            date_tx = new Date(parseInt(item["timeStamp"]) * 1000).toLocaleDateString();
+            gas = (item["gasUsed"] * item["gasPrice"]) / 1e18;
+            H += "<tr> <td>"+date_tx+"</td> <td>"+action+"</td> <td align='right'>"+amount.toFixed(3)+"</td> <td align='right'>"+gas.toFixed(4)+"</td> <td align='right'>"+profit+"</td> <td align='right'>"+profit_pc+"</td> </tr>";
+            //console.log(item);
+        }
+    }
+    H += "<div><b>Balance: " + balance.toFixed(5) + "</b></div>";
+    H += "<div><b>Profit: " + profit_total.toFixed(5) + "</b></div>";
+    H += "<div><b>Net: " + (balance - profit_total).toFixed(5) + "</b></div>";
+    H = "<table>" + H + "</table>";
+    document.querySelector("#output").innerHTML = H;
+}
+document.querySelector("#but-go").addEventListener("click", function() { getScan(); });
+
+</script>
+</body>
+</html>

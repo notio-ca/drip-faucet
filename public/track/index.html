@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Smart Contract Tracker</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.0, user-scalable=no, minimum-scale=0.9, maximum-scale=0.9" />
+    <!-- <link rel="icon" href=""> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <style>
+        body { background-color:#333; color:#FFF; font-family:'Ubuntu', sans-serif; padding:20px; }
+        .clear { float:none; clear:both; }
+        input { width:100%; padding:0 10px 0 10px; border-radius:10px; outline:none; border-style:solid; border:0; }
+        .text-sm { font-size:12px; }
+        [v-cloak] { display:none; }
+
+        .wallet { background-color:#111; padding:2px 10px; border-radius:8px; }
+        .wallet-content { padding:5px 5px 10px 5px; }
+        .chain { background-color:#222; padding:2px 10px 4px 10px; border-radius:8px; }
+        .chain-content { padding:5px 15px 20px 15px; }
+        table td { padding:0 15px 0 0; white-space:nowrap; }
+        table td:nth-child(1) { padding-right:5px; } 
+        table td:nth-child(3) { text-align:right; padding-right:5px; } 
+        table td:nth-child(5) { text-align:right; }
+    </style>
+</head>
+<body>
+  <div id="app" v-cloak>
+    <div v-for="(wallet, index) in user" :key="index">
+      <div class="wallet">{{ wallet.name }} <span class="text-sm">{{ wallet.address }}</span></div>
+      <div class="wallet-content">
+        <div v-for="(chain, index) in wallet.chains" :key="index">
+          <div class="chain"><img :src="chain.logo" style="height:20px;"> {{ chain.name }}</div>
+          <div class="chain-content">
+            <table>
+              <tr>
+                <td><img :src="chain.logo" style="height:20px;"></td>
+                <td>{{ chain.value|numSpace }}$</td>
+                <td>{{ chain.qty }}</td>
+                <td><span class="text-sm">{{ chain.symbol }}</span></td>
+                <td>{{ chain.price }}$</td>
+                <td>Base</td>
+              </tr>
+              <tr v-for="(asset, index) in chain.assets" :key="index">
+                <td><img :src="asset.logo" style="height:20px;"></td>
+                <td>{{ asset.value|numSpace }}$</td>
+                <td>{{ asset.qty }}</td>
+                <td><span class="text-sm">{{ asset.symbol }}</span></td>
+                <td>{{ asset.price }}$</td>
+                <td>
+                  <span v-if="asset.label != ''">{{ asset.name }} \ {{ asset.label }}</span>
+                  <span v-else>{{ asset.name }} Token</span>
+                </td>
+              </tr> 
+            </table>
+          </div>
+        </div>
+
+      </div><!-- Wallet -->
+    </div>
+  </div><!-- APP -->
+  <div id="chart"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/web3js-cdn@latest/web3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="https://defidata.link/editor/jsondb.js?v=3"></script>
+  <script src="chains.js?v=4"></script>
+  <script src="price.js?v=5"></script>
+  <script src="rpc.js?v=4"></script>
+  <script src="app.js?v=4"></script>
+</body>
+</html>
+
